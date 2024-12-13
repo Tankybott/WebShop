@@ -1,0 +1,253 @@
+﻿@model Models.ViewModels.ProductVM
+
+@functions {
+    public struct StaticData
+    {
+        public const string MainPhotoAreaSelector = "data-main-photo-area";
+        public const string UploadMainPhoto = "data-upload-main-photo";
+        public const string UpdateMainPhoto = "data-update-main-photo";
+        public const string OtherPhotosContainer = "data-other-photos-container";
+
+        public const string ProductId = "id";
+        public const string ProductDiscountId = "DiscountId";
+
+        //ExtraTopicUploader
+        public const string ExtraTopicContainer = "data-extra-topics-container";
+        public const string ExtraTopicAddTopicButton = "data-extra-topics-add-new-topic-button";
+        public const string ExtraTopicSaveButton = "data-extra-topics-save-button";
+        public const string ExtraTopicEditButton = "data-extra-topics-edit-button";
+        public const string ExtraTopicDeleteButton = "data-extra-topic-delete-button";
+        public const string ExtraTopicContainerSelector = "extra-topic-container";
+
+
+        public const string ExtraTopicSavedCssClass = "extra-topic-saved";
+
+    }
+}
+
+<form id="product-form">
+    <input asp-for="Product.Id" data-product="@StaticData.ProductId" hidden>
+    <input asp-for="Product.DiscountId" data-product="@StaticData.ProductDiscountId" hidden>
+    <!-- Product Name -->
+    <div>
+        <label for="product-name">Product Name</label>
+        <input asp-for="Product.Name"
+               data-validation="product-name"
+               class="form-control"
+               id="product-name" />
+        <p class="text-danger"></p>
+    </div>
+
+    <!-- Category Dropdown -->
+    <div class="form-floating mb-3">
+        <select asp-for="Product.CategoryId"
+                data-validation="category"
+                asp-items="Model.CategoryListItems"
+                class="form-select"
+                id="Category">
+            @if (Model.Product.CategoryId == 0)
+            {
+                <option value="" disabled selected>Select Category</option>
+            }
+            else
+            {
+                <option value="" disabled>Select Category</option>
+            }
+        </select>
+        <label for="ParentCategory">Category</label>
+    </div>
+
+    <!-- Product Price -->
+    <div>
+        <label for="product-name">Product Price</label>
+        <input asp-for="Product.Price"
+               type="number"
+               step="0.01"
+               min="0"
+               data-validation="product-price"
+               class="form-control"
+               id="product-price" />
+        <p class="text-danger"></p>
+    </div>
+
+    <!-- Discount Start Time -->
+    <div>
+        <label for="discount-start">Discount Start Time</label>
+        <input asp-for="Product.Discount.StartTime"
+               type="datetime-local"
+               class="form-control"
+               id="discount-start" />
+        <p class="text-danger"></p>
+    </div>
+
+    <!-- Discount End Time -->
+    <div>
+        <label for="discount-end">Discount End Time</label>
+        <input asp-for="Product.Discount.EndTime"
+               type="datetime-local"
+               class="form-control"
+               id="discount-end" />
+        <p class="text-danger"></p>
+    </div>
+
+    <!-- Discount Percentage -->
+    <div>
+        <label for="discount-percentage">Discount Percentage</label>
+        <input asp-for="Product.Discount.Percentage"
+               type="number"
+               step="0.01"
+               min="0"
+               max="100"
+               class="form-control"
+               id="discount-percentage" />
+        <p class="text-danger"></p>
+    </div>
+
+
+    <!-- Short Description -->
+    <div>
+        <label for="short-description">Short Description</label>
+        <input asp-for="Product.ShortDescription"
+               data-validation="short-description"
+               class="form-control"
+               id="short-description" />
+        <p class="text-danger"></p>
+    </div>
+
+    <!-- Quill Editor -->
+    <div class="form-group">
+        <label for="editor">Content</label>
+        <div id="editor" style="height: 300px;">@Html.Raw(Model?.Product?.FullDescription)</div>
+        <input asp-for="Product.FullDescription"
+               type="hidden"
+               id="editorContent" />
+    </div>
+
+    <!-- Extra topics -->
+    <div class="extra-topcis-container" @StaticData.ExtraTopicContainer>
+        <p>Extra topics</p>
+        <button @StaticData.ExtraTopicAddTopicButton>Add new topic</button>
+        @foreach (var extraTopic in Model.Product.ExtraTopics)
+        {
+            <div @StaticData.ExtraTopicContainer class="extra-topic-container">
+                <div>
+                    <button @StaticData.ExtraTopicDeleteButton>Delete</button>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input class="form-control" type="text" value="@extraTopic.TopicTitle" />
+                </div>
+                <div class="form-group">
+                    <label>Info</label>
+                    <textarea class="form-control">@extraTopic.TopicInfo</textarea>
+                </div>
+                <div class="topic-buttons">
+                    <button @StaticData.ExtraTopicSaveButton>Save</button>
+                    <button @StaticData.ExtraTopicEditButton>Edit</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Main Photo -->
+    <div @StaticData.MainPhotoAreaSelector class="main-photo-container">
+        <div class="main-photo-placeholder-container" style="@(Model?.Product.MainPhotoUrl == null ? "" : "display: none;")">
+            <label for="main-photo-input" class="custom-file-button">
+                Choose File
+            </label>
+            <input @StaticData.UploadMainPhoto
+                   type="file"
+                   id="main-photo-input"
+                   accept="image/png, image/jpeg, image/jpg"
+                   class="hidden-file-input" />
+        </div>
+
+        <div class="main-photo-img-container" @StaticData.UpdateMainPhoto style="@(Model?.Product.MainPhotoUrl == null ? "display: none;" : "")">
+            <img id="main-photo-preview"
+                 alt="Main Photo"
+                 src="@Model?.Product.MainPhotoUrl"
+                 class="main-photo-preview" />
+            <div class="main-photo-controllers">
+                <label for="new-photo-input" class="upload-photo-button">
+                    Upload New Photo
+                </label>
+                <input type="file"
+                       id="new-photo-input"
+                       accept="image/png, image/jpeg, image/jpg"
+                       class="hidden-file-input" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Photos -->
+    <div id="other-photos-container" @StaticData.OtherPhotosContainer>
+        @if (Model?.Product?.OtherPhotosUrls != null)
+        {
+            foreach (var photoUrl in Model.Product.OtherPhotosUrls)
+            {
+                <div class="image-wrapper">
+                    <!-- Render the image -->
+                    <img src="@photoUrl" alt="Other Photo" style="width: 100px; height: 100px;" />
+
+                    <!-- Render the controls -->
+                    <div class="controls">
+                        <button type="button" class="delete-photo-button" data-photo-url="@photoUrl">
+                            Delete
+                        </button>
+                        <button type="button" class="switch-photo-button" data-photo-url="@photoUrl">
+                            Switch with Main Photo
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Submit Button -->
+    <button type="button" id="save-button" class="btn btn-success">Save Product</button>
+</form>
+
+@section Scripts {
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="~/js/productQuill.js"></script>
+    <script src="~/js/PhotoUploader.js"></script>
+    <script src="~/js/ExtraTopicUplaoder.js"></script>
+    <script src="~/js/ProductHandler.js"></script>
+
+    <script>
+        (() => {
+            // Initialize PhotoUploader
+            const photoUploader = new PhotoUploader(
+                "[@StaticData.UploadMainPhoto]",
+                "[@StaticData.UpdateMainPhoto]",
+                "[@StaticData.OtherPhotosContainer]",
+                "@(Model?.Product?.MainPhotoUrl ?? "")",
+                @Html.Raw(Model?.Product?.OtherPhotosUrls != null
+                    ? System.Text.Json.JsonSerializer.Serialize(Model.Product.OtherPhotosUrls)
+                    : "[]")
+            );
+
+            const extraTopicUploader = new ExtraTopicUploader(
+                "[@StaticData.ExtraTopicContainer]",
+                "[@StaticData.ExtraTopicAddTopicButton]",
+                "[@StaticData.ExtraTopicDeleteButton]",
+                "[@StaticData.ExtraTopicSaveButton]",
+                "[@StaticData.ExtraTopicEditButton]",
+                "[@StaticData.ExtraTopicContainer]",
+                "@StaticData.ExtraTopicSavedCssClass",
+            )
+
+            // Initialize ProductHandler
+            const productHandler = new ProductHandler(
+                `[data-product='@StaticData.ProductId']`,
+                "#product-name",
+                "#Category",
+                "#short-description",
+                "#editor",
+                photoUploader,
+                extraTopicUploader,
+                "#save-button" // Save button ID
+            );
+        })();
+    </script>
+}

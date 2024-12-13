@@ -1,0 +1,5 @@
+﻿.extra-topic-saved input,
+.extra-topic-saved textarea {
+    pointer-events: none; 
+    opacity: 0.6; 
+}

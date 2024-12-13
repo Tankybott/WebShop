@@ -1,0 +1,48 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+
+/*styling tables*/
+.dt-container {
+    padding: 2px;
+}
+.dt-search {
+    margin-bottom: 10px;
+}
+
+.dt-search label {
+    margin-right: 5px;
+}
+
+.dt-info {
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.dt-paging {
+    margin-bottom: 8px;
+}
+
+.dt-paging button {
+    margin: 1px;
+}
