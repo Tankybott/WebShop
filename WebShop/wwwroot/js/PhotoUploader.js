@@ -132,6 +132,7 @@ class PhotoUploader {
         this.currentMainPhotoUrl = temp;
     }
     deleteOtherPhoto(otherPhotoContainer, img) {
+        console.log("deleting photo" + img.src);
         this.deletePhotoFromServer(img.src);
         otherPhotoContainer.remove();
     }
@@ -141,6 +142,7 @@ class PhotoUploader {
         }
         else {
             this.photoToDeleteUrls.push(this.getRelativeUrl(imgSrc));
+            console.log("pushing photo to delte" + imgSrc);
         }
     }
     handleDownloadedOtherImagesEvents() {

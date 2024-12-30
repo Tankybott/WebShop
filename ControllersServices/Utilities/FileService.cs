@@ -1,8 +1,7 @@
 ﻿using ControllersServices.Utilities.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Serilog;
-using System.IO;
-using System.Threading.Tasks;
+
 
 namespace ControllersServices.Utilities
 {

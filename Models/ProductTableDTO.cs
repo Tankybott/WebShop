@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class ProductDTO
+    public class ProductTableDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string CategoryName { get; set; }
+        public int? DiscountId { get; set; }
     }
 
 }

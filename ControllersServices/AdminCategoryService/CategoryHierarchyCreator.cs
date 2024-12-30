@@ -33,34 +33,5 @@ namespace ControllersServices.AdminCategoryService
             _unitOfWork.Category.Update(parentCategory);
             await _unitOfWork.SaveAsync();
         }
-
-
-        //public async Task BuildAllCategoriesHierarchy(IEnumerable<Category> allCatregories)
-        //{
-
-        //    var rootCategories = allCatregories
-        //        .Where(c => c.ParentCategoryId == null)
-        //        .ToList();
-
-        //    foreach (var rootCategory in rootCategories)
-        //    {
-        //        BuildSubcategories(rootCategory, allCatregories);
-        //    }
-
-        //    _unitOfWork.Category.UpdateRange(rootCategories);
-        //    await _unitOfWork.SaveAsync();
-
-        //}
-        //private void BuildSubcategories(Category category, IEnumerable<Category> allCategories)
-        //{
-        //    category.SubCategories = allCategories
-        //        .Where(c => c.ParentCategoryId == category.Id)
-        //        .ToList();
-
-        //    foreach (var subCategory in category.SubCategories)
-        //    {
-        //        BuildSubcategories(subCategory, allCategories);
-        //    }
-        //}
     }
 }

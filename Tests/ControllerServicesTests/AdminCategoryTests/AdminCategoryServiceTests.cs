@@ -1,9 +1,8 @@
-﻿namespace Tests.AdminCategoryTests
+﻿namespace Tests.ControllerServicesTests.AdminCategoryTests
 {
     using NUnit.Framework;
     using Moq;
-    using ControllersServices.AdminCategoryService;
-    using ControllersServices.AdminCategoryService.Interfaces;
+
     using DataAccess.Repository.IRepository;
     using Models;
     using Models.ViewModels;
@@ -12,9 +11,9 @@
     using System.Threading.Tasks;
     using System.Linq.Expressions;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using DataAccess.Repository;
-    using System.Globalization;
     using System;
+    using global::ControllersServices.AdminCategoryService.Interfaces;
+    using global::ControllersServices.AdminCategoryService;
 
     [TestFixture]
     public class AdminCategoryServiceTests
@@ -24,6 +23,7 @@
         private Mock<IAdminCategoryVMCreator> _mockAdminCategoryVMCreator;
         private Mock<ICategoryHierarchyCreator> _mockCategoryHierarchyCreator;
         private Mock<ICategoryHierarchyRetriver> _mockCategoryHierarchyRetriver;
+        private Mock<ICategoryReletedProductRemover> _mockProductRemover;
         private AdminCategoryService _adminCategoryService;
 
         [SetUp]
@@ -34,6 +34,7 @@
             _mockAdminCategoryVMCreator = new Mock<IAdminCategoryVMCreator>();
             _mockCategoryHierarchyCreator = new Mock<ICategoryHierarchyCreator>();
             _mockCategoryHierarchyRetriver = new Mock<ICategoryHierarchyRetriver>();
+            _mockProductRemover = new Mock<ICategoryReletedProductRemover>();
 
             _mockUnitOfWork.Setup(u => u.Category).Returns(_mockCategoryRepository.Object);
 
@@ -41,7 +42,9 @@
                 _mockCategoryHierarchyCreator.Object,
                 _mockUnitOfWork.Object,
                 _mockAdminCategoryVMCreator.Object,
-                _mockCategoryHierarchyRetriver.Object
+                _mockCategoryHierarchyRetriver.Object,
+                _mockProductRemover.Object
+
             );
         }
         private void SetupMockForGetAllAsync(IEnumerable<Category> categories)
@@ -65,22 +68,23 @@
                 .ReturnsAsync(result);
         }
 
-        private AdminCategoryVM createExpectedVM(IEnumerable<Category> categories) 
-        {return new AdminCategoryVM()
+        private AdminCategoryVM createExpectedVM(IEnumerable<Category> categories)
         {
-            CategoryListItems = categories.Select(c => new SelectListItem
+            return new AdminCategoryVM()
             {
-                Text = c.Name,
-                Value = c.Id.ToString()
-            })
+                CategoryListItems = categories.Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                })
                 .Prepend(new SelectListItem
                 {
                     Text = "Root",
                     Value = ""
                 }),
-            Category = new Category(),
-            AllCategories = categories
-        };
+                Category = new Category(),
+                AllCategories = categories
+            };
         }
 
         #region GetAdminCategoryVMAsync Tests
@@ -108,7 +112,7 @@
             // Arrange
             var categoryId = 1;
             Category expectedCategory = new Category() { Id = categoryId, Name = "Category1" };
-            var categories = new List<Category> { expectedCategory,  new Category { Id = 2, Name = "Category2" }};
+            var categories = new List<Category> { expectedCategory, new Category { Id = 2, Name = "Category2" } };
             var expectedVM = createExpectedVM(categories);
 
             SetupMockForGetAllAsync(categories);
@@ -235,7 +239,7 @@
             // Arrange
             var parentCategory = new Category { Id = 1 };
             var childCategory = new Category { Id = 0, ParentCategoryId = 1 }; // id 0 means that new category is created
-            var categoryVM = new AdminCategoryVM { Category = childCategory }; 
+            var categoryVM = new AdminCategoryVM { Category = childCategory };
             SetupMockForGetAsync(parentCategory);
 
             // Act
@@ -320,7 +324,13 @@
 
             SetupMockForGetAsync(targetCategory);
             _mockCategoryHierarchyRetriver.Setup(r => r.GetCollectionOfAllHigherLevelSubcategoriesAsync(targetCategory))
-                .ReturnsAsync(subcategories);  
+                .ReturnsAsync(subcategories);
+
+            _mockProductRemover
+                .Setup(p => p.DeleteProductsOfCategories(It.IsAny<List<Category>>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
 
             // Act
             await _adminCategoryService.DeleteCategoryWithWholeTreeOfSubcategories(targetCategory.Id);
@@ -330,6 +340,8 @@
                 list.Contains(targetCategory) &&
                 list.Contains(subcategory1) &&
                 list.Contains(subcategory2))), Times.Once);
+
+
         }
 
         [Test]
@@ -347,7 +359,12 @@
                 .ReturnsAsync(categoriesToBeDeleted);
 
             _mockCategoryHierarchyCreator.Setup(c => c.DeleteSubcategoryFromCategoryAsync(targetCategory, targetCategory.ParentCategory))
-                .Verifiable(); 
+                .Verifiable();
+
+            _mockProductRemover
+                .Setup(p => p.DeleteProductsOfCategories(It.IsAny<List<Category>>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
             // Act
             await _adminCategoryService.DeleteCategoryWithWholeTreeOfSubcategories(targetCategory.Id);

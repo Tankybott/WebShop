@@ -11,21 +11,10 @@
         public const string ProductId = "id";
         public const string ProductDiscountId = "DiscountId";
 
-        //ExtraTopicUploader
-        public const string ExtraTopicContainer = "data-extra-topics-container";
-        public const string ExtraTopicAddTopicButton = "data-extra-topics-add-new-topic-button";
-        public const string ExtraTopicSaveButton = "data-extra-topics-save-button";
-        public const string ExtraTopicEditButton = "data-extra-topics-edit-button";
-        public const string ExtraTopicDeleteButton = "data-extra-topic-delete-button";
-        public const string ExtraTopicContainerSelector = "extra-topic-container";
-
-
-        public const string ExtraTopicSavedCssClass = "extra-topic-saved";
-
     }
 }
 
-<form id="product-form">
+<form id="product-form" method="post">
     <input asp-for="Product.Id" data-product="@StaticData.ProductId" hidden>
     <input asp-for="Product.DiscountId" data-product="@StaticData.ProductDiscountId" hidden>
     <!-- Product Name -->
@@ -123,32 +112,6 @@
                id="editorContent" />
     </div>
 
-    <!-- Extra topics -->
-    <div class="extra-topcis-container" @StaticData.ExtraTopicContainer>
-        <p>Extra topics</p>
-        <button @StaticData.ExtraTopicAddTopicButton>Add new topic</button>
-        @foreach (var extraTopic in Model.Product.ExtraTopics)
-        {
-            <div @StaticData.ExtraTopicContainer class="extra-topic-container">
-                <div>
-                    <button @StaticData.ExtraTopicDeleteButton>Delete</button>
-                </div>
-                <div class="form-group">
-                    <label>Title</label>
-                    <input class="form-control" type="text" value="@extraTopic.TopicTitle" />
-                </div>
-                <div class="form-group">
-                    <label>Info</label>
-                    <textarea class="form-control">@extraTopic.TopicInfo</textarea>
-                </div>
-                <div class="topic-buttons">
-                    <button @StaticData.ExtraTopicSaveButton>Save</button>
-                    <button @StaticData.ExtraTopicEditButton>Edit</button>
-                </div>
-            </div>
-        }
-    </div>
-
     <!-- Main Photo -->
     <div @StaticData.MainPhotoAreaSelector class="main-photo-container">
         <div class="main-photo-placeholder-container" style="@(Model?.Product.MainPhotoUrl == null ? "" : "display: none;")">
@@ -211,7 +174,6 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/js/productQuill.js"></script>
     <script src="~/js/PhotoUploader.js"></script>
-    <script src="~/js/ExtraTopicUplaoder.js"></script>
     <script src="~/js/ProductHandler.js"></script>
 
     <script>
@@ -227,25 +189,18 @@
                     : "[]")
             );
 
-            const extraTopicUploader = new ExtraTopicUploader(
-                "[@StaticData.ExtraTopicContainer]",
-                "[@StaticData.ExtraTopicAddTopicButton]",
-                "[@StaticData.ExtraTopicDeleteButton]",
-                "[@StaticData.ExtraTopicSaveButton]",
-                "[@StaticData.ExtraTopicEditButton]",
-                "[@StaticData.ExtraTopicContainer]",
-                "@StaticData.ExtraTopicSavedCssClass",
-            )
+            console.log("[data-product='@StaticData.ProductId']");
+            console.log("[data-product='@StaticData.ProductDiscountId']");
 
             // Initialize ProductHandler
             const productHandler = new ProductHandler(
                 `[data-product='@StaticData.ProductId']`,
+                `[data-product='@StaticData.ProductDiscountId']`,
                 "#product-name",
                 "#Category",
                 "#short-description",
                 "#editor",
                 photoUploader,
-                extraTopicUploader,
                 "#save-button" // Save button ID
             );
         })();

@@ -18,9 +18,9 @@ namespace Models
 
         [ValidateNever]
         public List<string> UrlsToDelete { get; set; }
-        // validate datetimes to start < end 
         public DateTime? DiscountStartDate { get; set; }
         public DateTime? DiscountEndDate { get; set; }
         public int? DiscountPercentage { get; set; }
+        public bool? IsDisocuntChanged { get; set; }
     }
 }

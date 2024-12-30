@@ -1,5 +1,5 @@
 ﻿using ControllersServices.AdminCategoryService.Interfaces;
-using ControllersServices.ProductService.Interfaces;
+using ControllersServices.ProductManagement.Interfaces;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;

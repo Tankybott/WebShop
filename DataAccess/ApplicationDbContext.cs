@@ -25,12 +25,10 @@ namespace DataAccess
 
             builder.Entity<Product>(entity =>
             {
-                entity.OwnsMany(p => p.ExtraTopics, extraTopic =>
-                {
-                    extraTopic.WithOwner().HasForeignKey("ProductId"); 
-                    extraTopic.Property(e => e.TopicTitle).IsRequired();
-                    extraTopic.Property(e => e.TopicInfo).IsRequired();
-                });
+                entity.HasOne(p => p.Discount)
+                    .WithMany()
+                    .HasForeignKey(p => p.DiscountId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             builder.Entity<Category>().HasData(

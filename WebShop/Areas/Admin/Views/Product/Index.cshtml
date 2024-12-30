@@ -10,7 +10,7 @@
 
 <div class="container border border-primary rounded p-3">
     <div class="form-group mb-3">
-        <label class="control-label p-2">Parent Category</label>
+        <label class="control-label p-2">Category</label>
         <select id="categoryFilter" asp-items="Model.CategoryListItems" class="form-control">
             <option selected value="all">All</option>
         </select>
@@ -23,16 +23,12 @@
                 <tr>
                     <th>Name</th>
                     <th>Category Name</th>
+                    <th>Has Discount?</th>
                     <th>Actions</th>
                 </tr>
             </thead>
         </table>
     </div>
-
-
-    <a id="CreateSubcategoryInThisCategory" asp-controller="AdminCategory" asp-action="upsert" class="btn btn-primary mt-3 w-100">
-        <i class="bi bi-plus-circle"></i> Create new subcategory for this category
-    </a>
 </div>
 
 <div class="d-flex justify-content-center mb-3">
@@ -43,5 +39,6 @@
 
 @section Scripts {
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script src="~/js/productIndex.js"></script>
+    <script type="module" src="~/js/DiscountUpdater.js"></script>
+    <script type="module" src="~/js/productIndex.js"></script>
 }

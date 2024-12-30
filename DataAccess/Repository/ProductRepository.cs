@@ -1,12 +1,9 @@
 ﻿using DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace DataAccess.Repository
 {
@@ -26,25 +23,26 @@ namespace DataAccess.Repository
             return await base.GetAsync(filter, includeProperties, tracked);
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetProductsDtoAsync() 
+        public async Task<IEnumerable<ProductTableDTO>> GetProductsDtoAsync() 
         {
             return await _db.Products
                 .Include(p => p.Category)
-                .Select(p => new ProductDTO 
+                .Select(p => new ProductTableDTO 
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    CategoryName = p.Category.Name
+                    CategoryName = p.Category.Name,
+                    DiscountId = p.DiscountId,
                 })
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetProductsDtoOfCategoryAsync(int categoryId)
+        public async Task<IEnumerable<ProductTableDTO>> GetProductsDtoOfCategoryAsync(int categoryId)
         {
             return await _db.Products
                 .Include(p => p.Category)
                 .Where(p => p.CategoryId == categoryId)
-                .Select(p => new ProductDTO
+                .Select(p => new ProductTableDTO
                 {
                     Id = p.Id,
                     Name = p.Name,

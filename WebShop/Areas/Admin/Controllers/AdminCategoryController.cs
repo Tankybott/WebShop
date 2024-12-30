@@ -116,6 +116,7 @@ namespace WebShop.Areas.Admin.Controllers
             try
             {
                 await _adminCategoryService.DeleteCategoryWithWholeTreeOfSubcategories(id);
+                TempData["success"] = "Category deleted successfully";
                 return Json(new { success = true, message = "Delete successfull" });
             }
             catch (Exception ex)

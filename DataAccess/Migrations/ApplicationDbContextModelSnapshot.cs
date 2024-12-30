@@ -362,6 +362,9 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Discounts");
@@ -378,7 +381,7 @@ namespace DataAccess.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DiscountId")
+                    b.Property<int?>("DiscountId")
                         .HasColumnType("int");
 
                     b.Property<string>("FullDescription")
@@ -510,41 +513,11 @@ namespace DataAccess.Migrations
                     b.HasOne("Models.DatabaseRelatedModels.Discount", "Discount")
                         .WithMany()
                         .HasForeignKey("DiscountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsMany("Models.ProductBase+ExtraTopic", "ExtraTopics", b1 =>
-                        {
-                            b1.Property<int>("ProductId")
-                                .HasColumnType("int");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("TopicInfo")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("TopicTitle")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("ProductId", "Id");
-
-                            b1.ToTable("ExtraTopic");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProductId");
-                        });
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
 
                     b.Navigation("Discount");
-
-                    b.Navigation("ExtraTopics");
                 });
 
             modelBuilder.Entity("Models.Category", b =>

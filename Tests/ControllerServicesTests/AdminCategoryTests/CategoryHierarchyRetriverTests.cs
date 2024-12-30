@@ -2,14 +2,13 @@
 {
     using NUnit.Framework;
     using Moq;
-    using ControllersServices.AdminCategoryService;
-    using ControllersServices.AdminCategoryService.Interfaces;
     using DataAccess.Repository.IRepository;
     using Models;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Linq.Expressions;
+    using global::ControllersServices.AdminCategoryService;
 
     namespace Tests.AdminCategoryTests
     {

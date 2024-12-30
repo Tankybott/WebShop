@@ -25,7 +25,6 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\Utility\Utility.csproj" />
-	<ProjectReference Include="..\WebShop\WebShop.csproj" />
 
   </ItemGroup>
 

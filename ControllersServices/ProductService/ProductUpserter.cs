@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
-using ControllersServices.ProductService.Interfaces;
+using ControllersServices.ProductManagement.Interfaces;
 using ControllersServices.Utilities.Interfaces;
 using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebShop.CustomExceptions;
 
-namespace ControllersServices.ProductService
+
+
+
+
+namespace ControllersServices.ProductManagement
 {
     public class ProductUpserter : IProductUpserter
     {
@@ -25,7 +22,11 @@ namespace ControllersServices.ProductService
 
         private const string _productImageDirectory = "images/product";
 
-        public ProductUpserter(IMapper mapper, IUnitOfWork unitOfWork, IFileNameCreator fileNameCreator, IProductPhotoService productPhotoService, IDiscountService discountService)
+        public ProductUpserter(IMapper mapper,
+            IUnitOfWork unitOfWork,
+            IFileNameCreator fileNameCreator,
+            IProductPhotoService productPhotoService,
+            IDiscountService discountService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -37,23 +38,15 @@ namespace ControllersServices.ProductService
         public async Task HandleUpsertAsync(ProductFormModel model)
         {
             var product = new Product();
-
             _mapper.Map(model, product);
 
-            try
-            {
-                await HandleDiscountUpsert(product, model.DiscountStartDate, model.DiscountEndDate, model.DiscountPercentage);
-            }
-            catch (DiscountUpsertException)
-            {
-                throw; 
-            }
+            await HandleDiscountUpsert(product, model.DiscountStartDate, model.DiscountEndDate, model.DiscountPercentage, model.IsDisocuntChanged);
 
             await HandleMainPhotoUpload(product, model.MainPhoto);
 
             await HandleOtherPhotosUpload(product, model.OtherPhotos);
 
-            await HandlePhotosDeletion(model.OtherPhotosUrls);
+            await HandlePhotosDeletion(model.UrlsToDelete);
 
             if (product.Id == 0)
             {
@@ -64,28 +57,50 @@ namespace ControllersServices.ProductService
                 _unitOfWork.Product.Update(product);
             }
 
+            try
+            {
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                //delete created discount if there was a problem with adding whole product
+                if (product.DiscountId != 0 && product.DiscountId != null)
+                {
+                    var discountToDelete = await _unitOfWork.Discount.GetAsync(d => d.Id == product.DiscountId);
+                    _unitOfWork.Discount.Remove(discountToDelete);
+                }
+                throw;
+            }
 
-            await _unitOfWork.SaveAsync();
         }
 
-        private async Task HandleDiscountUpsert(Product product, DateTime? startTime, DateTime? endTime, int? percentage)
+        private async Task HandleDiscountUpsert(
+            Product product,
+            DateTime? startTime,
+            DateTime? endTime,
+            int? percentage,
+            bool? isDiscountChanged)
         {
             if (startTime != null && endTime != null && percentage != null)
             {
-                if (product.DiscountId == 0 || product.DiscountId == null)
+                if (isDiscountChanged != null && isDiscountChanged == false) 
+                {
+                    return;
+                }
+                else if (product.DiscountId == 0 || product.DiscountId == null)
                 {
                     var discount = await _discountService.CreateDiscountAsync(startTime.Value, endTime.Value, percentage.Value);
                     product.DiscountId = discount.Id;
-                } else
-                {
-                    product.Discount.StartTime = startTime.Value;
-                    product.Discount.EndTime = endTime.Value;
-                    product.Discount.Percentage = percentage.Value;
                 }
-            } else if (startTime != null || endTime != null || percentage != null ) 
+                else
+                {
+                    var discount = await _discountService.UpdateDiscountAsync(product.DiscountId.Value, startTime.Value, endTime.Value, percentage.Value);
+                    product.DiscountId = discount.Id;
+                }
+            } 
+            else 
             {
-                Log.Error("Discount not added beacuse of missing data");
-                throw new DiscountUpsertException("Discount was not added because of missing or invalid data.");
+                product.DiscountId = null;
             }
         }
 

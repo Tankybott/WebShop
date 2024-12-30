@@ -8,7 +8,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tests.AdminCategoryTests
+namespace Tests.ControllerServicesTests.AdminCategoryTests
 {
     [TestFixture]
     public class AdminCategoryVMCreatorTests

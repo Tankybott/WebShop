@@ -1,4 +1,6 @@
-﻿using ControllersServices.ProductService.Interfaces;
+﻿using ControllersServices.ProductManagement.Interfaces;
+using DataAccess.Repository;
+using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,16 +8,21 @@ using Models;
 using Models.ViewModels;
 using Newtonsoft.Json;
 
+
+
 namespace WebShop.Areas.Admin.Controllers
 {
-    // delete product allong with deleted categories
     [Area("Admin")]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
-        public ProductController(IProductService productService)
+        private readonly IDiscountService _discountService;
+        private readonly IUnitOfWork _unitOfWork;
+        public ProductController(IProductService productService, IDiscountService discountService, IUnitOfWork unitOfWork)
         {
             _productService = productService;
+            _discountService = discountService;
+            _unitOfWork = unitOfWork;
         }
 
         // make try catch 
@@ -29,8 +36,8 @@ namespace WebShop.Areas.Admin.Controllers
         {
             try
             {
-                var categoryVM = await _productService.GetProductVMAsync(id);
-                return View(categoryVM);
+                var productVM = await _productService.GetProductVMAsync(id);
+                return View(productVM);
             }
             catch (Exception)
             {
@@ -58,41 +65,34 @@ namespace WebShop.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        // usunac return jsony zmienic handling tego na froncie w product handler i dodac redirect tutaj 
-        // dodac handling exception z Discountem 
         public async Task<IActionResult> UpsertAjax([FromForm] ProductFormModel model)
         {
-            var extraTopicsJson = Request.Form["ExtraTopics"];
-            if (!string.IsNullOrEmpty(extraTopicsJson))
-            {
-                model.ExtraTopics = JsonConvert.DeserializeObject<List<ProductBase.ExtraTopic>>(extraTopicsJson);
-            }
-
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Something went wrong, try again later";
-                return Json(new { success = false });
+                return Json(new { });
             }
 
             try
             {
                 await _productService.UpsertAsync(model);
 
-                return Json(new { success = true });
+                TempData["success"] = model.Id != 0 ? "Product upserted successfully" : "Product added successfully";
+                return Json(new { });
             }
             catch (Exception ex)
             {
                 TempData["error"] = "Something went wrong, try again later";
-                return Json(new { success = false });
+                return Json(new { });
             }
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id) 
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                await _productService.Delete(id);
+                await _productService.DeleteAsync(id);
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -100,7 +100,6 @@ namespace WebShop.Areas.Admin.Controllers
                 return Json(new { success = false });
             }
         }
-
         #endregion
     }
 }

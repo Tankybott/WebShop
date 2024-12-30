@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tests.AdminCategoryTests
+namespace Tests.ControllerServicesTests.AdminCategoryTests
 {
     [TestFixture]
     public class CategoryHierarchyCreatorTests

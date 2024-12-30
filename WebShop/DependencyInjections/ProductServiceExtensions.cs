@@ -1,7 +1,7 @@
 ﻿using ControllersServices.AdminCategoryService;
 using ControllersServices.AdminCategoryService.Interfaces;
-using ControllersServices.ProductService;
-using ControllersServices.ProductService.Interfaces;
+using ControllersServices.ProductManagement;
+using ControllersServices.ProductManagement.Interfaces;
 
 namespace WebShop.DependencyInjections
 {
@@ -11,9 +11,10 @@ namespace WebShop.DependencyInjections
         {
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductVMCreator, ProductVMCreator>();
-            services.AddScoped<IProductPhotoService, ProductPhotoServices>();
+            services.AddScoped<IProductPhotoService, ProductPhotoService>();
             services.AddScoped<IProductUpserter, ProductUpserter>();
             services.AddScoped<IDiscountService, DiscountService>();
+            services.AddScoped<IProductRemover, ProductRemover>();
 
             return services;
         }

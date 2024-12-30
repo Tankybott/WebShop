@@ -1,12 +1,9 @@
 ﻿using ControllersServices.AdminCategoryService.Interfaces;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.ViewModels;
-using DataAccess.Repository;
 using DataAccess.Repository.IRepository;
-using Microsoft.AspNetCore.Hosting;
-using Serilog;
+using ControllersServices.ProductManagement.Interfaces;
+
 
 namespace ControllersServices.AdminCategoryService
 {
@@ -16,17 +13,20 @@ namespace ControllersServices.AdminCategoryService
         private readonly IAdminCategoryVMCreator _adminCategoryVMCreator;
         private readonly ICategoryHierarchyCreator _categoryHierarchyCreator;
         private readonly ICategoryHierarchyRetriver _categoryHierarchyRetriver;
+        private readonly ICategoryReletedProductRemover _productRemover;
 
         public AdminCategoryService(
             ICategoryHierarchyCreator categoryHierarchyCreator,
             IUnitOfWork unitOfWork,
             IAdminCategoryVMCreator adminCategoryVMCreator,
-            ICategoryHierarchyRetriver categoryHierarchyRetriver)
+            ICategoryHierarchyRetriver categoryHierarchyRetriver,
+            ICategoryReletedProductRemover productRemover)
         {
             _categoryHierarchyCreator = categoryHierarchyCreator;
             _unitOfWork = unitOfWork;
             _adminCategoryVMCreator = adminCategoryVMCreator;
             _categoryHierarchyRetriver = categoryHierarchyRetriver;
+            _productRemover = productRemover;
         }
         public async Task<AdminCategoryVM> GetAdminCategoryVMAsync(int? id = null, int? bindedParentId = null) 
         {
@@ -124,10 +124,11 @@ namespace ControllersServices.AdminCategoryService
                 {
                     await _categoryHierarchyCreator.DeleteSubcategoryFromCategoryAsync(targetCategory, targetCategory.ParentCategory);
                 }
-            
                 var allSubcategories = await _categoryHierarchyRetriver.GetCollectionOfAllHigherLevelSubcategoriesAsync(targetCategory);
                 List<Category> categoriesToBeDeleted = allSubcategories.ToList();
                 categoriesToBeDeleted.Add(targetCategory);
+
+                await _productRemover.DeleteProductsOfCategories(categoriesToBeDeleted);
                 _unitOfWork.Category.RemoveRange(categoriesToBeDeleted);
                 await _unitOfWork.SaveAsync();
             }

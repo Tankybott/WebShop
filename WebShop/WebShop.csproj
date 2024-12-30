@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\ts\ExtraTopicUplaoder.ts" />
     <Content Remove="wwwroot\ts\PhotoUploader.ts" />
     <Content Remove="wwwroot\ts\ProductHandler.ts" />
   </ItemGroup>
@@ -38,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BackgroundServices\BackgroundServices.csproj" />
     <ProjectReference Include="..\ControllersServices\ControllersServices.csproj" />
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
@@ -45,7 +45,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\ts\ExtraTopicUplaoder.ts" />
     <TypeScriptCompile Include="wwwroot\ts\PhotoUploader.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductHandler.ts" />
   </ItemGroup>

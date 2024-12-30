@@ -11,6 +11,7 @@ namespace WebShop.DependencyInjections
             services.AddScoped<IAdminCategoryVMCreator, AdminCategoryVMCreator>();
             services.AddScoped<ICategoryHierarchyRetriver, CategoryHierarchyRetriver>();
             services.AddScoped<IAdminCategoryService, AdminCategoryService>();
+            services.AddScoped<ICategoryReletedProductRemover, CategoryReletedProductRemover>();
 
 
             return services;

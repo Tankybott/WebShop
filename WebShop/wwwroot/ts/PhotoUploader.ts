@@ -159,6 +159,7 @@
     }
 
     private deleteOtherPhoto(otherPhotoContainer: HTMLDivElement, img: HTMLImageElement): void {
+        console.log("deleting photo" + img.src)
         this.deletePhotoFromServer(img.src);
         otherPhotoContainer.remove();
     }
@@ -168,6 +169,7 @@
             this.photoToUploadUrls = this.photoToUploadUrls.filter(url => url.trim() !== imgSrc.trim());
         } else {
             this.photoToDeleteUrls.push(this.getRelativeUrl(imgSrc));
+            console.log("pushing photo to delte" + imgSrc)
         }
     }
 

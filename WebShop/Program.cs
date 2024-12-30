@@ -6,7 +6,7 @@ using DataAccess.Repository.IRepository;
 using DataAccess.Repository;
 using WebShop.DependencyInjections;
 using System.Text.Json.Serialization;
-using ControllersServices.ProductService;
+using ControllersServices.ProductManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +39,10 @@ try
     });
 
     builder.Services.AddAutoMapper(typeof(ProductFormToProductMapper).Assembly);
+
+    builder.Services.AddHostedService<DiscountActivationService>();
+    builder.Services.AddHostedService<DiscountDeletionService>();
+
 
     var app = builder.Build();
 

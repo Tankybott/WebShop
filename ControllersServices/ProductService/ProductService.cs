@@ -1,36 +1,30 @@
-﻿using AutoMapper;
-using ControllersServices.ProductService.Interfaces;
-using ControllersServices.Utilities.Interfaces;
-using DataAccess.Repository;
+﻿
+using ControllersServices.ProductManagement.Interfaces;
+
 using DataAccess.Repository.IRepository;
-using Microsoft.AspNetCore.Http;
+
 using Models;
 using Models.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ControllersServices.ProductService
+
+namespace ControllersServices.ProductManagement
 {
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductVMCreator _productVMCreator;
         private readonly IProductUpserter _productUpserter;
-        private readonly IProductPhotoService _productPhotoService;
+        private readonly IProductRemover _productRemover;
 
         public ProductService(IUnitOfWork unitOfWork,
             IProductVMCreator productVMCreator,
             IProductUpserter productUpserter,
-            IProductPhotoService productPhotoService)
+            IProductRemover productRemover)
         {
             _unitOfWork = unitOfWork;
             _productVMCreator = productVMCreator;
             _productUpserter = productUpserter;
-            _productPhotoService = productPhotoService;
+            _productRemover = productRemover;
         }
 
         public async Task<ProductVM> GetProductVMForIndexAsync()
@@ -62,7 +56,7 @@ namespace ControllersServices.ProductService
             await _productUpserter.HandleUpsertAsync(model);
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetProductsForTableAsync(string? categoryFilter) 
+        public async Task<IEnumerable<ProductTableDTO>> GetProductsForTableAsync(string? categoryFilter) 
         {
             int filterValueInt;
             if (categoryFilter != null && int.TryParse(categoryFilter, out filterValueInt))
@@ -74,30 +68,11 @@ namespace ControllersServices.ProductService
             return products;
         }
 
-        public async Task Delete(int? id)
+        public async Task DeleteAsync(int id)
         {
-            Product productToDelete = await _unitOfWork.Product.GetAsync(p => p.Id == id, tracked: true);
-            if (productToDelete != null)
-            {
-                await _productPhotoService.DeletePhotoAsync(productToDelete!.MainPhotoUrl);
-                if (productToDelete.OtherPhotosUrls != null)
-                {
-                    foreach (var url in productToDelete.OtherPhotosUrls)
-                    {
-                        await _productPhotoService.DeletePhotoAsync(url);
-                    }
-                }
-                _unitOfWork.Product.Remove(productToDelete);
-                await _unitOfWork.SaveAsync();
-            }
+            var productToDelte = await _unitOfWork.Product.GetAsync(p => p.Id == id);
+            if(productToDelte != null) await _productRemover.RemoveAsync(productToDelte);
         }
-        //public async Task UpdateDiscount(int? id, int discount) 
-        //{
-        //    Product productToUpdate = await _unitOfWork.Product.GetAsync(p => p.Id == id);
-        //    productToUpdate.Discount = discount;
-        //    _unitOfWork.Product.Update(productToUpdate);
-        //    await _unitOfWork.SaveAsync();
-        //}
     }
 }
 

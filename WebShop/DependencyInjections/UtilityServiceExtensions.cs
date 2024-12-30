@@ -2,6 +2,7 @@
 using ControllersServices.AdminCategoryService;
 using ControllersServices.Utilities.Interfaces;
 using ControllersServices.Utilities;
+using Utility.DiscountQueues.Interfaces;
 
 namespace WebShop.DependencyInjections
 {
@@ -12,6 +13,9 @@ namespace WebShop.DependencyInjections
             services.AddScoped<IFileNameCreator, FileNameCreator>();
             services.AddScoped<IPathCreator, PathCreator>();
             services.AddScoped<IFileService, FileService>();
+
+            services.AddSingleton<IActivationDiscountQueue, ActivationDiscountQueue>();
+            services.AddSingleton<IDeletionDiscountQueue, DeletionDiscountQueue>();
 
             return services;
         }

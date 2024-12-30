@@ -43,6 +43,20 @@ function loadDataTable() {
                 "width": "30%"
             },
             {
+                data: 'discountId',
+                "render": function (data, type, row) {
+                    if (type === 'display') {
+                        if (data) {
+                            return '<i class="bi bi-check-circle-fill"></i>';
+                        } else {
+                            return ''; 
+                        }
+                    }
+                    return data; 
+                },
+                "width": "10%"
+            },
+            {
                 data: null,
                 "render": function (data) {
                     if (!data || typeof data.id === 'undefined') {
@@ -91,7 +105,7 @@ function Delete(url) {
                 },
                 error: function (xhr, status, error) {
                     console.error("Error during delete request:", error);
-                    toastr.error("Failed to delete the category.");
+                    toastr.error("Failed to delete the product.");
                 }
             });
         }

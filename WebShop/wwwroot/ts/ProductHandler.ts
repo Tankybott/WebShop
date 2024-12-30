@@ -1,23 +1,39 @@
 ﻿class ProductHandler {
     private productIdInput: HTMLInputElement | null;
+    private discountIdInput: HTMLInputElement | null;
+    private isDiscountChanged: boolean = false;
     constructor(
-        private productIdSelector: string,
+        productIdSelector: string,
+        discountIdSelector: string,
         private nameSelector: string,
         private categorySelector: string,
         private descriptionSelector: string,
         private editorSelector: string,
         private photoUploader: PhotoUploader,
-        private extraTopicUploader: ExtraTopicUploader,
-        private saveButtonSelector: string
+        private saveButtonSelector: string,
+
+        private discountStartTimeInput: HTMLInputElement,
+        private discountEndTimeInput: HTMLInputElement,
+        private discountPercentageInput: HTMLInputElement,
     ) {
         this.attachSaveButtonHandler();
         this.productIdInput = document.querySelector(productIdSelector);
+        this.discountIdInput = document.querySelector(discountIdSelector);
 
+        this.discountStartTimeInput = document.getElementById("discount-start") as HTMLInputElement;
+        this.discountEndTimeInput = document.getElementById("discount-end") as HTMLInputElement;
+        this.discountPercentageInput = document.getElementById("discount-percentage") as HTMLInputElement;
+        this.discountStartTimeInput.addEventListener('change', () => {
+            this.isDiscountChanged = true
+            console.log(this.isDiscountChanged);
+        });
+        this.discountEndTimeInput.addEventListener('change', () => this.isDiscountChanged = true);
+        this.discountPercentageInput.addEventListener('change', () => this.isDiscountChanged = true);
     }
 
 
     private attachSaveButtonHandler(): void {
-        const saveButton = document.querySelector(this.saveButtonSelector) as HTMLButtonElement;
+        const saveButton = document.querySelector("#save-button") as HTMLButtonElement;
 
         saveButton?.addEventListener("click", async (event) => {
             event.preventDefault();
@@ -88,46 +104,43 @@
         const nameInput = document.querySelector(this.nameSelector) as HTMLInputElement;
         const descriptionInput = document.querySelector(this.descriptionSelector) as HTMLInputElement;
         const categorySelect = document.querySelector(this.categorySelector) as HTMLSelectElement;
+        // Add event listeners for change detection
 
-        const discountStartTimeInput = document.getElementById("discount-start") as HTMLInputElement;
-        const discountEndTimeInput = document.getElementById("discount-end") as HTMLInputElement;
-        const discountPercentageInput = document.getElementById("discount-percentage") as HTMLInputElement;
 
         // Get content from Quill editor
         const editorContent = this.getEditorContent();
 
         // Await the asynchronous photo upload preparation
         const formData = this.photoUploader.preparePhotosToUpload();
-        const extraTopicsFormData = this.extraTopicUploader.prepareTopicsToUpload();
 
-        for (const [key, value] of extraTopicsFormData.entries()) {
-            formData.append(key, value);
-        }
-
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
+        //for (const [key, value] of formData.entries()) {
+        //    console.log(`${key}: ${value}`);
+        //}
 
         formData.append("Id", this.productIdInput!.value.trim());
+        formData.append("DiscountId", this.discountIdInput!.value.trim());
+
         formData.append("Name", nameInput.value.trim());
         formData.append("ShortDescription", descriptionInput.value.trim());
         formData.append("FullDescription", editorContent);
         formData.append("CategoryId", categorySelect.value.trim());
 
-        formData.append("Discount.StartTime", discountStartTimeInput.value.trim());
-        formData.append("Discount.EndTime", discountEndTimeInput.value.trim());
-        formData.append("Discount.Percentage", discountPercentageInput.value.trim());
+        formData.append("DiscountStartDate", this.discountStartTimeInput.value.trim());
+        formData.append("DiscountEndDate", this.discountEndTimeInput.value.trim());
+        formData.append("DiscountPercentage", this.discountPercentageInput.value.trim());
+        formData.append("IsDisocuntChanged", this.isDiscountChanged.toString());
+
 
         return formData;
     }
 
     private async handleProductUpsert(): Promise<void> {
         try {
-            const formData = await this.prepareFormData(); // Await the resolved FormData
+            const formData = await this.prepareFormData();
 
             const response = await fetch("/Admin/Product/UpsertAjax", {
                 method: "POST",
-                body: formData, // Resolved FormData passed here
+                body: formData,
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                 },
@@ -137,13 +150,13 @@
                 throw new Error("Failed to upsert product.");
             }
 
-            const data = await response.json();
-            console.log("Product upserted successfully:", data);
-            window.location.href = "/Admin/Product/Index";
+            console.log("Product upserted successfully.");
         } catch (error) {
             console.error("Error during product upsert:", error);
+        } finally {
             window.location.href = "/Admin/Product/Index";
         }
     }
+
 
 }

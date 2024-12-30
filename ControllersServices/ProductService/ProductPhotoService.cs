@@ -1,19 +1,15 @@
-﻿using ControllersServices.ProductService.Interfaces;
+﻿using ControllersServices.ProductManagement.Interfaces;
 using ControllersServices.Utilities.Interfaces;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ControllersServices.ProductService
+
+namespace ControllersServices.ProductManagement
 {
-    public class ProductPhotoServices : IProductPhotoService
+    public class ProductPhotoService : IProductPhotoService
     {
         private readonly IPathCreator _pathCreator;
         private readonly IFileService _fileService;
-        public ProductPhotoServices(IPathCreator pathCreator, IFileService fileService)
+        public ProductPhotoService(IPathCreator pathCreator, IFileService fileService)
         {
             _pathCreator = pathCreator;
             _fileService = fileService;

@@ -9,25 +9,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 class ProductHandler {
-    constructor(productIdSelector, nameSelector, categorySelector, descriptionSelector, editorSelector, photoUploader, saveButtonSelector) {
-        this.productIdSelector = productIdSelector;
+    constructor(productIdSelector, discountIdSelector, nameSelector, categorySelector, descriptionSelector, editorSelector, photoUploader, saveButtonSelector, discountStartTimeInput, discountEndTimeInput, discountPercentageInput) {
         this.nameSelector = nameSelector;
         this.categorySelector = categorySelector;
         this.descriptionSelector = descriptionSelector;
         this.editorSelector = editorSelector;
         this.photoUploader = photoUploader;
         this.saveButtonSelector = saveButtonSelector;
+        this.discountStartTimeInput = discountStartTimeInput;
+        this.discountEndTimeInput = discountEndTimeInput;
+        this.discountPercentageInput = discountPercentageInput;
+        this.isDiscountChanged = false;
         this.attachSaveButtonHandler();
         this.productIdInput = document.querySelector(productIdSelector);
+        this.discountIdInput = document.querySelector(discountIdSelector);
+        this.discountStartTimeInput = document.getElementById("discount-start");
+        this.discountEndTimeInput = document.getElementById("discount-end");
+        this.discountPercentageInput = document.getElementById("discount-percentage");
+        this.discountStartTimeInput.addEventListener('change', () => {
+            this.isDiscountChanged = true;
+            console.log(this.isDiscountChanged);
+        });
+        this.discountEndTimeInput.addEventListener('change', () => this.isDiscountChanged = true);
+        this.discountPercentageInput.addEventListener('change', () => this.isDiscountChanged = true);
     }
     attachSaveButtonHandler() {
-        const saveButton = document.querySelector(this.saveButtonSelector);
+        const saveButton = document.querySelector("#save-button");
         saveButton === null || saveButton === void 0 ? void 0 : saveButton.addEventListener("click", (event) => __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
             if (this.validateInputs()) {
                 yield this.handleProductUpsert();
             }
-        }), { once: true });
+        }));
     }
     /**
      * Validates the input fields (Product Name and Short Description).
@@ -61,7 +74,6 @@ class ProductHandler {
                 isValid = false;
                 errorParagraph.textContent = errorMessage; // Display error message in <p>
                 field.classList.add("is-invalid"); // Add invalid styling
-                this.attachSaveButtonHandler();
             }
             else {
                 errorParagraph.textContent = ""; // Clear any previous error message
@@ -87,27 +99,34 @@ class ProductHandler {
             const nameInput = document.querySelector(this.nameSelector);
             const descriptionInput = document.querySelector(this.descriptionSelector);
             const categorySelect = document.querySelector(this.categorySelector);
+            // Add event listeners for change detection
             // Get content from Quill editor
             const editorContent = this.getEditorContent();
             // Await the asynchronous photo upload preparation
-            const formData = yield this.photoUploader.preparePhotosToUpload();
-            if (!formData)
-                return new FormData();
+            const formData = this.photoUploader.preparePhotosToUpload();
+            //for (const [key, value] of formData.entries()) {
+            //    console.log(`${key}: ${value}`);
+            //}
             formData.append("Id", this.productIdInput.value.trim());
+            formData.append("DiscountId", this.discountIdInput.value.trim());
             formData.append("Name", nameInput.value.trim());
             formData.append("ShortDescription", descriptionInput.value.trim());
             formData.append("FullDescription", editorContent);
             formData.append("CategoryId", categorySelect.value.trim());
+            formData.append("DiscountStartDate", this.discountStartTimeInput.value.trim());
+            formData.append("DiscountEndDate", this.discountEndTimeInput.value.trim());
+            formData.append("DiscountPercentage", this.discountPercentageInput.value.trim());
+            formData.append("IsDisocuntChanged", this.isDiscountChanged.toString());
             return formData;
         });
     }
     handleProductUpsert() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const formData = yield this.prepareFormData(); // Await the resolved FormData
+                const formData = yield this.prepareFormData();
                 const response = yield fetch("/Admin/Product/UpsertAjax", {
                     method: "POST",
-                    body: formData, // Resolved FormData passed here
+                    body: formData,
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
                     },
@@ -115,12 +134,12 @@ class ProductHandler {
                 if (!response.ok) {
                     throw new Error("Failed to upsert product.");
                 }
-                const data = yield response.json();
-                console.log("Product upserted successfully:", data);
-                window.location.href = "/Admin/Product/Index";
+                console.log("Product upserted successfully.");
             }
             catch (error) {
                 console.error("Error during product upsert:", error);
+            }
+            finally {
                 window.location.href = "/Admin/Product/Index";
             }
         });

@@ -29,19 +29,8 @@ namespace Models
         public virtual int? DiscountId { get; set; }
 
         public string? FullDescription { get; set; }
-        public List<ExtraTopic>? ExtraTopics { get; set; } = new List<ExtraTopic>();
         public virtual string? MainPhotoUrl { get; set; }
         public List<string>? OtherPhotosUrls { get; set; } = new List<string>();
-
-        public class ExtraTopic
-        {
-            [Required]
-            public int Id { get; set; }
-            [Required]
-            public string TopicTitle { get; set; }
-
-            public string TopicInfo { get; set; }
-        }
     }
 }
 

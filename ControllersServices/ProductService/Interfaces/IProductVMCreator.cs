@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControllersServices.ProductService.Interfaces
+namespace ControllersServices.ProductManagement.Interfaces
 {
     public interface IProductVMCreator
     {
