@@ -38,7 +38,6 @@ function loadDataTable() {
         "ajax": {
             url: `/Admin/AdminCategory/getall?filter=${selectedParentCategoryId}`,
             dataSrc: function (json) {
-                console.log("Received JSON:", json); 
                 if (json && json.data) {
                     return json.data;
                 } else {

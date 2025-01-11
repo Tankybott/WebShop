@@ -19,7 +19,7 @@ namespace ControllersServices.ProductManagement
         {
             if (product != null)
             {
-                if (product.DiscountId != null) await _discountService.DeleteAsync(product.DiscountId.Value);
+                if (product.DiscountId != null) await _discountService.DeleteByIdAsync(product.DiscountId.Value);
 
                 await _productPhotoService.DeletePhotoAsync(product!.MainPhotoUrl);
                 if (product.OtherPhotosUrls != null)

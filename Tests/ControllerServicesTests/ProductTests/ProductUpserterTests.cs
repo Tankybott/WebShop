@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Models;
 using Models.DatabaseRelatedModels;
 using System.Linq.Expressions;
+using Models.ProductModel;
 
 namespace Tests.ControllersServices.ProductService
 {
@@ -240,6 +241,8 @@ namespace Tests.ControllersServices.ProductService
             var model = CreateValidProductFormModel();
             model.DiscountId = 0;
             model.DiscountPercentage = null;
+            model.DiscountEndDate = null;
+            model.DiscountStartDate = null;
             _mockUnitOfWork.Setup(u => u.SaveAsync()).ThrowsAsync(new Exception());
 
             // Act & Assert
@@ -248,7 +251,23 @@ namespace Tests.ControllersServices.ProductService
             _mockUnitOfWork.Verify(u => u.Discount.GetAsync(It.IsAny<Expression<Func<Discount, bool>>>(), null, false), Times.Never);
             _mockUnitOfWork.Verify(u => u.Discount.Remove(It.IsAny<Discount>()), Times.Never);
         }
+        [Test]
+        public async Task HandleUpsertAsync_ShoudThrowArgumentException_WhenDiscountDataIsNotValidForAddingOrDeletingDiscount()
+        {
+            // Arrange
+            var model = CreateValidProductFormModel();
+            model.DiscountId = 0;
+            model.DiscountPercentage = null;
+            model.DiscountEndDate = null;
+            //missing start date as null which will affect deleting discount, neither 3 of those values are not valid for adding new one 
+            _mockUnitOfWork.Setup(u => u.SaveAsync()).ThrowsAsync(new Exception());
 
+            // Act & Assert
+            Assert.ThrowsAsync<ArgumentException>(() => _productUpserter.HandleUpsertAsync(model));
+
+            _mockUnitOfWork.Verify(u => u.Discount.GetAsync(It.IsAny<Expression<Func<Discount, bool>>>(), null, false), Times.Never);
+            _mockUnitOfWork.Verify(u => u.Discount.Remove(It.IsAny<Discount>()), Times.Never);
+        }
         #endregion
     }
 }

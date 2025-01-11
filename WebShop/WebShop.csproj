@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\ts\DiscountHandler.ts" />
     <Content Remove="wwwroot\ts\PhotoUploader.ts" />
+    <Content Remove="wwwroot\ts\ProductBrowserFilter.ts" />
+    <Content Remove="wwwroot\ts\ProductBrowserHandler.ts" />
+    <Content Remove="wwwroot\ts\ProductFormUpsert.ts" />
     <Content Remove="wwwroot\ts\ProductHandler.ts" />
   </ItemGroup>
 
@@ -38,14 +42,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BackgroundServices\BackgroundServices.csproj" />
-    <ProjectReference Include="..\ControllersServices\ControllersServices.csproj" />
+    <ProjectReference Include="..\ControllersServices\Services.csproj" />
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\ts\DiscountHandler.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductBrowserFilter.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductBrowserHandler.ts" />
     <TypeScriptCompile Include="wwwroot\ts\PhotoUploader.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductFormUpsert.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductHandler.ts" />
   </ItemGroup>
 
@@ -62,10 +70,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

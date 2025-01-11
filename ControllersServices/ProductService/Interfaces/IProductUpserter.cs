@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using Models.ProductModel;
 
 namespace ControllersServices.ProductManagement.Interfaces
 {

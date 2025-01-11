@@ -1,11 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork
@@ -15,12 +9,12 @@ namespace DataAccess.Repository
         public IProductRepository Product { get; private set; }
         public IDiscountRepository Discount { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext db)
+        public UnitOfWork(ApplicationDbContext db, ICategoryRepository category, IProductRepository product, IDiscountRepository discount)
         {
             _db = db;
-            Category = new CategoryRepository(db);
-            Product = new ProductRepository(db);
-            Discount = new DiscountRepository(db);
+            Category = category;
+            Product = product;
+            Discount = discount;
         }
 
         public async Task SaveAsync()

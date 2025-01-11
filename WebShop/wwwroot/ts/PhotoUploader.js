@@ -1,15 +1,16 @@
 "use strict";
 class PhotoUploader {
-    constructor(mainPhotoUploadSelector, mainPhotoUpdateSelector, otherPhotosContainerSelector, downloadedMainPhotoUrl = null, downloadedOtherPhotoUrls = []) {
+    constructor(mainPhotoUploadSelector, mainPhotoValidationParagraphSelector, mainPhotoUpdateSelector, otherPhotosContainerSelector, downloadedMainPhotoUrl = null, downloadedOtherPhotoUrls = []) {
         this.downloadedMainPhotoUrl = downloadedMainPhotoUrl;
         this.downloadedOtherPhotoUrls = downloadedOtherPhotoUrls;
         this.currentMainPhotoUrl = null;
         this.photoToDeleteUrls = [];
         this.photoToUploadUrls = [];
-        this.MAX_PHOTOS_TO_ADD = 7;
+        this.MAX_PHOTOS_TO_ADD = 6;
         this.MAX_PHOTO_SIZE_IN_MB = 8;
         this.currentMainPhotoUrl = downloadedMainPhotoUrl;
         this.mainPhotoUploadInput = document.querySelector(mainPhotoUploadSelector);
+        this.mainPhotoValidationParagraph = document.querySelector(mainPhotoValidationParagraphSelector);
         this.mainPhotoUpdateContainer = document.querySelector(mainPhotoUpdateSelector);
         this.otherPhotosContainer = document.querySelector(otherPhotosContainerSelector);
         this.mainPhotoImg = this.mainPhotoUpdateContainer.querySelector('img');
@@ -60,18 +61,31 @@ class PhotoUploader {
         const existingInput = this.otherPhotosContainer.querySelector("input[type='file']");
         if (this.countAllOtherPhotos() < this.MAX_PHOTOS_TO_ADD) {
             if (!existingInput) {
+                const div = document.createElement("div");
+                div.className = ("other-photo-placeholder-container bg-light border border-secondary order-1");
                 const input = document.createElement("input");
+                const id = "otherPhotoUploadInput";
                 input.type = "file";
+                input.id = id;
                 input.accept = "image/png, image/jpeg, image/jpg";
+                input.style.display = "none";
                 input.addEventListener("change", () => {
                     this.handleOtherPhotoUpload(input);
                 });
-                this.otherPhotosContainer.appendChild(input);
+                const label = document.createElement("label");
+                label.setAttribute("for", id);
+                label.className = "custom-file-button text-secondary";
+                label.innerHTML = `<i class="bi bi-image-fill"></i>`;
+                div.appendChild(input);
+                div.appendChild(label);
+                this.otherPhotosContainer.appendChild(div);
             }
         }
         else {
-            if (existingInput)
-                existingInput.style.display = "none";
+            if (existingInput) {
+                const existingInputDiv = existingInput.parentElement;
+                existingInputDiv.style.display = 'none';
+            }
         }
     }
     countAllOtherPhotos() {
@@ -97,18 +111,19 @@ class PhotoUploader {
     }
     buildOtherPhotoStructure(url) {
         const imageWrapper = document.createElement("div");
-        //zmienic z klasa css
         const img = document.createElement("img");
         img.src = url;
-        img.style.width = "100px";
-        img.style.height = "100px";
+        img.className = "other-photo";
         const controlsDiv = document.createElement("div");
+        controlsDiv.classList.add("controls", "d-flex", "flex-column");
         const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
+        deleteButton.innerHTML = `<i class="bi bi-x-circle"></i>`;
+        deleteButton.className = "btn btn-danger btn-sm mx-2 mb-1";
         const switchButton = document.createElement("button");
-        switchButton.textContent = "Switch with Main Photo";
-        controlsDiv.appendChild(deleteButton);
+        switchButton.className = "btn btn-success btn-sm mx-2 mb-1";
+        switchButton.innerHTML = `<i class="bi bi-arrow-clockwise"></i>`;
         controlsDiv.appendChild(switchButton);
+        controlsDiv.appendChild(deleteButton);
         imageWrapper.appendChild(img);
         imageWrapper.appendChild(controlsDiv);
         this.otherPhotosContainer.appendChild(imageWrapper);
@@ -134,6 +149,7 @@ class PhotoUploader {
     deleteOtherPhoto(otherPhotoContainer, img) {
         this.deletePhotoFromServer(img.src);
         otherPhotoContainer.remove();
+        this.handleOtherPhotosInput();
     }
     deletePhotoFromServer(imgSrc) {
         if (this.isBase64(imgSrc)) {
@@ -141,14 +157,14 @@ class PhotoUploader {
         }
         else {
             this.photoToDeleteUrls.push(this.getRelativeUrl(imgSrc));
+            console.log("pushing photo to delte" + imgSrc);
         }
     }
     handleDownloadedOtherImagesEvents() {
         this.otherPhotosContainer.addEventListener("click", (event) => {
             const eventTarget = event.target;
             // Handle "Delete" button click
-            if (eventTarget.classList.contains("delete-photo-button")) {
-                console.log("delte invoked");
+            if (eventTarget.classList.contains("btn-danger")) {
                 const photoUrl = eventTarget.getAttribute("data-photo-url");
                 if (photoUrl) {
                     const imageWrapper = eventTarget.closest(".image-wrapper");
@@ -158,8 +174,7 @@ class PhotoUploader {
                 }
             }
             // Handle "Switch with Main Photo" button click
-            if (eventTarget.classList.contains("switch-photo-button")) {
-                console.log("switch invoked");
+            if (eventTarget.classList.contains("btn-success")) {
                 const photoUrl = eventTarget.getAttribute("data-photo-url");
                 if (photoUrl) {
                     const imageWrapper = eventTarget.closest(".image-wrapper");
@@ -216,6 +231,16 @@ class PhotoUploader {
         const uniqueId = Date.now() + Math.random().toString(36).substring(2, 15);
         const fileName = `file_${uniqueId}.${extension}`;
         return new File([byteArray], fileName, { type: contentType });
+    }
+    validateMainPhoto() {
+        this.mainPhotoValidationParagraph.innerText = "";
+        if (this.mainPhotoImg.src && this.mainPhotoImg.complete && this.mainPhotoImg.naturalWidth > 0 && this.mainPhotoImg.naturalHeight > 0) {
+            return true;
+        }
+        else {
+            this.mainPhotoValidationParagraph.innerText = "You need to provide main photo of product";
+            return false;
+        }
     }
     //utilities
     isFileTooBig(file) {

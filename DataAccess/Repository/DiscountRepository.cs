@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repository
 {
-    internal class DiscountRepository : Repository<Discount>, IDiscountRepository
+    public class DiscountRepository : Repository<Discount>, IDiscountRepository
     {
         public DiscountRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) { }
     }

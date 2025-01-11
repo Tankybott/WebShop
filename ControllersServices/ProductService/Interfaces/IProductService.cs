@@ -1,10 +1,7 @@
-﻿using Models;
+﻿using Models.DTOs;
+using Models.ProductModel;
 using Models.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ControllersServices.ProductManagement.Interfaces
 {
@@ -14,6 +11,6 @@ namespace ControllersServices.ProductManagement.Interfaces
         Task<ProductVM> GetProductVMAsync(int? id = null);
         Task UpsertAsync(ProductFormModel model);
         Task DeleteAsync(int id);
-        Task<IEnumerable<ProductTableDTO>> GetProductsForTableAsync(string? CategoryFilter);
+        Task<IEnumerable<ProductTableDTO>> GetProductsForTableAsync(int? CategoryFilter, string? productFilterOption);
     }
 }

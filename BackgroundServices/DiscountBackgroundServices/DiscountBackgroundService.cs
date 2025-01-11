@@ -29,13 +29,13 @@ public abstract class DiscountBackgroundService : BackgroundService
         {
             var now = DateTime.Now;
 
-            while (!DiscoutQueue.IsEmpty)
+            while (!DiscoutQueue.IsEmpty())
             {
-                var discount = DiscoutQueue.Peek();
+                var discount = await DiscoutQueue.PeekAsync();
                 if (discount == null || !ShouldProcess(discount, now))
                     break;
 
-                DiscoutQueue.Dequeue();
+                await DiscoutQueue.DequeueAsync();
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {

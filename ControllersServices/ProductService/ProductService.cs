@@ -2,9 +2,11 @@
 using ControllersServices.ProductManagement.Interfaces;
 
 using DataAccess.Repository.IRepository;
-
 using Models;
+using Models.DTOs;
+using Models.ProductModel;
 using Models.ViewModels;
+using Services.ProductService.Interfaces;
 
 
 namespace ControllersServices.ProductManagement
@@ -15,16 +17,19 @@ namespace ControllersServices.ProductManagement
         private readonly IProductVMCreator _productVMCreator;
         private readonly IProductUpserter _productUpserter;
         private readonly IProductRemover _productRemover;
+        private readonly IProductTableDtoRetriver _productTableDtoRetriver;
 
         public ProductService(IUnitOfWork unitOfWork,
             IProductVMCreator productVMCreator,
             IProductUpserter productUpserter,
-            IProductRemover productRemover)
+            IProductRemover productRemover,
+            IProductTableDtoRetriver productTableDtoRetriver)
         {
             _unitOfWork = unitOfWork;
             _productVMCreator = productVMCreator;
             _productUpserter = productUpserter;
             _productRemover = productRemover;
+            _productTableDtoRetriver = productTableDtoRetriver;
         }
 
         public async Task<ProductVM> GetProductVMForIndexAsync()
@@ -56,16 +61,9 @@ namespace ControllersServices.ProductManagement
             await _productUpserter.HandleUpsertAsync(model);
         }
 
-        public async Task<IEnumerable<ProductTableDTO>> GetProductsForTableAsync(string? categoryFilter) 
+        public async Task<IEnumerable<ProductTableDTO>> GetProductsForTableAsync(int? categoryFilter, string? productFilterOption) 
         {
-            int filterValueInt;
-            if (categoryFilter != null && int.TryParse(categoryFilter, out filterValueInt))
-            {
-                return await _unitOfWork.Product.GetProductsDtoOfCategoryAsync(filterValueInt);
-            }
-
-            var products = await _unitOfWork.Product.GetProductsDtoAsync();
-            return products;
+            return await _productTableDtoRetriver.GetProductsTableDtoAsync(categoryFilter, productFilterOption);
         }
 
         public async Task DeleteAsync(int id)

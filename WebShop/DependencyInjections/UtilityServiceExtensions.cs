@@ -1,5 +1,5 @@
-﻿using ControllersServices.AdminCategoryService.Interfaces;
-using ControllersServices.AdminCategoryService;
+﻿using ControllersServices.CategoryService.Interfaces;
+using ControllersServices.CategoryService;
 using ControllersServices.Utilities.Interfaces;
 using ControllersServices.Utilities;
 using Utility.DiscountQueues.Interfaces;

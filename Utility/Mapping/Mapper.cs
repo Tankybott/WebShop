@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Models;
+using Models.ProductFilterOptions;
+using Models.ProductModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,8 @@ namespace ControllersServices.ProductManagement
         public ProductFormToProductMapper()
         {
             CreateMap<ProductFormModel, Product>();
+            CreateMap<ProductFilterOptionsRequest, ProductFilterOptionsQuery>()
+            .ForMember(dest => dest.CategoriesFilteredIds, opt => opt.Ignore());
         }
     }
 }

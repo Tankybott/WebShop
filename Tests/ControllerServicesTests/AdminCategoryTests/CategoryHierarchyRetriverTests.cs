@@ -1,4 +1,4 @@
-﻿namespace Tests.AdminCategoryTests
+﻿namespace Tests.CategoryTests
 {
     using NUnit.Framework;
     using Moq;
@@ -8,9 +8,9 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Linq.Expressions;
-    using global::ControllersServices.AdminCategoryService;
+    using global::ControllersServices.CategoryService;
 
-    namespace Tests.AdminCategoryTests
+    namespace Tests.CategoryTests
     {
 
 
@@ -45,7 +45,7 @@
             }
 
             [Test]
-            public async Task GetCollectionOfAllHigherLevelSubcategoriesAsync_ReturnsCorrectCount()
+            public async Task GetCategoryTreeAsync_ReturnsCorrectCount()
             {
                 // Arrange
                 var parentCategory = new Category { Id = 1, Name = "Parent" };
@@ -57,14 +57,14 @@
                 SetupMockForGetAllAsync(categories);
 
                 // Act
-                var result = await _categoryHierarchyRetriver.GetCollectionOfAllHigherLevelSubcategoriesAsync(parentCategory);
+                var result = await _categoryHierarchyRetriver.GetCategoryTreeAsync(parentCategory);
 
                 // Assert
-                Assert.That(result.Count(), Is.EqualTo(3));
+                Assert.That(result.Count(), Is.EqualTo(4));
             }
 
             [Test]
-            public async Task GetCollectionOfAllHigherLevelSubcategoriesAsync_ContainsChildCategory1()
+            public async Task GetCategoryTreeAsync_ContainsChildCategory1()
             {
                 // Arrange
                 var parentCategory = new Category { Id = 1, Name = "Parent" };
@@ -74,14 +74,14 @@
                 SetupMockForGetAllAsync(categories);
 
                 // Act
-                var result = await _categoryHierarchyRetriver.GetCollectionOfAllHigherLevelSubcategoriesAsync(parentCategory);
+                var result = await _categoryHierarchyRetriver.GetCategoryTreeAsync(parentCategory);
 
                 // Assert
                 Assert.That(result.Contains(childCategory1), Is.True);
             }
 
             [Test]
-            public async Task GetCollectionOfAllHigherLevelSubcategoriesAsync_ContainsChildCategory2()
+            public async Task GetCategoryTreeAsync_ContainsChildCategory2()
             {
                 // Arrange
                 var parentCategory = new Category { Id = 1, Name = "Parent" };
@@ -91,14 +91,14 @@
                 SetupMockForGetAllAsync(categories);
 
                 // Act
-                var result = await _categoryHierarchyRetriver.GetCollectionOfAllHigherLevelSubcategoriesAsync(parentCategory);
+                var result = await _categoryHierarchyRetriver.GetCategoryTreeAsync(parentCategory);
 
                 // Assert
                 Assert.That(result.Contains(childCategory2), Is.True);
             }
 
             [Test]
-            public async Task GetCollectionOfAllHigherLevelSubcategoriesAsync_ContainsSubChildCategory()
+            public async Task GetCategoryTreeAsync_ContainsSubChildCategory()
             {
                 // Arrange
                 var parentCategory = new Category { Id = 1, Name = "Parent" };
@@ -109,14 +109,14 @@
                 SetupMockForGetAllAsync(categories);
 
                 // Act
-                var result = await _categoryHierarchyRetriver.GetCollectionOfAllHigherLevelSubcategoriesAsync(parentCategory);
+                var result = await _categoryHierarchyRetriver.GetCategoryTreeAsync(parentCategory);
 
                 // Assert
                 Assert.That(result.Contains(subChildCategory), Is.True);
             }
 
             [Test]
-            public async Task GetCollectionOfAllHigherLevelSubcategoriesAsync_ReturnsEmptyWhenNoSubcategories()
+            public async Task GetCategoryTreeAsync_ReturnsCollectionWith1Category_WhenNoSubcategories()
             {
                 // Arrange
                 var parentCategory = new Category { Id = 1, Name = "Parent" };
@@ -124,10 +124,10 @@
                 SetupMockForGetAllAsync(categories);
 
                 // Act
-                var result = await _categoryHierarchyRetriver.GetCollectionOfAllHigherLevelSubcategoriesAsync(parentCategory);
+                var result = await _categoryHierarchyRetriver.GetCategoryTreeAsync(parentCategory);
 
                 // Assert
-                Assert.That(result, Is.Empty);
+                Assert.That(result.Count, Is.EqualTo(1));
             }
         }
     }

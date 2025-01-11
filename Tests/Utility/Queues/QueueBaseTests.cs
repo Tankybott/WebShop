@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 
 namespace Tests.Utility.DiscountQueues
 {
@@ -23,7 +23,7 @@ namespace Tests.Utility.DiscountQueues
             }
         }
 
-        private class TestQueue : QueueBase<TestItem>
+        private class TestQueue : SortedQueue<TestItem>
         {
             public TestQueue() : base(new TestItemComparer()) { }
         }
@@ -39,31 +39,31 @@ namespace Tests.Utility.DiscountQueues
         #region Enqueue Tests
 
         [Test]
-        public void Enqueue_ShouldAddItemToQueue_WhenQueueIsEmpty()
+        public async Task Enqueue_ShouldAddItemToQueue_WhenQueueIsEmpty()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
 
             // Act
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Assert
-            Assert.That(_queue.Peek(), Is.EqualTo(item));
+            Assert.That(await _queue.PeekAsync(), Is.EqualTo(item));
         }
 
         [Test]
-        public void Enqueue_ShouldMaintainOrder_WhenItemsAreAdded()
+        public async Task Enqueue_ShouldMaintainOrder_WhenItemsAreAdded()
         {
             // Arrange
             var item1 = new TestItem { Id = 2, Name = "Item2" };
             var item2 = new TestItem { Id = 1, Name = "Item1" };
 
             // Act
-            _queue.Enqueue(item1);
-            _queue.Enqueue(item2);
+            await _queue.EnqueueAsync(item1);
+            await _queue.EnqueueAsync(item2);
 
             // Assert
-            Assert.That(_queue.Peek(), Is.EqualTo(item2));
+            Assert.That(await _queue.PeekAsync(), Is.EqualTo(item2));
         }
 
         #endregion
@@ -71,38 +71,39 @@ namespace Tests.Utility.DiscountQueues
         #region Peek Tests
 
         [Test]
-        public void Peek_ShouldReturnFirstElement_WhenQueueHasItems()
+        public async Task Peek_ShouldReturnFirstElement_WhenQueueHasItems()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            var result = _queue.Peek();
+            var result = await _queue.PeekAsync();
 
             // Assert
             Assert.That(result, Is.EqualTo(item));
         }
 
         [Test]
-        public void Peek_ShouldNotRemoveElementFromQueue_WhenQueueHasItems()
+        public async Task Peek_ShouldNotRemoveElementFromQueue_WhenQueueHasItems()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            _queue.Peek();
+            await _queue.PeekAsync();
 
             // Assert
-            Assert.That(_queue.IsEmpty, Is.False); 
+            Assert.That(_queue.IsEmpty(), Is.False);
         }
+        
 
         [Test]
-        public void Peek_ShouldReturnNull_WhenQueueIsEmpty()
+        public async Task Peek_ShouldReturnNull_WhenQueueIsEmpty()
         {
             // Act
-            var result = _queue.Peek();
+            var result = await _queue.PeekAsync();
 
             // Assert
             Assert.That(result, Is.Null);
@@ -113,41 +114,41 @@ namespace Tests.Utility.DiscountQueues
         #region Dequeue Tests
 
         [Test]
-        public void Dequeue_ShouldReturnAndRemoveFirstElement_WhenQueueHasItems()
+        public async Task Dequeue_ShouldReturnAndRemoveFirstElement_WhenQueueHasItems()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            var result = _queue.Dequeue();
+            var result = await _queue.DequeueAsync();
 
             // Assert
             Assert.That(result, Is.EqualTo(item));
         }
 
         [Test]
-        public void Dequeue_ShouldMakeQueueEmpty_WhenQueueHasOnlyOneItem()
+        public async Task Dequeue_ShouldMakeQueueEmpty_WhenQueueHasOnlyOneItem()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            _queue.Dequeue();
+            await _queue.DequeueAsync();
 
             // Assert
-            Assert.That(_queue.IsEmpty, Is.True);
+            Assert.That(_queue.IsEmpty(), Is.True);
         }
 
         [Test]
-        public void Dequeue_ShouldReturnNull_WhenQueueIsEmpty()
+        public async Task Dequeue_ShouldReturnNull_WhenQueueIsEmpty()
         {
             // Act
-            var result = _queue.Dequeue();
+            var result = await _queue.DequeueAsync();
 
             // Assert
-            Assert.That(result, Is.Null); 
+            Assert.That(result, Is.Null);
         }
 
         #endregion
@@ -155,24 +156,24 @@ namespace Tests.Utility.DiscountQueues
         #region IsEmpty Tests
 
         [Test]
-        public void IsEmpty_ShouldReturnTrue_WhenQueueIsEmpty()
+        public async Task IsEmpty_ShouldReturnTrue_WhenQueueIsEmpty()
         {
             // Act
-            var result = _queue.IsEmpty;
+            var result = _queue.IsEmpty();
 
             // Assert
             Assert.That(result, Is.True);
         }
 
         [Test]
-        public void IsEmpty_ShouldReturnFalse_WhenQueueHasItems()
+        public async Task IsEmpty_ShouldReturnFalse_WhenQueueHasItems()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            var result = _queue.IsEmpty;
+            var result = _queue.IsEmpty();
 
             // Assert
             Assert.That(result, Is.False);
@@ -183,59 +184,59 @@ namespace Tests.Utility.DiscountQueues
         #region RemoveById Tests
 
         [Test]
-        public void RemoveById_ShouldReturnTrue_WhenItemWithIdExists()
+        public async Task RemoveById_ShouldReturnTrue_WhenItemWithIdExists()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            var result = _queue.RemoveById(1);
+            var result = await _queue.RemoveByIdAsync(1);
 
             // Assert
             Assert.That(result, Is.True);
         }
 
         [Test]
-        public void RemoveById_ShouldRemoveItem_WhenItemWithIdExists()
+        public async Task RemoveById_ShouldRemoveItem_WhenItemWithIdExists()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            _queue.RemoveById(1);
+            await _queue.RemoveByIdAsync(1);
 
             // Assert
-            Assert.That(_queue.IsEmpty, Is.True); 
+            Assert.That(_queue.IsEmpty(), Is.True);
         }
 
         [Test]
-        public void RemoveById_ShouldReturnFalse_WhenItemWithIdDoesNotExist()
+        public async Task RemoveById_ShouldReturnFalse_WhenItemWithIdDoesNotExist()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            var result = _queue.RemoveById(2);
+            var result = await _queue.RemoveByIdAsync(2);
 
             // Assert
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void RemoveById_ShouldNotRemoveAnyItem_WhenItemWithIdDoesNotExist()
+        public async Task RemoveById_ShouldNotRemoveAnyItem_WhenItemWithIdDoesNotExist()
         {
             // Arrange
             var item = new TestItem { Id = 1, Name = "Item1" };
-            _queue.Enqueue(item);
+            await _queue.EnqueueAsync(item);
 
             // Act
-            _queue.RemoveById(2);
+            await _queue.RemoveByIdAsync(2);
 
             // Assert
-            Assert.That(_queue.Peek(), Is.EqualTo(item)); 
+            Assert.That(await _queue.PeekAsync(), Is.EqualTo(item));
         }
 
         #endregion

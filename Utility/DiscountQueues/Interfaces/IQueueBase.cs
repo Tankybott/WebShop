@@ -1,14 +1,12 @@
 ﻿using Models;
-using Models.DatabaseRelatedModels;
-using System.Threading;
-using Utility.DiscountQueues.Interfaces;
+using System.Threading.Tasks;
 
 public interface IQueueBase<T> where T : IHasId
 {
-    bool IsEmpty { get; }
+    bool IsEmpty();
 
-    T? Dequeue();
-    void Enqueue(T item);
-    T? Peek();
-    bool RemoveById(int id);
+    Task<T?> DequeueAsync();
+    Task EnqueueAsync(T item);
+    Task<T?> PeekAsync();
+    Task<bool> RemoveByIdAsync(int id);
 }

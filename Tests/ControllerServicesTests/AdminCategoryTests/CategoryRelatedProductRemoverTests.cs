@@ -1,15 +1,15 @@
 ﻿using NUnit.Framework;
 using Moq;
-using ControllersServices.AdminCategoryService;
+using ControllersServices.CategoryService;
 using ControllersServices.ProductManagement.Interfaces;
 using DataAccess.Repository.IRepository;
 using Models;
 
 using System.Linq.Expressions;
-using ControllersServices.AdminCategoryService.Interfaces;
+using ControllersServices.CategoryService.Interfaces;
 
 
-namespace Tests.ControllerServicesTests.AdminCategoryTests
+namespace Tests.ControllerServicesTests.CategoryTests
 {
     [TestFixture]
     public class CategoryReletedProductRemoverTests
@@ -62,7 +62,7 @@ namespace Tests.ControllerServicesTests.AdminCategoryTests
                 .Returns(Task.CompletedTask);
 
             // Act
-            await _categoryReletedProductRemover.DeleteProductsOfCategories(categories);
+            await _categoryReletedProductRemover.DeleteProductsOfCategoriesAsync(categories);
 
             // Assert
             _mockProductRemover.Verify(p => p.RemoveAsync(It.IsAny<Product>()), Times.Exactly(4)); // Total calls
@@ -90,7 +90,7 @@ namespace Tests.ControllerServicesTests.AdminCategoryTests
                             .ReturnsAsync(products);
 
             // Act
-            await _categoryReletedProductRemover.DeleteProductsOfCategories(categories);
+            await _categoryReletedProductRemover.DeleteProductsOfCategoriesAsync(categories);
 
             // Assert
             _mockProductRemover.Verify(p => p.RemoveAsync(It.IsAny<Product>()), Times.Never); // Should not be called

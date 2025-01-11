@@ -2,6 +2,7 @@
 using Models.DatabaseRelatedModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Tests.Utility.DiscountQueues
 {
@@ -17,7 +18,7 @@ namespace Tests.Utility.DiscountQueues
         }
 
         [Test]
-        public void Items_ShouldBeSortedByEndTime()
+        public async Task Items_ShouldBeSortedByEndTime()
         {
             // Arrange
             var discount1 = new Discount { Id = 1, EndTime = new DateTime(2024, 12, 25, 12, 0, 0) };
@@ -25,29 +26,29 @@ namespace Tests.Utility.DiscountQueues
             var discount3 = new Discount { Id = 3, EndTime = new DateTime(2024, 12, 26, 12, 0, 0) }; // Later EndTime
 
             // Act
-            _queue.Enqueue(discount1);
-            _queue.Enqueue(discount2);
-            _queue.Enqueue(discount3);
+            await _queue.EnqueueAsync(discount1);
+            await _queue.EnqueueAsync(discount2);
+            await _queue.EnqueueAsync(discount3);
 
-            var result = _queue.Peek();
+            var result = await _queue.PeekAsync();
 
             // Assert
             Assert.That(result, Is.EqualTo(discount2)); // The earliest EndTime should be first
         }
 
         [Test]
-        public void Items_WithSameEndTime_ShouldBeSortedById()
+        public async Task Items_WithSameEndTime_ShouldBeSortedById()
         {
             // Arrange
             var discount1 = new Discount { Id = 1, EndTime = new DateTime(2024, 12, 25, 12, 0, 0) };
             var discount2 = new Discount { Id = 2, EndTime = new DateTime(2024, 12, 25, 12, 0, 0) }; // Same EndTime as discount1
 
             // Act
-            _queue.Enqueue(discount2);
-            _queue.Enqueue(discount1);
+            await _queue.EnqueueAsync(discount2);
+            await _queue.EnqueueAsync(discount1);
 
-            var result1 = _queue.Dequeue(); // First item
-            var result2 = _queue.Dequeue(); // Second item
+            var result1 = await _queue.DequeueAsync(); // First item
+            var result2 = await _queue.DequeueAsync(); // Second item
 
             // Assert
             Assert.That(result1, Is.EqualTo(discount1)); // Lower Id should come first
@@ -55,7 +56,7 @@ namespace Tests.Utility.DiscountQueues
         }
 
         [Test]
-        public void Items_WithSameEndTimeAndDifferentId_ShouldAllBeInserted()
+        public async Task Items_WithSameEndTimeAndDifferentId_ShouldAllBeInserted()
         {
             // Arrange
             var discount1 = new Discount { Id = 1, EndTime = new DateTime(2024, 12, 25, 12, 0, 0) };
@@ -63,14 +64,14 @@ namespace Tests.Utility.DiscountQueues
             var discount3 = new Discount { Id = 3, EndTime = new DateTime(2024, 12, 25, 12, 0, 0) };
 
             // Act
-            _queue.Enqueue(discount1);
-            _queue.Enqueue(discount2);
-            _queue.Enqueue(discount3);
+            await _queue.EnqueueAsync(discount1);
+            await _queue.EnqueueAsync(discount2);
+            await _queue.EnqueueAsync(discount3);
 
             // Assert
-            Assert.That(_queue.Dequeue(), Is.EqualTo(discount1)); // Order by Id
-            Assert.That(_queue.Dequeue(), Is.EqualTo(discount2));
-            Assert.That(_queue.Dequeue(), Is.EqualTo(discount3));
+            Assert.That(await _queue.DequeueAsync(), Is.EqualTo(discount1)); // Order by Id
+            Assert.That(await _queue.DequeueAsync(), Is.EqualTo(discount2));
+            Assert.That(await _queue.DequeueAsync(), Is.EqualTo(discount3));
         }
     }
 }

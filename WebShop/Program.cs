@@ -27,11 +27,14 @@ try
     {
         option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
+    builder.Services.AddReoistoryServices();
     builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-    builder.Services.AddAdminCategoryServices();
+    builder.Services.AddCategoryServices();
     builder.Services.AddProductServices();
     builder.Services.AddUtilityServices();
+    builder.Services.AddProductBrowserServices();
+
 
     builder.Services.AddControllers().AddJsonOptions(options =>
     {

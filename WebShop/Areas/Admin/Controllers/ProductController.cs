@@ -1,13 +1,6 @@
 ﻿using ControllersServices.ProductManagement.Interfaces;
-using DataAccess.Repository;
-using DataAccess.Repository.IRepository;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Models;
-using Models.ViewModels;
-using Newtonsoft.Json;
-
+using Models.ProductModel;
 
 
 namespace WebShop.Areas.Admin.Controllers
@@ -16,20 +9,25 @@ namespace WebShop.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
-        private readonly IDiscountService _discountService;
-        private readonly IUnitOfWork _unitOfWork;
-        public ProductController(IProductService productService, IDiscountService discountService, IUnitOfWork unitOfWork)
+
+        public ProductController(IProductService productService)
         {
             _productService = productService;
-            _discountService = discountService;
-            _unitOfWork = unitOfWork;
         }
 
-        // make try catch 
         public async Task<IActionResult> Index()
         {
-            var productVM = await _productService.GetProductVMForIndexAsync();
-            return View(productVM);
+
+            try
+            {
+                var productVM = await _productService.GetProductVMForIndexAsync();
+                return View(productVM);
+            }
+            catch (Exception)
+            {
+                TempData["error"] = "Something went wrong, try again later";
+                return RedirectToAction("Index", "Home", new { area = "User" });
+            }
         }
 
         public async Task<IActionResult> Upsert(int? id)
@@ -50,18 +48,10 @@ namespace WebShop.Areas.Admin.Controllers
         #region Api Calls
 
         [HttpGet]
-        public async Task<IActionResult> GetAllForTable(string? categoryFilter)
+        public async Task<IActionResult> GetAllForTable(int? categoryFilter, string? productFilterOption)
         {
-            try
-            {
-                var products = await _productService.GetProductsForTableAsync(categoryFilter);
-                return Json(new { data = products });
-            }
-            catch (Exception)
-            {
-                TempData["error"] = "Something went wrong, try again later";
-                return RedirectToAction("Index", "Home", new { area = "User" });
-            }
+            var products = await _productService.GetProductsForTableAsync(categoryFilter, productFilterOption);
+            return Json(new { data = products });
         }
 
         [HttpPost]
@@ -93,11 +83,13 @@ namespace WebShop.Areas.Admin.Controllers
             try
             {
                 await _productService.DeleteAsync(id);
-                return Json(new { success = true });
+                TempData["success"] = "Product deleted successfully";
+                return Json(new { success = true,});
             }
             catch (Exception ex)
             {
-                return Json(new { success = false });
+                TempData["error"] = "There was en error when deleting product";
+                return Json(new { success = false,});
             }
         }
         #endregion

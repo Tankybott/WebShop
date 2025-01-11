@@ -29,7 +29,7 @@ namespace Tests.ControllerServicesTests.ProductTests
 
             _mockUnitOfWork.Setup(u => u.Product).Returns(mockProductRepository.Object);
 
-            _mockDiscountService.Setup(d => d.DeleteAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+            _mockDiscountService.Setup(d => d.DeleteByIdAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
             _mockProductPhotoService.Setup(p => p.DeletePhotoAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
 
             _productRemover = new ProductRemover(_mockUnitOfWork.Object, _mockDiscountService.Object, _mockProductPhotoService.Object);
@@ -51,7 +51,7 @@ namespace Tests.ControllerServicesTests.ProductTests
             await _productRemover.RemoveAsync(product);
 
             // Assert
-            _mockDiscountService.Verify(d => d.DeleteAsync(10), Times.Once);
+            _mockDiscountService.Verify(d => d.DeleteByIdAsync(10), Times.Once);
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace Tests.ControllerServicesTests.ProductTests
             await _productRemover.RemoveAsync(product);
 
             // Assert
-            _mockDiscountService.Verify(d => d.DeleteAsync(It.IsAny<int>()), Times.Never);
+            _mockDiscountService.Verify(d => d.DeleteByIdAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace Tests.ControllerServicesTests.ProductTests
             await _productRemover.RemoveAsync(null);
 
             // Assert
-            _mockDiscountService.Verify(d => d.DeleteAsync(It.IsAny<int>()), Times.Never);
+            _mockDiscountService.Verify(d => d.DeleteByIdAsync(It.IsAny<int>()), Times.Never);
             _mockProductPhotoService.Verify(p => p.DeletePhotoAsync(It.IsAny<string>()), Times.Never);
             _mockUnitOfWork.Verify(u => u.Product.Remove(It.IsAny<Product>()), Times.Never);
             _mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Never);

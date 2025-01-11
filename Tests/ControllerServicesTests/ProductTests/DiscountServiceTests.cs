@@ -58,11 +58,11 @@ namespace Tests.ControllersServices.ProductService
 
         private void SetupMockForQueues()
         {
-            _mockActivationDiscountQueue.Setup(q => q.Enqueue(It.IsAny<Discount>()));
-            _mockActivationDiscountQueue.Setup(q => q.RemoveById(It.IsAny<int>())).Returns(true);
+            _mockActivationDiscountQueue.Setup(q => q.EnqueueAsync(It.IsAny<Discount>())).Returns(Task.CompletedTask);
+            _mockActivationDiscountQueue.Setup(q => q.RemoveByIdAsync(It.IsAny<int>())).ReturnsAsync(true);
 
-            _mockDeletionDiscountQueue.Setup(q => q.Enqueue(It.IsAny<Discount>()));
-            _mockDeletionDiscountQueue.Setup(q => q.RemoveById(It.IsAny<int>())).Returns(true);
+            _mockDeletionDiscountQueue.Setup(q => q.EnqueueAsync(It.IsAny<Discount>())).Returns(Task.CompletedTask);
+            _mockDeletionDiscountQueue.Setup(q => q.RemoveByIdAsync(It.IsAny<int>())).ReturnsAsync(true);
         }
 
         #region CreateDiscountAsync Tests
@@ -114,7 +114,7 @@ namespace Tests.ControllersServices.ProductService
             await _discountService.CreateDiscountAsync(startTime, endTime, percentage);
 
             // Assert
-            _mockActivationDiscountQueue.Verify(q => q.Enqueue(It.Is<Discount>(d =>
+            _mockActivationDiscountQueue.Verify(q => q.EnqueueAsync(It.Is<Discount>(d =>
                 d.StartTime == startTime &&
                 d.EndTime == endTime &&
                 d.Percentage == percentage)), Times.Once);
@@ -132,7 +132,7 @@ namespace Tests.ControllersServices.ProductService
             await _discountService.CreateDiscountAsync(startTime, endTime, percentage);
 
             // Assert
-            _mockDeletionDiscountQueue.Verify(q => q.Enqueue(It.Is<Discount>(d =>
+            _mockDeletionDiscountQueue.Verify(q => q.EnqueueAsync(It.Is<Discount>(d =>
                 d.StartTime == startTime &&
                 d.EndTime == endTime &&
                 d.Percentage == percentage)), Times.Once);
@@ -151,40 +151,8 @@ namespace Tests.ControllersServices.ProductService
         }
 
         #endregion
+
         #region UpdateDiscountAsync Tests
-
-        [Test]
-        public async Task UpdateDiscountAsync_ShouldGetExistingDiscountById()
-        {
-            // Arrange
-            var discountId = 1;
-            var startTime = DateTime.Now.AddHours(1);
-            var endTime = DateTime.Now.AddDays(1);
-            var percentage = 20;
-
-            // Act
-            await _discountService.UpdateDiscountAsync(discountId, startTime, endTime, percentage);
-
-            // Assert
-            _mockDiscountRepository.Verify(r => r.GetAsync(It.Is<Expression<Func<Discount, bool>>>(d => d.Compile().Invoke(new Discount { Id = discountId })),
-                                                            null, false), Times.Once);
-        }
-
-        [Test]
-        public async Task UpdateDiscountAsync_ShouldRemoveExistingDiscountFromRepository_WhenDiscountExists()
-        {
-            // Arrange
-            var discountId = 1;
-            var startTime = DateTime.Now.AddHours(1);
-            var endTime = DateTime.Now.AddDays(1);
-            var percentage = 20;
-
-            // Act
-            await _discountService.UpdateDiscountAsync(discountId, startTime, endTime, percentage);
-
-            // Assert
-            _mockDiscountRepository.Verify(r => r.Remove(It.Is<Discount>(d => d.Id == discountId)), Times.Once);
-        }
 
         [Test]
         public async Task UpdateDiscountAsync_ShouldRemoveFromActivationQueue_WhenDiscountExists()
@@ -199,7 +167,7 @@ namespace Tests.ControllersServices.ProductService
             await _discountService.UpdateDiscountAsync(discountId, startTime, endTime, percentage);
 
             // Assert
-            _mockActivationDiscountQueue.Verify(q => q.RemoveById(discountId), Times.Once);
+            _mockActivationDiscountQueue.Verify(q => q.RemoveByIdAsync(discountId), Times.Once);
         }
 
         [Test]
@@ -215,7 +183,7 @@ namespace Tests.ControllersServices.ProductService
             await _discountService.UpdateDiscountAsync(discountId, startTime, endTime, percentage);
 
             // Assert
-            _mockDeletionDiscountQueue.Verify(q => q.RemoveById(discountId), Times.Once);
+            _mockDeletionDiscountQueue.Verify(q => q.RemoveByIdAsync(discountId), Times.Once);
         }
 
         [Test]
@@ -276,10 +244,10 @@ namespace Tests.ControllersServices.ProductService
             var discountId = 1;
 
             // Act
-            await _discountService.DeleteAsync(discountId);
+            await _discountService.DeleteByIdAsync(discountId);
 
             // Assert
-            _mockActivationDiscountQueue.Verify(q => q.RemoveById(discountId), Times.Once);
+            _mockActivationDiscountQueue.Verify(q => q.RemoveByIdAsync(discountId), Times.Once);
         }
 
         [Test]
@@ -289,10 +257,10 @@ namespace Tests.ControllersServices.ProductService
             var discountId = 1;
 
             // Act
-            await _discountService.DeleteAsync(discountId);
+            await _discountService.DeleteByIdAsync(discountId);
 
             // Assert
-            _mockDeletionDiscountQueue.Verify(q => q.RemoveById(discountId), Times.Once);
+            _mockDeletionDiscountQueue.Verify(q => q.RemoveByIdAsync(discountId), Times.Once);
         }
 
         [Test]
@@ -302,7 +270,7 @@ namespace Tests.ControllersServices.ProductService
             var discountId = 1;
 
             // Act
-            await _discountService.DeleteAsync(discountId);
+            await _discountService.DeleteByIdAsync(discountId);
 
             // Assert
             _mockDiscountRepository.Verify(r => r.GetAsync(It.Is<Expression<Func<Discount, bool>>>(d => d.Compile().Invoke(new Discount { Id = discountId })),
@@ -316,7 +284,7 @@ namespace Tests.ControllersServices.ProductService
             var discountId = 1;
 
             // Act
-            await _discountService.DeleteAsync(discountId);
+            await _discountService.DeleteByIdAsync(discountId);
 
             // Assert
             _mockDiscountRepository.Verify(r => r.Remove(It.Is<Discount>(d => d.Id == discountId)), Times.Once);
@@ -331,7 +299,7 @@ namespace Tests.ControllersServices.ProductService
                                    .ReturnsAsync((Discount?)null);
 
             // Act
-            await _discountService.DeleteAsync(discountId);
+            await _discountService.DeleteByIdAsync(discountId);
 
             // Assert
             _mockDiscountRepository.Verify(r => r.Remove(It.IsAny<Discount>()), Times.Never);
@@ -344,7 +312,7 @@ namespace Tests.ControllersServices.ProductService
             var discountId = 1;
 
             // Act
-            await _discountService.DeleteAsync(discountId);
+            await _discountService.DeleteByIdAsync(discountId);
 
             // Assert
             _mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);

@@ -1,7 +1,7 @@
 ﻿using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
 
-public class ActivationDiscountQueue : QueueBase<Discount>, IActivationDiscountQueue
+public class ActivationDiscountQueue : SortedQueue<Discount>, IActivationDiscountQueue
 {
     public ActivationDiscountQueue()
         : base(Comparer<Discount>.Create((x, y) =>

@@ -4,6 +4,8 @@ using ControllersServices.Utilities.Interfaces;
 using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Models;
+using Models.ProductModel;
+using Serilog;
 
 
 
@@ -40,7 +42,7 @@ namespace ControllersServices.ProductManagement
             var product = new Product();
             _mapper.Map(model, product);
 
-            await HandleDiscountUpsert(product, model.DiscountStartDate, model.DiscountEndDate, model.DiscountPercentage, model.IsDisocuntChanged);
+            await HandleDiscountUpsert(product, model.DiscountStartDate, model.DiscountEndDate, model.DiscountPercentage, model.IsDisocuntChanged, model.DiscountId);
 
             await HandleMainPhotoUpload(product, model.MainPhoto);
 
@@ -79,7 +81,8 @@ namespace ControllersServices.ProductManagement
             DateTime? startTime,
             DateTime? endTime,
             int? percentage,
-            bool? isDiscountChanged)
+            bool? isDiscountChanged,
+            int? discountId)
         {
             if (startTime != null && endTime != null && percentage != null)
             {
@@ -100,7 +103,19 @@ namespace ControllersServices.ProductManagement
             } 
             else 
             {
-                product.DiscountId = null;
+                if (startTime == null && endTime == null && percentage == null)
+                {
+                    if (discountId != 0 && discountId != null)
+                    {
+                        await _discountService.DeleteByIdAsync(discountId.Value);
+                    }
+                    product.DiscountId = null;
+                }
+                else 
+                {
+                    Log.Error("Failed to add discount because of invalid data");
+                    throw new ArgumentException("Failed to add discount because of invalid data ");
+                }
             }
         }
 

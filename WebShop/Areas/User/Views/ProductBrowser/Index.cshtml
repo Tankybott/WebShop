@@ -1,0 +1,157 @@
+﻿@model Models.ViewModels.ProductBrowserViewModel
+@using Microsoft.AspNetCore.Html;
+@using System.Text.Encodings.Web;
+
+
+@functions {
+    public struct StaticData
+    {
+        public const string NavigationSelector = "data-navigation-ul";
+        public const string ItemsDivSelector = "data-items-category";
+
+        public const string FilterTextInputId = "textFilter";
+        public const string FilterMinPriceInputId = "minPrice"; 
+        public const string FilterMaxPriceInputId = "maxPrice";
+        public const string SortSelectId = "sorting";
+        public const string OnlyDiscountedCheckboxId = "onlyDiscounted";
+
+        public const string ApplyFiltersButtonSelector = "data-apply-filter-button";
+    }
+}
+
+<div class="row mt-4">
+    <!-- Sidebar -->
+    <aside class="col-md-3">
+        <nav class="card">
+            <div class="card-header">
+                <h5>Categories</h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav flex-column" @StaticData.NavigationSelector>
+                    @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null))
+                    {
+                        @RenderCategory(category)
+                    }
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="col-md-9">
+        <div class="card">
+            <div class="card-header">
+                <h5>Products</h5>
+            </div>
+            <form></form>
+            <div class="card-body">
+                <form method="GET" action="/products" class="container mt-4 p-4 border rounded">
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <!-- Text Filter -->
+                            <div class="mb-3">
+                                <label for="@StaticData.FilterTextInputId" class="form-label">Search by Name</label>
+                                <input type="text" class="form-control" id="@StaticData.FilterTextInputId" name="textFilter" placeholder="Type product name...">
+                            </div>
+
+                            <!-- Minimal Price -->
+                            <div class="mb-3">
+                                <label for="@StaticData.FilterMinPriceInputId" class="form-label">Minimal Price</label>
+                                <input type="number" class="form-control" id="@StaticData.FilterMinPriceInputId" name="minPrice" min="0" placeholder="0">
+                            </div>
+
+                            <!-- Maximal Price -->
+                            <div class="mb-3">
+                                <label for="@StaticData.FilterMaxPriceInputId" class="form-label">Maximal Price</label>
+                                <input type="number" class="form-control" id="@StaticData.FilterMaxPriceInputId" name="maxPrice" min="0" placeholder="10000">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Sorting Dropdown -->
+                            <div class="mb-3">
+                                <label for="@StaticData.SortSelectId" class="form-label">Sort By</label>
+                                <select class="form-select" id="@StaticData.SortSelectId" name="sorting">
+                                    <option value="@Utility.Constants.ProductBrowserFilteringOptions.AlphabeticOption">Alphabetic</option>
+                                    <option value="@Utility.Constants.ProductBrowserFilteringOptions.PriceAscendingOption">Lowest Price</option>
+                                    <option value="@Utility.Constants.ProductBrowserFilteringOptions.PriceDescendingOption">Highest Price</option>
+                                </select>
+                            </div>
+
+                            <!-- Show Only Discounted -->
+                            <div class="form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="@StaticData.OnlyDiscountedCheckboxId" name="onlyDiscounted">
+                                <label class="form-check-label" for="@StaticData.OnlyDiscountedCheckboxId">Show Only Discounted</label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div @StaticData.ItemsDivSelector></div>
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+@functions {
+    private IHtmlContent RenderCategory(Category category)
+    {
+        var content = new HtmlContentBuilder();
+
+        content.AppendHtml("<li class='nav-item'>");
+        content.AppendHtml($"<a class='nav-link text-decoration-underline' href='#'>{HtmlEncoder.Default.Encode(category.Name)}</a>");
+        content.AppendHtml($"<p class='d-none'>{category.Id}</p>");
+
+        var subCategories = category.SubCategories?.OrderBy(c => c.Name) ?? Enumerable.Empty<Category>();
+
+        if (subCategories.Any())
+        {
+            content.AppendHtml("<ul class='nav flex-column ms-3'>");
+            foreach (var subCategory in subCategories)
+            {
+                content.AppendHtml(RenderCategory(subCategory));
+            }
+            content.AppendHtml("</ul>");
+        }
+
+        content.AppendHtml("</li>");
+
+        return content;
+    }
+}
+
+@section Scripts {
+    <script src="~/js/ProductBrowserFilter.js"></script>
+    <script src="~/js/ProductBrowserHandler.js"></script>
+
+    <script>
+        (() => {
+            const productBrowserFilter = new ProductBrowserFilter(
+                `@StaticData.FilterTextInputId`,
+                `@StaticData.FilterMinPriceInputId`,
+                `@StaticData.FilterMaxPriceInputId`,
+                `@StaticData.OnlyDiscountedCheckboxId`,
+                `@StaticData.SortSelectId`
+            )
+            const productBrowserHandler = new ProductBrowserHandler(
+                `[@StaticData.NavigationSelector]`,
+                `[@StaticData.ItemsDivSelector]`,
+                productBrowserFilter
+            )
+
+        })();
+    </script>
+}

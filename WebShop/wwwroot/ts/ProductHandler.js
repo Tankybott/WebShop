@@ -9,20 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 class ProductHandler {
-    constructor(productIdSelector, discountIdSelector, nameSelector, categorySelector, descriptionSelector, editorSelector, photoUploader, saveButtonSelector, discountStartTimeInput, discountEndTimeInput, discountPercentageInput) {
+    constructor(productId, discountId, nameSelector, categorySelector, descriptionSelector, editorSelector, photoUploader, discountHandler, saveButtonSelector, discountStartTimeInput, discountEndTimeInput, discountPercentageInput) {
         this.nameSelector = nameSelector;
         this.categorySelector = categorySelector;
         this.descriptionSelector = descriptionSelector;
         this.editorSelector = editorSelector;
         this.photoUploader = photoUploader;
+        this.discountHandler = discountHandler;
         this.saveButtonSelector = saveButtonSelector;
         this.discountStartTimeInput = discountStartTimeInput;
         this.discountEndTimeInput = discountEndTimeInput;
         this.discountPercentageInput = discountPercentageInput;
         this.isDiscountChanged = false;
         this.attachSaveButtonHandler();
-        this.productIdInput = document.querySelector(productIdSelector);
-        this.discountIdInput = document.querySelector(discountIdSelector);
+        this.productIdInput = document.querySelector(`#${productId}`);
+        this.discountIdInput = document.querySelector(`#${discountId}`);
         this.discountStartTimeInput = document.getElementById("discount-start");
         this.discountEndTimeInput = document.getElementById("discount-end");
         this.discountPercentageInput = document.getElementById("discount-percentage");
@@ -42,12 +43,9 @@ class ProductHandler {
             }
         }));
     }
-    /**
-     * Validates the input fields (Product Name and Short Description).
-     * @returns {boolean} - Returns true if valid, otherwise false.
-     */
     validateInputs() {
         let isValid = true;
+        isValid = this.discountHandler.validateInputs();
         const inputs = document.querySelectorAll("[data-validation]");
         inputs.forEach((input) => {
             const field = input;
@@ -82,18 +80,10 @@ class ProductHandler {
         });
         return isValid;
     }
-    /**
-     * Retrieves the content from the Quill editor container.
-     * @returns {string} - The content of the editor.
-     */
     getEditorContent() {
         const editorElement = document.querySelector(this.editorSelector);
         return editorElement ? editorElement.innerHTML.trim() : '';
     }
-    /**
-     * Prepares the form data for submission.
-     * @returns {FormData} - The complete form data including product details and photos.
-     */
     prepareFormData() {
         return __awaiter(this, void 0, void 0, function* () {
             const nameInput = document.querySelector(this.nameSelector);
@@ -104,9 +94,10 @@ class ProductHandler {
             const editorContent = this.getEditorContent();
             // Await the asynchronous photo upload preparation
             const formData = this.photoUploader.preparePhotosToUpload();
-            //for (const [key, value] of formData.entries()) {
-            //    console.log(`${key}: ${value}`);
-            //}
+            const discountFormData = this.discountHandler.prepareDiscountToUpload();
+            for (const [key, value] of discountFormData.entries()) {
+                formData.append(key, value);
+            }
             formData.append("Id", this.productIdInput.value.trim());
             formData.append("DiscountId", this.discountIdInput.value.trim());
             formData.append("Name", nameInput.value.trim());

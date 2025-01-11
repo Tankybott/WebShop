@@ -38,10 +38,10 @@ namespace ControllersServices.ProductManagement
             }
             else 
             {
-                DiscountActivationQueue.Enqueue(discount);
+                await DiscountActivationQueue.EnqueueAsync(discount);
             }
 
-            DiscountDeletionQueue.Enqueue(discount);
+            await DiscountDeletionQueue.EnqueueAsync(discount);
 
             return discount;
         }
@@ -54,8 +54,8 @@ namespace ControllersServices.ProductManagement
             if (discountToDelete != null)
             {
                 _unitOfWork.Discount.Remove(discountToDelete);
-                DiscountActivationQueue.RemoveById(discountToDelete.Id);
-                DiscountDeletionQueue.RemoveById(discountToDelete.Id);
+                await DiscountActivationQueue.RemoveByIdAsync(discountToDelete.Id);
+                await DiscountDeletionQueue.RemoveByIdAsync(discountToDelete.Id);
             }
             var discount = await CreateDiscountAsync(startTime, endTime, percentage);
             return discount;
@@ -66,10 +66,10 @@ namespace ControllersServices.ProductManagement
             discount.isActive = true;
         }
 
-        public async Task DeleteAsync(int discountId) 
+        public async Task DeleteByIdAsync(int discountId) 
         {
-            DiscountActivationQueue.RemoveById(discountId);
-            DiscountDeletionQueue?.RemoveById(discountId);
+            await DiscountActivationQueue.RemoveByIdAsync(discountId);
+            await DiscountDeletionQueue.RemoveByIdAsync(discountId);
             var discountToDelete = await _unitOfWork.Discount.GetAsync(d => d.Id == discountId);
             if(discountToDelete != null) _unitOfWork.Discount.Remove(discountToDelete);
             await _unitOfWork.SaveAsync();

@@ -4,10 +4,18 @@ $(document).ready(function () {
     loadDataTable();
 });
 
+$('#categoryFilter').change(function () {
+    loadDataTable();
+});
+    
+$('#productOptions').change(function () {
+    loadDataTable();
+});
+
 
 function loadDataTable() {
     var selectedCategoryId = $('#categoryFilter').val();
-
+    var selectedFilterOption = $('#productOptions').val();
 
     if ($.fn.DataTable.isDataTable('#tblData')) {
         $('#tblData').DataTable().destroy();
@@ -17,9 +25,8 @@ function loadDataTable() {
 
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            url: `/Admin/Product/GetAllForTable?categoryFilter=${selectedCategoryId}`,
+            url: `/Admin/Product/GetAllForTable?categoryFilter=${selectedCategoryId}&productFilterOption=${selectedFilterOption}`,
             dataSrc: function (json) {
-                console.log("Received JSON:", json); 
                 if (json && json.data) {
                     return json.data;
                 } else {
@@ -40,19 +47,33 @@ function loadDataTable() {
             },
             {
                 data: 'categoryName', 
-                "width": "30%"
+                "width": "20%"
             },
             {
                 data: 'discountId',
                 "render": function (data, type, row) {
                     if (type === 'display') {
                         if (data) {
-                            return '<i class="bi bi-check-circle-fill"></i>';
+                            return '<div class="d-flex align-items-center justify-content-center text-success fs-4"><i class="bi bi-check-circle-fill"></i></div>';
                         } else {
                             return ''; 
                         }
                     }
                     return data; 
+                },
+                "width": "10%"
+            },
+            {
+                data: 'isDiscountActive',
+                "render": function (data, type, row) {
+                    if (type === 'display') {
+                        if (data === true) {
+                            return '<div class="d-flex align-items-center justify-content-center text-success fs-4"><i class="bi bi-check-circle-fill"></i></div>';
+                        } else {
+                            return ''; // Return empty if data is null, undefined, or false
+                        }
+                    }
+                    return data; // Return raw data for other types (e.g., sorting)
                 },
                 "width": "10%"
             },
@@ -70,18 +91,18 @@ function loadDataTable() {
                         <a href="/admin/Product/upsert?id=${productId}" class="btn btn-primary mx-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <a onClick=Delete('/admin/Product/delete/?id=${productId}') class="btn btn-danger mx-2">
+                        <a onClick=DeleteProduct('/admin/Product/delete/?id=${productId}') class="btn btn-danger mx-2">
                             <i class="bi bi-trash-fill"></i> Delete
                         </a>
                     </div>`;
                 },
-                "width": "40%"
+                "width": "30%"
             }
         ]
     });
 }
 
-function Delete(url) {
+window.DeleteProduct =  function(url) {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",

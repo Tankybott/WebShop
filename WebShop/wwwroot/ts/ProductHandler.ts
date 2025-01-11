@@ -3,13 +3,14 @@
     private discountIdInput: HTMLInputElement | null;
     private isDiscountChanged: boolean = false;
     constructor(
-        productIdSelector: string,
-        discountIdSelector: string,
+        productId: string,
+        discountId: string,
         private nameSelector: string,
         private categorySelector: string,
         private descriptionSelector: string,
         private editorSelector: string,
         private photoUploader: PhotoUploader,
+        private discountHandler: DiscountHandler,
         private saveButtonSelector: string,
 
         private discountStartTimeInput: HTMLInputElement,
@@ -17,8 +18,8 @@
         private discountPercentageInput: HTMLInputElement,
     ) {
         this.attachSaveButtonHandler();
-        this.productIdInput = document.querySelector(productIdSelector);
-        this.discountIdInput = document.querySelector(discountIdSelector);
+        this.productIdInput = document.querySelector(`#${productId}`);
+        this.discountIdInput = document.querySelector(`#${discountId}`);
 
         this.discountStartTimeInput = document.getElementById("discount-start") as HTMLInputElement;
         this.discountEndTimeInput = document.getElementById("discount-end") as HTMLInputElement;
@@ -43,13 +44,11 @@
             }
         });
     }
-    /**
-     * Validates the input fields (Product Name and Short Description).
-     * @returns {boolean} - Returns true if valid, otherwise false.
-     */
+
+
     validateInputs(): boolean {
         let isValid = true;
-
+        isValid = this.discountHandler.validateInputs();
         const inputs = document.querySelectorAll("[data-validation]");
         inputs.forEach((input) => {
             const field = input as HTMLInputElement;
@@ -87,19 +86,11 @@
         return isValid;
     }
 
-    /**
-     * Retrieves the content from the Quill editor container.
-     * @returns {string} - The content of the editor.
-     */
     getEditorContent(): string {
         const editorElement = document.querySelector(this.editorSelector) as HTMLElement;
         return editorElement ? editorElement.innerHTML.trim() : '';
     }
 
-    /**
-     * Prepares the form data for submission.
-     * @returns {FormData} - The complete form data including product details and photos.
-     */
     async prepareFormData(): Promise<FormData> {
         const nameInput = document.querySelector(this.nameSelector) as HTMLInputElement;
         const descriptionInput = document.querySelector(this.descriptionSelector) as HTMLInputElement;
@@ -112,10 +103,11 @@
 
         // Await the asynchronous photo upload preparation
         const formData = this.photoUploader.preparePhotosToUpload();
+        const discountFormData = this.discountHandler.prepareDiscountToUpload();
 
-        //for (const [key, value] of formData.entries()) {
-        //    console.log(`${key}: ${value}`);
-        //}
+        for (const [key, value] of discountFormData.entries()) {
+            formData.append(key, value)
+        }
 
         formData.append("Id", this.productIdInput!.value.trim());
         formData.append("DiscountId", this.discountIdInput!.value.trim());
@@ -157,6 +149,4 @@
             window.location.href = "/Admin/Product/Index";
         }
     }
-
-
 }

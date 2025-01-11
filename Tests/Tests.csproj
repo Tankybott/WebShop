@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ControllersServices\ControllersServices.csproj" />
+    <ProjectReference Include="..\ControllersServices\Services.csproj" />
   </ItemGroup>
 
 </Project>

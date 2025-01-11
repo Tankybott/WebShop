@@ -19,7 +19,7 @@ public class DiscountActivationService : DiscountBackgroundService
         var discounts = await unitOfWork.Discount.GetAllAsync(d => !d.isActive);
         foreach (var discount in discounts)
         {
-            DiscoutQueue.Enqueue(discount);
+            await DiscoutQueue.EnqueueAsync(discount);
         }
     }
 

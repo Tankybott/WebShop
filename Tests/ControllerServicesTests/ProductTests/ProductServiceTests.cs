@@ -8,6 +8,8 @@ using ControllersServices.ProductManagement.Interfaces;
 using ProductManagementNamespace = ControllersServices.ProductManagement;
 using Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Models.DTOs;
+using Models.ProductModel;
 
 namespace Tests.ControllersServices.ProductManagement
 {
@@ -324,14 +326,14 @@ namespace Tests.ControllersServices.ProductManagement
         {
             // Arrange
             var categoryFilter = "10";
-            _mockProductRepository.Setup(p => p.GetProductsDtoOfCategoryAsync(10))
+            _mockProductRepository.Setup(p => p.GetProductsTableDtoAsync(10))
                                   .ReturnsAsync(new List<ProductTableDTO>());
 
             // Act
             await _productService.GetProductsForTableAsync(categoryFilter);
 
             // Assert
-            _mockProductRepository.Verify(p => p.GetProductsDtoOfCategoryAsync(10), Times.Once);
+            _mockProductRepository.Verify(p => p.GetProductsTableDtoAsync(10), Times.Once);
         }
 
         [Test]
@@ -345,7 +347,7 @@ namespace Tests.ControllersServices.ProductManagement
         new ProductTableDTO { Id = 2, Name = "Product2", CategoryName = "Category1" }
     };
 
-            _mockProductRepository.Setup(p => p.GetProductsDtoOfCategoryAsync(10))
+            _mockProductRepository.Setup(p => p.GetProductsTableDtoAsync(10))
                                   .ReturnsAsync(expectedProducts);
 
             // Act
@@ -360,14 +362,14 @@ namespace Tests.ControllersServices.ProductManagement
         {
             // Arrange
             string? categoryFilter = null;
-            _mockProductRepository.Setup(p => p.GetProductsDtoAsync())
+            _mockProductRepository.Setup(p => p.GetProductsTableDtoAsync(null))
                                   .ReturnsAsync(new List<ProductTableDTO>());
 
             // Act
             await _productService.GetProductsForTableAsync(categoryFilter);
 
             // Assert
-            _mockProductRepository.Verify(p => p.GetProductsDtoAsync(), Times.Once);
+            _mockProductRepository.Verify(p => p.GetProductsTableDtoAsync(null), Times.Once);
         }
 
         [Test]
@@ -381,7 +383,7 @@ namespace Tests.ControllersServices.ProductManagement
         new ProductTableDTO { Id = 2, Name = "Product2", CategoryName = "Category2" }
     };
 
-            _mockProductRepository.Setup(p => p.GetProductsDtoAsync())
+            _mockProductRepository.Setup(p => p.GetProductsTableDtoAsync(null))
                                   .ReturnsAsync(expectedProducts);
 
             // Act
@@ -396,14 +398,14 @@ namespace Tests.ControllersServices.ProductManagement
         {
             // Arrange
             var categoryFilter = "invalid";
-            _mockProductRepository.Setup(p => p.GetProductsDtoAsync())
+            _mockProductRepository.Setup(p => p.GetProductsTableDtoAsync(null))
                                   .ReturnsAsync(new List<ProductTableDTO>());
 
             // Act
             await _productService.GetProductsForTableAsync(categoryFilter);
 
             // Assert
-            _mockProductRepository.Verify(p => p.GetProductsDtoOfCategoryAsync(It.IsAny<int>()), Times.Never);
+            _mockProductRepository.Verify(p => p.GetProductsTableDtoAsync(It.IsAny<int>()), Times.Never);
         }
 
         [Test]
@@ -411,14 +413,14 @@ namespace Tests.ControllersServices.ProductManagement
         {
             // Arrange
             var categoryFilter = "invalid";
-            _mockProductRepository.Setup(p => p.GetProductsDtoAsync())
+            _mockProductRepository.Setup(p => p.GetProductsTableDtoAsync(null))
                                   .ReturnsAsync(new List<ProductTableDTO>());
 
             // Act
             await _productService.GetProductsForTableAsync(categoryFilter);
 
             // Assert
-            _mockProductRepository.Verify(p => p.GetProductsDtoAsync(), Times.Once);
+            _mockProductRepository.Verify(p => p.GetProductsTableDtoAsync(null), Times.Once);
         }
 
         [Test]
@@ -432,7 +434,7 @@ namespace Tests.ControllersServices.ProductManagement
         new ProductTableDTO { Id = 2, Name = "Product2", CategoryName = "Category2" }
     };
 
-            _mockProductRepository.Setup(p => p.GetProductsDtoAsync())
+            _mockProductRepository.Setup(p => p.GetProductsTableDtoAsync(null))
                                   .ReturnsAsync(expectedProducts);
 
             // Act

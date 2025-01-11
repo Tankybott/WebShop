@@ -11,6 +11,6 @@ namespace ControllersServices.ProductManagement.Interfaces
         void SetActive(Discount discount);
 
         Task<Discount> UpdateDiscountAsync(int discountId, DateTime startTime, DateTime endTime, int percentage);
-        Task DeleteAsync(int discountId);
+        Task DeleteByIdAsync(int discountId);
     }
 }

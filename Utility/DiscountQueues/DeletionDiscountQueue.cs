@@ -1,7 +1,7 @@
 ﻿using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
 
-public class DeletionDiscountQueue : QueueBase<Discount>, IDeletionDiscountQueue
+public class DeletionDiscountQueue : SortedQueue<Discount>, IDeletionDiscountQueue
 {
     public DeletionDiscountQueue()
         : base(Comparer<Discount>.Create((x, y) =>

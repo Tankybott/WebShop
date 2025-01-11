@@ -1,4 +1,4 @@
-﻿using ControllersServices.AdminCategoryService;
+﻿using ControllersServices.CategoryService;
 using DataAccess.Repository.IRepository;
 using Models;
 using Moq;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tests.ControllerServicesTests.AdminCategoryTests
+namespace Tests.ControllerServicesTests.CategoryTests
 {
     [TestFixture]
     public class CategoryHierarchyCreatorTests

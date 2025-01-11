@@ -1,5 +1,5 @@
-﻿using ControllersServices.AdminCategoryService;
-using ControllersServices.AdminCategoryService.Interfaces;
+﻿using ControllersServices.CategoryService;
+using ControllersServices.CategoryService.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ViewModels;
@@ -8,19 +8,19 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tests.ControllerServicesTests.AdminCategoryTests
+namespace Tests.ControllerServicesTests.CategoryTests
 {
     [TestFixture]
     public class AdminCategoryVMCreatorTests
     {
         private Mock<ICategoryHierarchyCreator> _mockCategoryHierarchyCreator;
-        private IAdminCategoryVMCreator _adminCategoryVMCreator;
+        private ICategoryVMCreator _adminCategoryVMCreator;
 
         [SetUp]
         public void Setup()
         {
             _mockCategoryHierarchyCreator = new Mock<ICategoryHierarchyCreator>();
-            _adminCategoryVMCreator = new AdminCategoryVMCreator(_mockCategoryHierarchyCreator.Object);
+            _adminCategoryVMCreator = new CategoryVMCreator(_mockCategoryHierarchyCreator.Object);
         }
 
         [Test]

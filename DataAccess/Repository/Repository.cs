@@ -14,7 +14,7 @@ namespace DataAccess.Repository
  public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly ApplicationDbContext _db;
-        internal DbSet<T> dbSet;
+        protected DbSet<T> dbSet;
 
         public Repository(ApplicationDbContext database)
         {
@@ -22,7 +22,7 @@ namespace DataAccess.Repository
             dbSet = _db.Set<T>();
         }
 
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace DataAccess.Repository
             }
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace DataAccess.Repository
             }
         }
 
-        public void UpdateRange(IEnumerable<T> entities) 
+        public virtual void UpdateRange(IEnumerable<T> entities) 
         {
             try
             {
