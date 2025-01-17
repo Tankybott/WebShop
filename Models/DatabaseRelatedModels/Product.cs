@@ -23,9 +23,7 @@ namespace Models
         public override int? DiscountId { get; set; }
         [ValidateNever]
         public Discount? Discount { get; set; }
-
-        [Required]
-        public override string MainPhotoUrl { get; set; }
-
+        [ValidateNever]
+        public List<PhotoUrlSet>? PhotosUrlSets { get; set; } = new List<PhotoUrlSet>();
     }
 }

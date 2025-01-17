@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Models.ProductModel
 {
@@ -22,5 +17,7 @@ namespace Models.ProductModel
         public DateTime? DiscountEndDate { get; set; }
         public int? DiscountPercentage { get; set; }
         public bool? IsDisocuntChanged { get; set; }
+        public string? MainPhotoUrl { get; set; }
+        public List<string> OtherPhotosUrls { get; set; } = new List<string>();
     }
 }

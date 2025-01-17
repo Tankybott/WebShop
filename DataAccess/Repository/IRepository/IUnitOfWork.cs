@@ -11,6 +11,8 @@ namespace DataAccess.Repository.IRepository
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }
         IDiscountRepository Discount { get; }
+        IPhotoUrlsSetRepository PhotoUrlSets { get; }
         Task SaveAsync();
+        void DetachEntity<T>(T entity) where T : class;
     }
 }

@@ -18,6 +18,7 @@ namespace DataAccess
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Discount> Discounts { get; set; }
+        public DbSet<PhotoUrlSet> PhotoUrlSets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -25,13 +26,18 @@ namespace DataAccess
 
             builder.Entity<Product>(entity =>
             {
+                entity.HasMany(p => p.PhotosUrlSets)
+                    .WithOne(pu => pu.Product)
+                    .HasForeignKey(pu => pu.ProductId) 
+                    .OnDelete(DeleteBehavior.SetNull);
+
                 entity.HasOne(p => p.Discount)
                     .WithMany()
                     .HasForeignKey(p => p.DiscountId)
                     .OnDelete(DeleteBehavior.SetNull);
             });
-
-            builder.Entity<Category>().HasData(
+        
+        builder.Entity<Category>().HasData(
                 // Root categories
                 new Category { Id = 1, Name = "Vehicles", ParentCategoryId = null },
                 new Category { Id = 2, Name = "Electronics", ParentCategoryId = null },

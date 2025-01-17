@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using ControllersServices.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
+using Utility.Common;
 
 namespace Tests.ControllersServices.Utilities
 {

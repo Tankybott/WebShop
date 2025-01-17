@@ -13,7 +13,7 @@ namespace ControllersServices.CategoryService
         {
             ProductVM productVM = new()
             {
-                CategoryListItems = categories.Select(c => new SelectListItem
+                CategoryListItems = categories.Where(c => c.SubCategories != null && !c.SubCategories.Any()).Select(c => new SelectListItem
                 {
                     Text = c.Name,
                     Value = c.Id.ToString()

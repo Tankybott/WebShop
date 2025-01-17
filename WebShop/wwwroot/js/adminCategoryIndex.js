@@ -20,7 +20,7 @@ function menageSubcategoryAddButtonVisibility(selectedValue) {
         $('#CreateSubcategoryInThisCategory').hide();
     } else {
         $('#CreateSubcategoryInThisCategory').show();
-        $('#CreateSubcategoryInThisCategory').attr("href", `/Admin/AdminCategory/AddSubcategoryToSpecyficCategory?parentCategoryFilter=${selectedValue}`);
+        $('#CreateSubcategoryInThisCategory').attr("href", `/Admin/Category/AddSubcategoryToSpecyficCategory?parentCategoryFilter=${selectedValue}`);
     }
 }
 
@@ -36,7 +36,7 @@ function loadDataTable() {
 
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            url: `/Admin/AdminCategory/getall?filter=${selectedParentCategoryId}`,
+            url: `/Admin/Category/getall?filter=${selectedParentCategoryId}`,
             dataSrc: function (json) {
                 if (json && json.data) {
                     return json.data;
@@ -68,10 +68,10 @@ function loadDataTable() {
                     let parentCategoryId = data.parentCategoryId || 0;
 
                     return `<div class="w-75 btn-group" role="group">
-                        <a href="/admin/admincategory/upsert?id=${categoryId}&bindedParentCategory=${parentCategoryId}" class="btn btn-primary mx-2">
+                        <a href="/Admin/Category/upsert?id=${categoryId}&bindedParentCategory=${parentCategoryId}" class="btn btn-primary mx-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <a onClick=Delete('/admin/admincategory/delete/?id=${categoryId}') class="btn btn-danger mx-2">
+                        <a onClick=Delete('/admin/category/delete/?id=${categoryId}') class="btn btn-danger mx-2">
                             <i class="bi bi-trash-fill"></i> Delete
                         </a>
                     </div>`;

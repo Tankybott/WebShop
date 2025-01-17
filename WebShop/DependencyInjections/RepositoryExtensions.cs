@@ -16,6 +16,7 @@ namespace WebShop.DependencyInjections
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IDiscountRepository, DiscountRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IPhotoUrlsSetRepository, PhotoUrlSetReposiotory>();
             return services;
         }
     }

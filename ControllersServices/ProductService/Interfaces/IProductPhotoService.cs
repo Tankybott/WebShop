@@ -1,5 +1,6 @@
-﻿using ControllersServices.Utilities.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Models;
+using Models.DatabaseRelatedModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace ControllersServices.ProductManagement.Interfaces
 {
     public interface IProductPhotoService
     {
-        Task AddPhotoAsync(IFormFile photo, string fileName, string imageDirectory);
-        Task DeletePhotoAsync(string photoUrl);
+        Task AddPhotoSetAsync(IFormFile photo, string thumbnailPhotoName, string FullSizePhotName, string imageDirectory);
+        Task DeletePhotoSetAsync(PhotoUrlSet photoSet);
+        Task SynchronizeMainPhotosAsync(string newPhotoThumbnailUrl);
     }
 }

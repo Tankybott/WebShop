@@ -10,18 +10,18 @@ namespace WebShop.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryService _adminCategoryService;
+        private readonly ICategoryService _categoryService;
 
         public CategoryController(ICategoryService adminCategoryService)
         {
-            _adminCategoryService = adminCategoryService;
+            _categoryService = adminCategoryService;
         }
 
         public async Task<IActionResult> Index()
         {
             try
             {
-                var categoryVM = await _adminCategoryService.GetCategoryVMAsync();
+                var categoryVM = await _categoryService.GetCategoryVMAsync();
                 return View(categoryVM);
             }
             catch (Exception) 
@@ -35,7 +35,7 @@ namespace WebShop.Areas.Admin.Controllers
         {
             try
             {
-                var categoryVM = await _adminCategoryService.GetCategoryVMAsync(id, bindedParentCategory);
+                var categoryVM = await _categoryService.GetCategoryVMAsync(id, bindedParentCategory);
                 return View(categoryVM);
             }
             catch (Exception)
@@ -76,7 +76,7 @@ namespace WebShop.Areas.Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    await _adminCategoryService.UpsertAsync(VM);
+                    await _categoryService.UpsertAsync(VM);
                     TempData["success"] = VM.Category.Id == 0 ? "Product added successfully" : "Product updated successfully";
                     return RedirectToAction("Index");
                 }
@@ -96,7 +96,7 @@ namespace WebShop.Areas.Admin.Controllers
         [HttpGet]
         public async  Task<IActionResult> GetAll(string filter)
         {
-            var categories = await _adminCategoryService.GetSubcategoriesOfCateogryAsync(filter);
+            var categories = await _categoryService.GetSubcategoriesOfCateogryAsync(filter);
             return Json(new { data = categories });
         }
 
@@ -105,7 +105,7 @@ namespace WebShop.Areas.Admin.Controllers
         {
             try
             {
-                await _adminCategoryService.DeleteCategoryWithAllSubcategoriesAsync(id);
+                await _categoryService.DeleteCategoryWithAllSubcategoriesAsync(id);
                 TempData["success"] = "Category deleted successfully";
                 return Json(new { success = true,});
             }

@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using ControllersServices.ProductManagement.Interfaces;
-using ControllersServices.Utilities.Interfaces;
 using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Models;
+using Models.DatabaseRelatedModels;
 using Models.ProductModel;
 using Serilog;
-
-
-
-
+using Utility.Common.Interfaces;
 
 namespace ControllersServices.ProductManagement
 {
@@ -21,6 +18,7 @@ namespace ControllersServices.ProductManagement
         private readonly IProductPhotoService _productPhotoService;
         private readonly IFileNameCreator _fileNameCreator;
         private readonly IDiscountService _discountService;
+        private readonly IPathCreator _pathCreator;
 
         private const string _productImageDirectory = "images/product";
 
@@ -28,13 +26,15 @@ namespace ControllersServices.ProductManagement
             IUnitOfWork unitOfWork,
             IFileNameCreator fileNameCreator,
             IProductPhotoService productPhotoService,
-            IDiscountService discountService)
+            IDiscountService discountService,
+            IPathCreator pathCreator)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _fileNameCreator = fileNameCreator;
             _productPhotoService = productPhotoService;
             _discountService = discountService;
+            _pathCreator = pathCreator;
         }
 
         public async Task HandleUpsertAsync(ProductFormModel model)
@@ -42,13 +42,19 @@ namespace ControllersServices.ProductManagement
             var product = new Product();
             _mapper.Map(model, product);
 
-            await HandleDiscountUpsert(product, model.DiscountStartDate, model.DiscountEndDate, model.DiscountPercentage, model.IsDisocuntChanged, model.DiscountId);
+            await HandleDiscountUpsertAsync(product, model.DiscountStartDate, model.DiscountEndDate, model.DiscountPercentage, model.IsDisocuntChanged, model.DiscountId);
 
-            await HandleMainPhotoUpload(product, model.MainPhoto);
+            await HandleMainPhotoUploadAsync(product, model.MainPhoto);
 
-            await HandleOtherPhotosUpload(product, model.OtherPhotos);
+            await HandleOtherPhotosUploadAsync(product, model.OtherPhotos);
 
-            await HandlePhotosDeletion(model.UrlsToDelete);
+            //When there is possibility that main photo was swapped with any other photos belonging to product 
+            if (product.Id != 0 && model.MainPhotoUrl != null && model.MainPhoto == null)
+            {
+                await _productPhotoService.SynchronizeMainPhotosAsync(model.MainPhotoUrl);
+            }
+
+            if (model.UrlsToDelete != null && model.UrlsToDelete.Any()) await HandlePhotoSetsDeletionAsync(model.UrlsToDelete);
 
             if (product.Id == 0)
             {
@@ -65,18 +71,20 @@ namespace ControllersServices.ProductManagement
             }
             catch (Exception ex)
             {
-                //delete created discount if there was a problem with adding whole product
                 if (product.DiscountId != 0 && product.DiscountId != null)
                 {
                     var discountToDelete = await _unitOfWork.Discount.GetAsync(d => d.Id == product.DiscountId);
-                    _unitOfWork.Discount.Remove(discountToDelete);
+                    if (discountToDelete != null) 
+                    {
+                        _unitOfWork.Discount.Remove(discountToDelete); 
+                    }
                 }
                 throw;
             }
 
         }
 
-        private async Task HandleDiscountUpsert(
+        private async Task HandleDiscountUpsertAsync(
             Product product,
             DateTime? startTime,
             DateTime? endTime,
@@ -119,39 +127,58 @@ namespace ControllersServices.ProductManagement
             }
         }
 
-        private async Task HandleMainPhotoUpload(Product product, IFormFile mainPhoto)
+        private async Task HandleMainPhotoUploadAsync(Product product, IFormFile mainPhoto)
         {
             if (mainPhoto != null)
             {
-                string fileName = _fileNameCreator.CreateFileName(mainPhoto);
-                await _productPhotoService.AddPhotoAsync(mainPhoto, fileName, _productImageDirectory);
-                product.MainPhotoUrl = $"/{_productImageDirectory}/{fileName}";
+                await HandleAddingPhoto(product, mainPhoto, true);
             }
         }
 
-        private async Task HandleOtherPhotosUpload(Product product, IEnumerable<IFormFile> otherPhotos)
+        private async Task HandleOtherPhotosUploadAsync(Product product, IEnumerable<IFormFile> otherPhotos)
         {
             if (otherPhotos != null && otherPhotos.Any())
             {
-                if (product.OtherPhotosUrls == null)
-                    product.OtherPhotosUrls = new List<string>();
+                if (product.PhotosUrlSets == null)
+                    product.PhotosUrlSets = new List<PhotoUrlSet>();
 
                 foreach (var photo in otherPhotos)
                 {
-                    string fileName = _fileNameCreator.CreateFileName(photo);
-                    await _productPhotoService.AddPhotoAsync(photo, fileName, _productImageDirectory);
-                    product.OtherPhotosUrls.Add($"/{_productImageDirectory}/{fileName}");
+                    await HandleAddingPhoto(product, photo, false);
                 }
             }
         }
 
-        private async Task HandlePhotosDeletion(IEnumerable<string> urlsToDelete)
+        private async Task HandleAddingPhoto(Product product, IFormFile photo, bool isMain)
         {
-            if (urlsToDelete != null)
+            string thumbnailPhotoFileName = _fileNameCreator.CreateJpegFileName();
+            string fullSizePhotoFileName = _fileNameCreator.CreateJpegFileName();
+            await _productPhotoService.AddPhotoSetAsync(photo, thumbnailPhotoFileName, fullSizePhotoFileName, _productImageDirectory);
+            var photoSet = new PhotoUrlSet
             {
-                foreach (var url in urlsToDelete)
+                ThumbnailPhotoUrl = _pathCreator.CreateUrlPath(_productImageDirectory, thumbnailPhotoFileName),
+                BigPhotoUrl = _pathCreator.CreateUrlPath(_productImageDirectory, fullSizePhotoFileName),
+                IsMainPhoto = isMain
+            };
+            _unitOfWork.PhotoUrlSets.Add(photoSet);
+            await _unitOfWork.SaveAsync();
+            product?.PhotosUrlSets?.Add(photoSet);
+        }
+
+        private async Task HandlePhotoSetsDeletionAsync(IEnumerable<string> thumbnailPhotoUrls)
+        {
+            var photoSetsToDelete = new List<PhotoUrlSet>();
+            foreach (var photoUrl in thumbnailPhotoUrls) 
+            {
+                var photoUrlSet = await _unitOfWork.PhotoUrlSets.GetAsync(p => p.ThumbnailPhotoUrl == photoUrl);
+                if (photoUrlSet != null) photoSetsToDelete.Add(photoUrlSet);
+            }
+
+            if (photoSetsToDelete != null)
+            {
+                foreach (var urlSet in photoSetsToDelete)
                 {
-                    await _productPhotoService.DeletePhotoAsync(url);
+                    await _productPhotoService.DeletePhotoSetAsync(urlSet);
                 }
             }
         }

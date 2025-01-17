@@ -1,6 +1,10 @@
 ﻿using ControllersServices.ProductManagement.Interfaces;
-using ControllersServices.Utilities.Interfaces;
+using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
+using Models;
+using Models.DatabaseRelatedModels;
+using Services.ProductService.Interfaces;
+using Utility.Common.Interfaces;
 
 
 namespace ControllersServices.ProductManagement
@@ -8,28 +12,46 @@ namespace ControllersServices.ProductManagement
     public class ProductPhotoService : IProductPhotoService
     {
         private readonly IPathCreator _pathCreator;
-        private readonly IFileService _fileService;
-        public ProductPhotoService(IPathCreator pathCreator, IFileService fileService)
+        private readonly IImageProcessor _imageProcessor;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProductMainPhotoSynchronizer _productMainPhotoSynchronizer;
+        public ProductPhotoService(IPathCreator pathCreator, IImageProcessor imageProcessor, IUnitOfWork unitOfWork, IProductMainPhotoSynchronizer productMainPhotoSynchronizer)
         {
             _pathCreator = pathCreator;
-            _fileService = fileService;
+            _imageProcessor = imageProcessor;
+            _unitOfWork = unitOfWork;
+            _productMainPhotoSynchronizer = productMainPhotoSynchronizer;
         }
-
-        public async Task AddPhotoAsync(IFormFile photo, string fileName, string imageDirectory)
+        public async Task AddPhotoSetAsync(IFormFile photo, string thumbnailPhotoName, string FullSizePhotName, string imageDirectory)
         {
             string roothPath = _pathCreator.GetRootPath();
             string productPath = _pathCreator.CombinePaths(roothPath, imageDirectory);
-            await _fileService.CreateFileAsync(photo, productPath, fileName);
+            string thumbnailPath = _pathCreator.CombinePaths(productPath, thumbnailPhotoName);
+            string fullSizePath = _pathCreator.CombinePaths(productPath, FullSizePhotName);
+            await _imageProcessor.CreateThumbnailAsync(photo, thumbnailPath);
+            await _imageProcessor.CreateFullSizeImageAsync(photo, fullSizePath);
 
         }
-        public async Task DeletePhotoAsync(string photoUrl)
+
+        public async Task DeletePhotoSetAsync(PhotoUrlSet photoSet)
+        {
+            await DeleteSinglePhotoAsync(photoSet.ThumbnailPhotoUrl);
+            await DeleteSinglePhotoAsync(photoSet.BigPhotoUrl);
+            _unitOfWork.PhotoUrlSets.Remove(photoSet);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task SynchronizeMainPhotosAsync(string newPhotoThumbnailUrl)
+        {
+            await _productMainPhotoSynchronizer.SynchronizeMainPhotoSetAsync(newPhotoThumbnailUrl);
+        }
+
+        private async Task DeleteSinglePhotoAsync(string url) 
         {
             string rootPath = _pathCreator.GetRootPath();
-            string normalizedPhotoUrl = photoUrl.Replace('/', Path.DirectorySeparatorChar);
-
-            string fullPath = _pathCreator.CombinePaths(rootPath, normalizedPhotoUrl.TrimStart(Path.DirectorySeparatorChar));
-
-            await _fileService.DeleteFileAsync(fullPath);
+            string normalizedUrl = url.Replace('/', Path.DirectorySeparatorChar);
+            string fullPath = _pathCreator.CombinePaths(rootPath, normalizedUrl.TrimStart(Path.DirectorySeparatorChar));
+            await _imageProcessor.DeletePhotoAsync(fullPath);
         }
     }
 }

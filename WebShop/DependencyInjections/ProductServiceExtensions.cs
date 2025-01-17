@@ -1,5 +1,4 @@
 ﻿using ControllersServices.CategoryService;
-using ControllersServices.CategoryService.Interfaces;
 using ControllersServices.ProductManagement;
 using ControllersServices.ProductManagement.Interfaces;
 using Services.ProductService;
@@ -18,6 +17,7 @@ namespace WebShop.DependencyInjections
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<IProductRemover, ProductRemover>();
             services.AddScoped<IProductTableDtoRetriver, ProductTableDtoRetriver>();
+            services.AddScoped<IProductMainPhotoSynchronizer, ProductMainPhotoSynchronizer>();
 
             return services;
         }

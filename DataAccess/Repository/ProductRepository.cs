@@ -56,13 +56,13 @@ namespace DataAccess.Repository
 
         public override async Task<IEnumerable<Product>> GetAllAsync(Expression<Func<Product, bool>>? filter = null, string? includeProperties = null, bool tracked = false, Expression<Func<Product, object>>? sortBy = null)
         {
-            includeProperties = "Discount";
+            includeProperties = "Discount,PhotosUrlSets";
             return await base.GetAllAsync(filter, includeProperties, tracked, sortBy);
         }
 
         public override async Task<Product?> GetAsync(Expression<Func<Product, bool>> filter, string? includeProperties = null, bool tracked = false)
         {
-            includeProperties = "Discount";
+            includeProperties = "Discount,PhotosUrlSets";
             return await base.GetAsync(filter, includeProperties, tracked);
         }
 
@@ -116,7 +116,7 @@ namespace DataAccess.Repository
                 Name = p.Name,
                 CategoryName = p.Category.Name,
                 Price = p.Price,
-                MainPhotoUrl = p.MainPhotoUrl,
+                MainPhotoUrl = p.PhotosUrlSets.FirstOrDefault(p => p.IsMainPhoto == true).ThumbnailPhotoUrl,
                 ShortDescription = p.ShortDescription,
                 DiscountPercentage = (p.Discount != null && p.Discount.isActive) ? p.Discount.Percentage : null
             });

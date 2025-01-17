@@ -21,12 +21,11 @@ namespace ControllersServices.ProductManagement
             {
                 if (product.DiscountId != null) await _discountService.DeleteByIdAsync(product.DiscountId.Value);
 
-                await _productPhotoService.DeletePhotoAsync(product!.MainPhotoUrl);
-                if (product.OtherPhotosUrls != null)
+                if (product.PhotosUrlSets != null)
                 {
-                    foreach (var url in product.OtherPhotosUrls)
+                    foreach (var urlSet in product.PhotosUrlSets)
                     {
-                        await _productPhotoService.DeletePhotoAsync(url);
+                        await _productPhotoService.DeletePhotoSetAsync(urlSet);
                     }
                 }
                 _unitOfWork.Product.Remove(product);

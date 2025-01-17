@@ -35,7 +35,8 @@
             <input asp-for="Product.DiscountId" id="@StaticData.ProductDiscountId" hidden>
 
             <!-- Discount Section -->
-            <button class="btn btn-primary my-3 py-2 w-100 d-flex align-items-center justify-content-center mt-4 text-uppercase fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#discountCollapse" aria-expanded="false" aria-controls="discountCollapse" @StaticData.DiscountCollapseButtonSelector>
+            <button class="btn btn-primary my-3 py-2 w-100 d-flex align-items-center justify-content-center mt-4 text-uppercase fw-bold"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#discountCollapse" aria-expanded="false" aria-controls="discountCollapse" @StaticData.DiscountCollapseButtonSelector>
                 <div class="fade show">
                     @if (Model.Product.DiscountId != 0 && Model.Product.DiscountId != null)
                     {
@@ -147,13 +148,15 @@
             <p class="text-danger" @StaticData.MainPhotoValidationParagraph></p>
             <div class="d-flex flex-column flex-md-row">
                 <div @StaticData.MainPhotoAreaSelector class="main-photo-container ps-2">
-                    <div class="main-photo-placeholder-container bg-light border border-secondary" style="@(Model?.Product.MainPhotoUrl == null ? "" : "display: none;")">
+                    <div class="main-photo-placeholder-container bg-light border border-secondary" 
+                         style="@(Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl == null ? "" : "display: none;")">
                         <label for="main-photo-input" class="custom-file-button text-secondary"><i class="bi bi-image-fill"></i></label>
                         <input @StaticData.UploadMainPhoto type="file" id="main-photo-input" accept="image/png, image/jpeg, image/jpg" class="hidden-file-input" />
                     </div>
 
-                    <div class="main-photo-img-container" @StaticData.UpdateMainPhoto style="@(Model?.Product.MainPhotoUrl == null ? "display: none;" : "")">
-                        <img id="main-photo-preview" alt="Main Photo" src="@Model?.Product.MainPhotoUrl" class="main-photo-preview" />
+                    <div class="main-photo-img-container" @StaticData.UpdateMainPhoto 
+                         style="@(Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl == null ? "display: none;" : "")">
+                        <img id="main-photo-preview" alt="Main Photo" src="@Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl " class="main-photo-preview" />
                         <div class="main-photo-controllers d-flex flex-column">
                             <label for="new-photo-input" class="btn btn-primary mt-2">Upload New Photo</label>
                             <input type="file" id="new-photo-input" accept="image/png, image/jpeg, image/jpg" class="hidden-file-input" />
@@ -163,15 +166,15 @@
 
                 <!-- Other Photos -->
                 <div id="other-photos-container" class="d-flex p-3 flex-wrap justify-content-center" @StaticData.OtherPhotosContainer>
-                    @if (Model?.Product?.OtherPhotosUrls != null)
+                    @if (Model?.Product?.PhotosUrlSets != null)
                     {
-                        foreach (var photoUrl in Model.Product.OtherPhotosUrls)
+                        foreach (var photoUrlSet in Model?.Product?.PhotosUrlSets?.Where(s => s.IsMainPhoto == false))
                         {
                             <div class="image-wrapper">
-                                <img src="@photoUrl" alt="Other Photo" class="other-photo" />
+                                <img src="@photoUrlSet?.ThumbnailPhotoUrl" alt="Other Photo" class="other-photo" />
                                 <div class="d-flex flex-column">
-                                    <button type="button" class="btn btn-success btn-sm mx-2 mb-1" data-photo-url="@photoUrl"><i class="bi bi-arrow-clockwise"></i></button>
-                                    <button type="button" class="btn btn-danger btn-sm mx-2" data-photo-url="@photoUrl"><i class="bi bi-x-circle"></i></button>
+                                    <button type="button" class="btn btn-success btn-sm mx-2 mb-1" data-photo-url="@photoUrlSet?.ThumbnailPhotoUrl"><i class="bi bi-arrow-clockwise"></i></button>
+                                    <button type="button" class="btn btn-danger btn-sm mx-2" data-photo-url="@photoUrlSet?.ThumbnailPhotoUrl"><i class="bi bi-x-circle"></i></button>
                                 </div>
                             </div>
                         }
@@ -203,9 +206,9 @@
                 "[@StaticData.MainPhotoValidationParagraph]",
                 "[@StaticData.UpdateMainPhoto]",
                 "[@StaticData.OtherPhotosContainer]",
-                "@(Model?.Product?.MainPhotoUrl ?? "")",
-                @Html.Raw(Model?.Product?.OtherPhotosUrls != null
-                    ? System.Text.Json.JsonSerializer.Serialize(Model.Product.OtherPhotosUrls)
+                "@(Model?.Product?.PhotosUrlSets?.FirstOrDefault(s => s.IsMainPhoto == true)?.ThumbnailPhotoUrl ?? "")",
+                @Html.Raw(Model?.Product?.PhotosUrlSets != null
+                    ? System.Text.Json.JsonSerializer.Serialize(Model?.Product?.PhotosUrlSets?.Where(s => s.IsMainPhoto == false)?.Select(s => s.ThumbnailPhotoUrl).ToList())
                     : "[]")
             );
 

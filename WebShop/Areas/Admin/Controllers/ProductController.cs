@@ -23,7 +23,7 @@ namespace WebShop.Areas.Admin.Controllers
                 var productVM = await _productService.GetProductVMForIndexAsync();
                 return View(productVM);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "Home", new { area = "User" });

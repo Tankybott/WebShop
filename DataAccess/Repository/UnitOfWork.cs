@@ -1,4 +1,7 @@
 ﻿using DataAccess.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
+using Models;
+using Models.DatabaseRelatedModels;
 using Serilog;
 namespace DataAccess.Repository
 {
@@ -8,13 +11,15 @@ namespace DataAccess.Repository
         public ICategoryRepository Category { get; private set; }
         public IProductRepository Product { get; private set; }
         public IDiscountRepository Discount { get; private set; }
+        public IPhotoUrlsSetRepository PhotoUrlSets { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext db, ICategoryRepository category, IProductRepository product, IDiscountRepository discount)
+        public UnitOfWork(ApplicationDbContext db, ICategoryRepository category, IProductRepository product, IDiscountRepository discount, IPhotoUrlsSetRepository photoUrlsSet)
         {
             _db = db;
             Category = category;
             Product = product;
             Discount = discount;
+            PhotoUrlSets = photoUrlsSet;
         }
 
         public async Task SaveAsync()
@@ -27,6 +32,15 @@ namespace DataAccess.Repository
             {
                 Log.Error(ex, "Failed to save database");
                 throw new Exception("An error occurred while saving changes.", ex);
+            }
+        }
+
+        public void DetachEntity<T>(T entity) where T : class 
+        {
+            var entry = _db.Entry(entity);
+            if (entry != null)
+            {
+                entry.State = EntityState.Detached;
             }
         }
     }
