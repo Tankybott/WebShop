@@ -14,7 +14,7 @@ namespace Models.DatabaseRelatedModels
         [Key]
         public int Id { get; set; }
         [ForeignKey("Product")]
-        public int? ProductId { get; set; }
+        public int ProductId { get; set; }
         [ValidateNever]
         public Product Product { get; set; }
         [Required]

@@ -1,5 +1,6 @@
 ﻿using Models;
-
+using Models.ContractInterfaces;
+namespace Utility.Queues;
 
 public abstract class SortedQueue<T> : IQueueBase<T> where T : IHasId
 {

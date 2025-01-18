@@ -1,6 +1,7 @@
 ﻿using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
 
+namespace Utility.Queues;
 public class ActivationDiscountQueue : SortedQueue<Discount>, IActivationDiscountQueue
 {
     public ActivationDiscountQueue()

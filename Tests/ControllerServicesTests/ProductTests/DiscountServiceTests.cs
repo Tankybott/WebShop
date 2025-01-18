@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Moq;
-using ControllersServices.ProductManagement;
 using ControllersServices.ProductManagement.Interfaces;
 using DataAccess.Repository.IRepository;
 using Models.DatabaseRelatedModels;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using Services.ProductService.DiscountRelated;
 
 namespace Tests.ControllersServices.ProductService
 {

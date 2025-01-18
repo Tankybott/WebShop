@@ -2,12 +2,12 @@
 using Models.DatabaseRelatedModels;
 using Services.ProductService.Interfaces;
 
-namespace Services.ProductService
+namespace Services.ProductService.PhotoRelated
 {
-    public class ProductMainPhotoSynchronizer : IProductMainPhotoSynchronizer
+    public class MainPhotoSetSynchronizer : IMainPhotoSetSynchronizer
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductMainPhotoSynchronizer(IUnitOfWork unitOfWork)
+        public MainPhotoSetSynchronizer(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

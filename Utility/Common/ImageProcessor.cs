@@ -41,11 +41,6 @@ namespace Utility.Common
             }
         }
 
-        public async Task DeletePhotoAsync(string photoPath) 
-        {
-            await _fileService.DeleteFileAsync(photoPath);
-        }
-
         private SKBitmap ResizeToFit(SKBitmap original, int maxWidth, int maxHeight, SKSamplingOptions samplingOptions)
         {
             float widthRatio = (float)maxWidth / original.Width;

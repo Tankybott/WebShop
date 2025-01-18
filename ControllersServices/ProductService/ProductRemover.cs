@@ -8,8 +8,8 @@ namespace ControllersServices.ProductManagement
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IDiscountService _discountService;
-        private readonly IProductPhotoService _productPhotoService;
-        public ProductRemover(IUnitOfWork unitOfWork, IDiscountService discountService, IProductPhotoService productPhotoServices)
+        private readonly IPhotoService _productPhotoService;
+        public ProductRemover(IUnitOfWork unitOfWork, IDiscountService discountService, IPhotoService productPhotoServices)
         {
             _unitOfWork = unitOfWork;
             _discountService = discountService;
@@ -25,7 +25,7 @@ namespace ControllersServices.ProductManagement
                 {
                     foreach (var urlSet in product.PhotosUrlSets)
                     {
-                        await _productPhotoService.DeletePhotoSetAsync(urlSet);
+                        await _productPhotoService.DeletePhotosFromServer(urlSet);
                     }
                 }
                 _unitOfWork.Product.Remove(product);

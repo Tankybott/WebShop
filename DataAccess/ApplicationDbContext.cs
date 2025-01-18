@@ -29,7 +29,7 @@ namespace DataAccess
                 entity.HasMany(p => p.PhotosUrlSets)
                     .WithOne(pu => pu.Product)
                     .HasForeignKey(pu => pu.ProductId) 
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(p => p.Discount)
                     .WithMany()

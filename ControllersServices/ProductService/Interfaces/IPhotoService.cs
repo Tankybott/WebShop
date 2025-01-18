@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace ControllersServices.ProductManagement.Interfaces
 {
-    public interface IProductPhotoService
+    public interface IPhotoService
     {
-        Task AddPhotoSetAsync(IFormFile photo, string thumbnailPhotoName, string FullSizePhotName, string imageDirectory);
-        Task DeletePhotoSetAsync(PhotoUrlSet photoSet);
+        Task UploadPhotosFromSet(IFormFile photo, string thumbnailPhotoName, string FullSizePhotName, string imageDirectory);
+        Task DeletePhotosFromServer(PhotoUrlSet photoSet);
         Task SynchronizeMainPhotosAsync(string newPhotoThumbnailUrl);
     }
 }

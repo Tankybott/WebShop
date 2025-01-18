@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿using Models.ContractInterfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.DatabaseRelatedModels
 {

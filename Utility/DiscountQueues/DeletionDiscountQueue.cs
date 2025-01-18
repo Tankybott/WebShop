@@ -1,6 +1,6 @@
 ﻿using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
-
+namespace Utility.Queues;
 public class DeletionDiscountQueue : SortedQueue<Discount>, IDeletionDiscountQueue
 {
     public DeletionDiscountQueue()

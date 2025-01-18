@@ -2,7 +2,7 @@
 
 namespace Services.ProductService.Interfaces
 {
-    public interface IProductMainPhotoSynchronizer
+    public interface IMainPhotoSetSynchronizer
     {
         Task SynchronizeMainPhotoSetAsync(string newMainPhotoThumbnailUrl);
     }

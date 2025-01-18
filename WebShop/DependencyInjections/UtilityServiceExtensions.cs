@@ -1,6 +1,7 @@
 ﻿using Utility.DiscountQueues.Interfaces;
 using Utility.Common;
 using Utility.Common.Interfaces;
+using Utility.Queues;
 
 namespace WebShop.DependencyInjections
 {

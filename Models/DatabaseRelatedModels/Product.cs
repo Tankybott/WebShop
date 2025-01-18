@@ -24,6 +24,6 @@ namespace Models
         [ValidateNever]
         public Discount? Discount { get; set; }
         [ValidateNever]
-        public List<PhotoUrlSet>? PhotosUrlSets { get; set; } = new List<PhotoUrlSet>();
+        public List<PhotoUrlSet> PhotosUrlSets { get; set; } = new List<PhotoUrlSet>();
     }
 }

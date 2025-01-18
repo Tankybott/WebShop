@@ -3,7 +3,7 @@ using DataAccess.Repository.IRepository;
 using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
 
-namespace ControllersServices.ProductManagement
+namespace Services.ProductService.DiscountRelated
 {
     public class DiscountService : IDiscountService
     {
@@ -36,7 +36,7 @@ namespace ControllersServices.ProductManagement
             {
                 SetActive(discount);
             }
-            else 
+            else
             {
                 await DiscountActivationQueue.EnqueueAsync(discount);
             }
@@ -46,7 +46,7 @@ namespace ControllersServices.ProductManagement
             return discount;
         }
 
-        public async Task<Discount> UpdateDiscountAsync(int discountId, DateTime startTime, DateTime endTime, int percentage) 
+        public async Task<Discount> UpdateDiscountAsync(int discountId, DateTime startTime, DateTime endTime, int percentage)
         {
             checkIfDiscountValid(startTime, endTime, percentage);
 
@@ -60,24 +60,24 @@ namespace ControllersServices.ProductManagement
             var discount = await CreateDiscountAsync(startTime, endTime, percentage);
             return discount;
         }
-   
-        public void SetActive(Discount discount) 
+
+        public void SetActive(Discount discount)
         {
             discount.isActive = true;
         }
 
-        public async Task DeleteByIdAsync(int discountId) 
+        public async Task DeleteByIdAsync(int discountId)
         {
             await DiscountActivationQueue.RemoveByIdAsync(discountId);
             await DiscountDeletionQueue.RemoveByIdAsync(discountId);
             var discountToDelete = await _unitOfWork.Discount.GetAsync(d => d.Id == discountId);
-            if(discountToDelete != null) _unitOfWork.Discount.Remove(discountToDelete);
+            if (discountToDelete != null) _unitOfWork.Discount.Remove(discountToDelete);
             await _unitOfWork.SaveAsync();
         }
 
-        private void checkIfDiscountValid(DateTime startTime, DateTime endTime, int percentage) 
+        private void checkIfDiscountValid(DateTime startTime, DateTime endTime, int percentage)
         {
-            if (startTime >= endTime|| endTime < DateTime.Now || percentage < 0 || percentage > 99) throw new Exception("Invalid discount data");
+            if (startTime >= endTime || endTime < DateTime.Now || percentage < 0 || percentage > 99) throw new Exception("Invalid discount data");
         }
     }
 }

@@ -6,6 +6,5 @@ namespace Utility.Common.Interfaces
     {
         Task CreateFullSizeImageAsync(IFormFile inputFile, string outputFullSizePath);
         Task CreateThumbnailAsync(IFormFile inputFile, string outputThumbnailPath);
-        Task DeletePhotoAsync(string photoPath);
     }
 }

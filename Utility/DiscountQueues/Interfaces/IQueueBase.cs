@@ -1,5 +1,6 @@
-﻿using Models;
-using System.Threading.Tasks;
+﻿
+using Models.ContractInterfaces;
+
 
 public interface IQueueBase<T> where T : IHasId
 {

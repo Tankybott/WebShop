@@ -21,17 +21,17 @@ namespace Utility.Common
 
         public string CombinePaths(string firstPath, string secondPath)
         {
-            var combinedPath = Path.Combine(firstPath, secondPath);
-            return NormalizePath(combinedPath);
+            var combinedPath = Path.Combine(NormalizePathToSystemFormat(firstPath), NormalizePathToSystemFormat(secondPath));
+            return NormalizeToUniversalFormat(combinedPath);
         }
 
         public string CreateUrlPath(string directory, string fileName)
         {
             var combinedPath = CombinePaths(directory, fileName);
-            return NormalizePath(combinedPath, isUrl: true);
+            return NormalizeToUniversalFormat(combinedPath, isUrl: true);
         }
 
-        private string NormalizePath(string path, bool isUrl = false)
+        private string NormalizeToUniversalFormat(string path, bool isUrl = false)
         {
             var normalizedPath = path.Replace("\\", "/");
 
@@ -41,6 +41,13 @@ namespace Utility.Common
             }
 
             return normalizedPath;
+        }
+        private string NormalizePathToSystemFormat(string path)
+        {
+            return path.Replace('/', Path.DirectorySeparatorChar)
+                       .Replace('\\', Path.DirectorySeparatorChar)
+                       .TrimStart(Path.DirectorySeparatorChar)
+                       .TrimEnd(Path.DirectorySeparatorChar);
         }
     }
 }
