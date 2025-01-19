@@ -1,6 +1,6 @@
-﻿using ControllersServices.ProductManagement.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models.ProductModel;
+using Services.ProductManagement.Interfaces;
 
 
 namespace WebShop.Areas.Admin.Controllers

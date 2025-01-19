@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Models.DatabaseRelatedModels;
 using Utility.Common.Interfaces;
-using ControllersServices.ProductManagement.Interfaces;
 using DataAccess.Repository.IRepository;
-using Services.ProductService.Interfaces;
+using Services.PhotoService.Interfaces;
+using Services.PhotoSetService.Interfaces;
 
-namespace Services.ProductService.PhotoRelated
+namespace Services.PhotoSetService
 {
     public class PhotoSetService : IPhotoSetService
     {
@@ -39,7 +39,7 @@ namespace Services.ProductService.PhotoRelated
         public async Task DeletePhotoSetAsync(string thumbnailPhotoUrl)
         {
             var photoUrlSet = await _unitOfWork.PhotoUrlSets.GetAsync(p => p.ThumbnailPhotoUrl == thumbnailPhotoUrl);
-            if (photoUrlSet != null) 
+            if (photoUrlSet != null)
             {
                 await _productPhotoService.DeletePhotosFromServer(photoUrlSet);
                 _unitOfWork.PhotoUrlSets.Remove(photoUrlSet);

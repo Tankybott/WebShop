@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Models.DatabaseRelatedModels;
 using Models;
-using Services.ProductService.Interfaces;
+using Services.PhotoSetService.Interfaces;
+using Services.ProductManagement.Interfaces;
 
 namespace Services.ProductService
 {

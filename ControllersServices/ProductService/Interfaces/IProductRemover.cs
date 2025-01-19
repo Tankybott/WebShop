@@ -1,6 +1,6 @@
 ﻿using Models;
 
-namespace ControllersServices.ProductManagement.Interfaces
+namespace Services.ProductManagement.Interfaces
 {
     public interface IProductRemover
     {

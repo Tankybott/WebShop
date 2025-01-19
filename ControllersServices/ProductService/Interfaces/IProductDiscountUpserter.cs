@@ -1,7 +1,7 @@
 ﻿using Models;
 using Models.DiscountCreateModel;
 
-namespace Services.ProductService.Interfaces
+namespace Services.ProductManagement.Interfaces
 {
     public interface IProductDiscountUpserter
     {

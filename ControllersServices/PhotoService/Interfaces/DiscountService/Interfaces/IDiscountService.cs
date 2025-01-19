@@ -1,7 +1,7 @@
 ﻿using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
 
-namespace ControllersServices.ProductManagement.Interfaces
+namespace Services.PhotoService.Interfaces.DiscountService.Interfaces
 {
     public interface IDiscountService
     {

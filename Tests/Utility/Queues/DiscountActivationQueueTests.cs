@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Models.DatabaseRelatedModels;
-using Utility.DiscountQueues;
+using Utility.Queues;
 
 namespace Tests.Utility.DiscountQueues
 {

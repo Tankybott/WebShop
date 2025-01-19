@@ -1,9 +1,7 @@
-﻿using ControllersServices.CategoryService.Interfaces;
-using ControllersServices.ProductManagement.Interfaces;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using Models.ViewModels;
+using Services.ProductManagement.Interfaces;
 
 namespace ControllersServices.CategoryService
 {

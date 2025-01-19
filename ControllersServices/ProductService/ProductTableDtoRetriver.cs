@@ -3,15 +3,10 @@ using DataAccess.Repository.IRepository;
 using Models;
 using Models.DTOs;
 using Services.CategoryService.Interfaces;
-using Services.ProductService.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Services.ProductManagement.Interfaces;
 
-namespace Services.ProductService
+
+namespace Services.ProductManagement
 {
     public class ProductTableDtoRetriver : IProductTableDtoRetriver
     {

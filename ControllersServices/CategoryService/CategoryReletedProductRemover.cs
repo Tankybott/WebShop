@@ -1,12 +1,8 @@
 ﻿using ControllersServices.CategoryService.Interfaces;
-using ControllersServices.ProductManagement.Interfaces;
 using DataAccess.Repository.IRepository;
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Services.ProductManagement.Interfaces;
+
 
 namespace ControllersServices.CategoryService
 {

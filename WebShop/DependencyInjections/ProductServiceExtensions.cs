@@ -1,10 +1,14 @@
 ﻿using ControllersServices.CategoryService;
 using ControllersServices.ProductManagement;
-using ControllersServices.ProductManagement.Interfaces;
+using Services.PhotoService;
+using Services.PhotoService.Interfaces;
+using Services.PhotoService.Interfaces.DiscountService;
+using Services.PhotoService.Interfaces.DiscountService.Interfaces;
+using Services.PhotoSetService;
+using Services.PhotoSetService.Interfaces;
+using Services.ProductManagement;
+using Services.ProductManagement.Interfaces;
 using Services.ProductService;
-using Services.ProductService.DiscountRelated;
-using Services.ProductService.Interfaces;
-using Services.ProductService.PhotoRelated;
 
 namespace WebShop.DependencyInjections
 {
@@ -12,7 +16,7 @@ namespace WebShop.DependencyInjections
     {
         public static IServiceCollection AddProductServices(this IServiceCollection services)
         {
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductService, ProductServices>();
             services.AddScoped<IProductVMCreator, ProductVMCreator>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IProductPhotoUpserter, ProductPhotoUpserter>();

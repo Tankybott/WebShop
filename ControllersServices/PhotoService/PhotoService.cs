@@ -1,11 +1,11 @@
-﻿using ControllersServices.ProductManagement.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Models.DatabaseRelatedModels;
-using Services.ProductService.Interfaces;
+using Services.PhotoService.Interfaces;
+using Services.PhotoSetService.Interfaces;
 using Utility.Common.Interfaces;
 
 
-namespace Services.ProductService.PhotoRelated
+namespace Services.PhotoService
 {
     public class PhotoService : IPhotoService
     {
@@ -34,11 +34,6 @@ namespace Services.ProductService.PhotoRelated
         {
             await DeleteSinglePhotoAsync(photoSet.ThumbnailPhotoUrl);
             await DeleteSinglePhotoAsync(photoSet.BigPhotoUrl);
-        }
-
-        public async Task SynchronizeMainPhotosAsync(string newPhotoThumbnailUrl)
-        {
-            await _productMainPhotoSynchronizer.SynchronizeMainPhotoSetAsync(newPhotoThumbnailUrl);
         }
 
         private async Task DeleteSinglePhotoAsync(string url)

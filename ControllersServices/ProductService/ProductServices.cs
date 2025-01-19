@@ -1,17 +1,16 @@
 ﻿
-using ControllersServices.ProductManagement.Interfaces;
-
 using DataAccess.Repository.IRepository;
 using Models;
 using Models.DTOs;
 using Models.ProductModel;
 using Models.ViewModels;
-using Services.ProductService.Interfaces;
+using Services.ProductManagement.Interfaces;
+
 
 
 namespace ControllersServices.ProductManagement
 {
-    public class ProductService : IProductService
+    public class ProductServices : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductVMCreator _productVMCreator;
@@ -19,7 +18,7 @@ namespace ControllersServices.ProductManagement
         private readonly IProductRemover _productRemover;
         private readonly IProductTableDtoRetriver _productTableDtoRetriver;
 
-        public ProductService(IUnitOfWork unitOfWork,
+        public ProductServices(IUnitOfWork unitOfWork,
             IProductVMCreator productVMCreator,
             IProductUpserter productUpserter,
             IProductRemover productRemover,

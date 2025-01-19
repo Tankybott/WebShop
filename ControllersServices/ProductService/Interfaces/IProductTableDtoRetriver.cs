@@ -1,6 +1,6 @@
 ﻿using Models.DTOs;
 
-namespace Services.ProductService.Interfaces
+namespace Services.ProductManagement.Interfaces
 {
     public interface IProductTableDtoRetriver
     {

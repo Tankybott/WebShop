@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using ControllersServices.ProductManagement.Interfaces;
 using DataAccess.Repository.IRepository;
 using Models;
 using Models.DiscountCreateModel;
 using Models.ProductModel;
-using Services.ProductService.Interfaces;
+using Services.PhotoService.Interfaces.DiscountService.Interfaces;
+using Services.ProductManagement.Interfaces;
 
 namespace ControllersServices.ProductManagement
 {
@@ -54,9 +54,8 @@ namespace ControllersServices.ProductManagement
             {
                 await _productPhotoUpserter.UploadOtherPhotoSetsAsync(product, model.OtherPhotos);
             }
-            //Update newly choosen main photo set "main" flag
-            //When there is possibility that main photo was swapped with any other photos belonging to product 
-            if (product.Id != 0 && model.MainPhotoUrl != null && model.MainPhoto == null)
+
+            if (IsMainFlagOnIncorrectPhotoSet(product, model))
             {
                 await _productPhotoUpserter.SetPhotoMain(model.MainPhotoUrl);
             }
@@ -65,7 +64,6 @@ namespace ControllersServices.ProductManagement
             {
                 await _productPhotoUpserter.DeletePhotoSetsAsync(model.UrlsToDelete);
             } 
-
 
             if (product.Id == 0)
             {
@@ -96,7 +94,11 @@ namespace ControllersServices.ProductManagement
                 }
                 throw;
             }
+        }
 
+        private bool IsMainFlagOnIncorrectPhotoSet(Product product, ProductFormModel model)
+        {
+            return (product.Id != 0 && model.MainPhotoUrl != null && model.MainPhoto == null);
         }
     }
 }

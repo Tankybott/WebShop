@@ -1,9 +1,9 @@
-﻿using ControllersServices.ProductManagement.Interfaces;
-using DataAccess.Repository.IRepository;
+﻿using DataAccess.Repository.IRepository;
 using Models.DatabaseRelatedModels;
+using Services.PhotoService.Interfaces.DiscountService.Interfaces;
 using Utility.DiscountQueues.Interfaces;
 
-namespace Services.ProductService.DiscountRelated
+namespace Services.PhotoService.Interfaces.DiscountService
 {
     public class DiscountService : IDiscountService
     {

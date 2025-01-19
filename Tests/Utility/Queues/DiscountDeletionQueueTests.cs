@@ -3,6 +3,7 @@ using Models.DatabaseRelatedModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Utility.Queues;
 
 namespace Tests.Utility.DiscountQueues
 {

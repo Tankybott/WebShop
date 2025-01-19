@@ -1,8 +1,8 @@
 ﻿using DataAccess.Repository.IRepository;
 using Models.DatabaseRelatedModels;
-using Services.ProductService.Interfaces;
+using Services.PhotoSetService.Interfaces;
 
-namespace Services.ProductService.PhotoRelated
+namespace Services.PhotoSetService
 {
     public class MainPhotoSetSynchronizer : IMainPhotoSetSynchronizer
     {

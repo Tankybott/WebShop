@@ -1,12 +1,12 @@
 ﻿using NUnit.Framework;
 using Moq;
 using ControllersServices.CategoryService;
-using ControllersServices.ProductManagement.Interfaces;
 using DataAccess.Repository.IRepository;
 using Models;
 
 using System.Linq.Expressions;
 using ControllersServices.CategoryService.Interfaces;
+using Services.ProductManagement.Interfaces;
 
 
 namespace Tests.ControllerServicesTests.CategoryTests

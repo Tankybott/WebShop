@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Models;
 
-namespace Services.ProductService.Interfaces
+namespace Services.ProductManagement.Interfaces
 {
     public interface IProductPhotoUpserter
     {

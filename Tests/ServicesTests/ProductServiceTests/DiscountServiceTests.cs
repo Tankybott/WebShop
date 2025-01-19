@@ -1,14 +1,10 @@
 ﻿using NUnit.Framework;
 using Moq;
-using ControllersServices.ProductManagement.Interfaces;
 using DataAccess.Repository.IRepository;
 using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
-using Services.ProductService.DiscountRelated;
+using Services.PhotoService.Interfaces.DiscountService;
 
 namespace Tests.ControllersServices.ProductService
 {

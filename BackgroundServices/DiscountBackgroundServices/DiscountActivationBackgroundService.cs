@@ -1,5 +1,4 @@
-﻿using ControllersServices.ProductManagement.Interfaces;
-using DataAccess.Repository.IRepository;
+﻿using DataAccess.Repository.IRepository;
 using Microsoft.Extensions.DependencyInjection;
 using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;

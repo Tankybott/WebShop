@@ -1,6 +1,6 @@
 ﻿using Models.ProductModel;
 
-namespace ControllersServices.ProductManagement.Interfaces
+namespace Services.ProductManagement.Interfaces
 {
     public interface IProductUpserter
     {

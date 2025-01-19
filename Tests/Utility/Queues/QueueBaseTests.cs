@@ -1,8 +1,8 @@
-﻿using Models;
+﻿
+using Models.ContractInterfaces;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Utility.Queues;
+
 
 namespace Tests.Utility.DiscountQueues
 {

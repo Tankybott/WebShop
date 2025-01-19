@@ -1,11 +1,10 @@
-﻿
-using ControllersServices.ProductManagement.Interfaces;
-using Models;
+﻿using Models;
 using Models.DiscountCreateModel;
 using Serilog;
-using Services.ProductService.Interfaces;
+using Services.PhotoService.Interfaces.DiscountService.Interfaces;
+using Services.ProductManagement.Interfaces;
 
-namespace Services.ProductService.DiscountRelated
+namespace Services.ProductService
 {
     public class ProductDiscountUpserter : IProductDiscountUpserter
     {
@@ -20,7 +19,7 @@ namespace Services.ProductService.DiscountRelated
            Product product,
            DiscountCreateModel discountCreateModel)
         {
-            if (discountCreateModel.StartTime != null && discountCreateModel.EndTime != null && discountCreateModel.Percentage != null)
+            if (IsDiscountValid(discountCreateModel))
             {
                 if (discountCreateModel.IsDiscountChanged != null && discountCreateModel.IsDiscountChanged == false)
                 {
@@ -39,7 +38,8 @@ namespace Services.ProductService.DiscountRelated
             }
             else
             {
-                if (discountCreateModel.StartTime == null && discountCreateModel.EndTime == null && discountCreateModel.Percentage == null)
+                // Deletes 
+                if (IsDiscountCleaned(discountCreateModel))
                 {
                     if (discountCreateModel.DiscountId != 0 && discountCreateModel.DiscountId != null)
                     {
@@ -53,6 +53,17 @@ namespace Services.ProductService.DiscountRelated
                     throw new ArgumentException("Failed to add discount because of invalid data ");
                 }
             }
+        }
+
+
+        private bool IsDiscountCleaned(DiscountCreateModel model)
+        {
+            return (model.StartTime == null && model.EndTime == null && model.Percentage == null);
+        }
+
+        private bool IsDiscountValid(DiscountCreateModel model) 
+        {
+            return (model.StartTime != null && model.EndTime != null && model.Percentage != null);
         }
     }
 }

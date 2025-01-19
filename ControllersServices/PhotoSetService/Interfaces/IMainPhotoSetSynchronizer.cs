@@ -1,6 +1,6 @@
 ﻿using Models.DatabaseRelatedModels;
 
-namespace Services.ProductService.Interfaces
+namespace Services.PhotoSetService.Interfaces
 {
     public interface IMainPhotoSetSynchronizer
     {

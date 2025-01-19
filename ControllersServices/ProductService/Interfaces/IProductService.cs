@@ -3,7 +3,7 @@ using Models.ProductModel;
 using Models.ViewModels;
 
 
-namespace ControllersServices.ProductManagement.Interfaces
+namespace Services.ProductManagement.Interfaces
 {
     public interface IProductService
     {
