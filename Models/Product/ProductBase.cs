@@ -1,12 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Models.DatabaseRelatedModels;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 namespace Models.ProductModel
 {
@@ -20,12 +13,9 @@ namespace Models.ProductModel
         [Required]
         public virtual int CategoryId { get; set; }
         [Required]
-        [StringLength(500)]
-        public string ShortDescription { get; set; }
-        [Required]
+        public int StockQuantity { get; set; }
         public decimal Price { get; set; }
         public virtual int? DiscountId { get; set; }
-
         public string? FullDescription { get; set; }
     }
 }

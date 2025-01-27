@@ -46,3 +46,29 @@ body {
 .dt-paging button {
     margin: 1px;
 }
+
+.page-link--spacer {
+    padding-left: 0;
+    padding-right: 0;
+    pointer-events: none;
+    letter-spacing: 2px;
+}
+
+.page-link {
+    border: none;
+    border-radius: 20%;
+}
+
+.page-item {
+    margin: .2rem;
+}
+
+.thumbnail-photo {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+
+

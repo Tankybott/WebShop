@@ -1,68 +1,70 @@
 ﻿@model Models.ViewModels.CategoryVM
 @using Microsoft.AspNetCore.Html;
 @using System.Text.Encodings.Web;
+<div class="container">
+    <div class="card shadow-lg mt-4 mx-auto p-4" style="width: 100%;">
 
-<div class="card shadow-lg mt-4 mx-auto p-4" style="width: 100%;">
-
-    <div class="card-header mb-4 bg-primary text-white">
-        <h2 class="mb-0 text-center p-2">Category Management</h2>
-    </div>
-
-
-    <div class="d-flex justify-content-center mb-3">
-        <a asp-controller="AdminCategory" asp-action="upsert" class="btn btn-primary w-75 border border-secondary mt-3 mb-2">
-            <i class="bi bi-plus-circle"></i> Create new category
-        </a>
-    </div>
-
-
-    <div class="container border border-primary rounded p-3">
-        <div class="form-group mb-3">
-            <label for="categoryFilter" class="control-label p-2">Parent Category</label>
-            <select id="categoryFilter" asp-items="Model.CategoryListItems" class="form-control">
-                <option selected value="all">All</option>
-            </select>
+        <div class="card-header mb-4 bg-primary text-white">
+            <h2 class="mb-0 text-center p-2">Category Management</h2>
         </div>
 
 
-        <div class="table-responsive">
-            <table id="tblData" class="table table-bordered table-striped mb-3">
-                <thead class="text-center">
-                    <tr>
-                        <th>Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="d-flex justify-content-center mb-3">
+            <a asp-controller="AdminCategory" asp-action="upsert" class="btn btn-primary w-75 border border-secondary mt-3 mb-2">
+                <i class="bi bi-plus-circle"></i> Create new category
+            </a>
         </div>
 
 
-        <a id="CreateSubcategoryInThisCategory" asp-controller="AdminCategory" asp-action="upsert" class="btn btn-primary mt-3 w-100">
-            <i class="bi bi-plus-circle"></i> Create new subcategory for this category
-        </a>
-    </div>
+        <div class="container border border-primary rounded p-3">
+            <div class="form-group mb-3">
+                <label for="categoryFilter" class="control-label p-2">Parent Category</label>
+                <select id="categoryFilter" asp-items="Model.CategoryListItems" class="form-control">
+                    <option selected value="all">All</option>
+                </select>
+            </div>
 
 
-    <button class="btn btn-secondary my-3 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#categoryTree" aria-expanded="false" aria-controls="categoryTree">
-        Show Category Tree
-    </button>
+            <div class="table-responsive">
+                <table id="tblData" class="table table-bordered table-striped mb-3">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
 
 
-    <div class="collapse" id="categoryTree">
-        <div class="container border border-secondary rounded p-3 ">
-            <ul class="list-unstyled">
-                @{
-                    var renderedIds = new HashSet<int>();
+            <a id="CreateSubcategoryInThisCategory" asp-controller="AdminCategory" asp-action="upsert" class="btn btn-primary mt-3 w-100">
+                <i class="bi bi-plus-circle"></i> Create new subcategory for this category
+            </a>
+        </div>
 
-                    foreach (var category in Model.AllCategories.Where(c => c.ParentCategoryId == null))
-                    {
-                        @RenderCategory(category, renderedIds)
+
+        <button class="btn btn-secondary my-3 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#categoryTree" aria-expanded="false" aria-controls="categoryTree">
+            Show Category Tree
+        </button>
+
+
+        <div class="collapse" id="categoryTree">
+            <div class="container border border-secondary rounded p-3 ">
+                <ul class="list-unstyled">
+                    @{
+                        var renderedIds = new HashSet<int>();
+
+                        foreach (var category in Model.AllCategories.Where(c => c.ParentCategoryId == null))
+                        {
+                            @RenderCategory(category, renderedIds)
+                        }
                     }
-                }
-            </ul>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
+</div>   
+
 
 @functions {
     private IHtmlContent RenderCategory(Category category, HashSet<int> renderedIds, int level = 0)

@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repository.IRepository;
+using DataAccess.Repository.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Models;
@@ -99,29 +100,42 @@ namespace DataAccess.Repository
             return await result.ToListAsync();
         }
 
-        public async Task<IEnumerable<ProductCardDTO>> GetProductCardDTOsAsync(ProductFilterOptionsQuery productFilterOptions)
+        public async Task<PaginatedResult<ProductCardDTO>> GetProductCardDTOsAsync(ProductFilterOptionsQuery productFilterOptions)
         {
-            var query = _db.Products.Include(p => p.Category).Include(p => p.Discount).AsQueryable();
+            var query = _db.Products
+            .Include(p => p.Category)
+            .Include(p => p.Discount)
+            .Include(p => p.PhotosUrlSets)
+            .AsQueryable();
 
             query = ApplyCategoryFilter(query, productFilterOptions.CategoriesFilteredIds);
             query = ApplyTextFilter(query, productFilterOptions.TypedTextFilter);
             query = ApplyPriceFilters(query, productFilterOptions.MinimalPriceFilter, productFilterOptions.MaximalPriceFilter);
             query = ApplyDiscountFilter(query, productFilterOptions.ShowOnlyDiscountFilter);
-
             query = ApplySorting(query, productFilterOptions.SortByValueFilter);
 
-            var result = query.Select(p => new ProductCardDTO
+            int totalItemCount = await query.CountAsync();
+
+            query = ApplyPagination(query, productFilterOptions.PageSize, productFilterOptions.PageNumber);
+
+            var productCardDTOCollection = await query.Select(p => new ProductCardDTO
             {
                 Id = p.Id,
                 Name = p.Name,
                 CategoryName = p.Category.Name,
                 Price = p.Price,
-                MainPhotoUrl = p.PhotosUrlSets.FirstOrDefault(p => p.IsMainPhoto == true).ThumbnailPhotoUrl,
-                ShortDescription = p.ShortDescription,
-                DiscountPercentage = (p.Discount != null && p.Discount.isActive) ? p.Discount.Percentage : null
-            });
+                MainPhotoUrl = p.PhotosUrlSets.FirstOrDefault(p => p.IsMainPhoto == true)!.ThumbnailPhotoUrl,
+                DiscountPercentage = (p.Discount != null && p.Discount.isActive) ? p.Discount.Percentage : null,
+                StockQuantity = p.StockQuantity
+            }).ToListAsync();
 
-            return await result.ToListAsync();
+            var result = new PaginatedResult<ProductCardDTO>
+            {
+                Items = productCardDTOCollection,
+                TotalItemCount = totalItemCount,
+            };
+
+            return result;
         }
 
         private IQueryable<Product> ApplyCategoryFilter(IQueryable<Product> query, IEnumerable<int>? categoriesFilteredIds)
@@ -177,6 +191,20 @@ namespace DataAccess.Repository
                     ProductBrowserFilteringOptions.PriceDescendingOption => query.OrderByDescending(p => p.Price),
                     _ => query
                 };
+            }
+            else 
+            {
+                return query;
+            }
+        }
+
+        private IQueryable<Product> ApplyPagination(IQueryable<Product> query, int? pageSize, int? pageNumber)  
+        {
+            if (pageSize != null && pageSize != 0 && pageNumber != null && pageNumber != 0)
+            {
+                int skip = (pageNumber.Value - 1) * pageSize.Value;
+                return query.Skip(skip)
+                    .Take(pageSize.Value);
             }
             else 
             {

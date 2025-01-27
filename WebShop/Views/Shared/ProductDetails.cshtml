@@ -1,0 +1,125 @@
+﻿<div class="container">
+    @model Product
+
+
+    @functions {
+        public struct StaticData
+        {
+            public const string PhotSliderSelector = "photo-slider";
+            public const string SlidingDivSelector = "sliding-div";
+            public const string SldierItemSelector = "slider-item";
+            public const string previousSelector = "previous";
+            public const string nextSelector = "next";
+
+        }
+    }
+
+
+    <form method="post">
+        <input hidden asp-for="Id" />
+        <div class="card shadow border-0 mt-4">
+            <div class="card-header bg-secondary bg-gradient text-light py-4">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h3 class="text-white text-uppercase">@Model.Name</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row d-flex justify-content-center justify-content-md-start">
+                    <div class="photo-slider d-flex flex-column m-3" @StaticData.PhotSliderSelector>
+                        <div class="d-flex border-1 border-primary" @StaticData.SlidingDivSelector>
+                            <div class="bg-dark carousel-thumbnail-img-container" @StaticData.SldierItemSelector>
+                                <img class="thumbnail-photo" src="@Model.PhotosUrlSets.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl"
+                                     alt="Main Product Image">
+                            </div>
+                            @foreach (var photo in Model.PhotosUrlSets.Where(p => !p.IsMainPhoto))
+                            {
+                                <div class="bg-dark carousel-thumbnail-img-container" @StaticData.SldierItemSelector>
+                                    <img class="thumbnail-photo" src="@photo.ThumbnailPhotoUrl" alt="Product Image">
+                                </div>
+                            }
+                        </div>
+                        @if (Model.PhotosUrlSets.Where(p => !p.IsMainPhoto).Any())
+                        {
+                            <div class="photo-slider-button-cotainer w-100 d-flex">
+                                <button class="w-50 btn btn-primary rounded-0 photo-slider-nav-button" @StaticData.previousSelector><i class="bi bi-chevron-compact-left"></i></button>
+                                <button class="w-50 btn btn-primary rounded-0 photo-slider-nav-button" @StaticData.nextSelector><i class="bi bi-chevron-compact-right"></i></button>
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="col-12 col-lg-7 offset-lg-1">
+                        <div class="row ps-2">
+                            @if (Model.DiscountId != null && Model.DiscountId != 0)
+                            {
+                                <div class="col-12 pb-2">
+                                    <h6 class="text-dark text-opacity-50">
+                                        Original Price:
+                                        <span class="text-decoration-line-through text-muted">
+                                            @Model.Price.ToString("c")
+                                        </span>
+                                    </h6>
+                                    <h6 class="text-dark">
+                                        Discounted Price:
+                                        <span class="text-warning fw-bold">
+                                            @(Model.Price * (1 - Model.Discount.Percentage / 100)).ToString("c")
+                                        </span>
+                                    </h6>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-12 pb-2">
+                                    <h6 class="text-dark fw-bold">
+                                        Price:
+                                        <span class="text-warning">
+                                            @Model.Price.ToString("c")
+                                        </span>
+                                    </h6>
+                                </div>
+                            }
+                        </div>
+                        <div class="row ps-2 my-3">
+                            <p class="text-secondary lh-sm">@Html.Raw(Model.FullDescription)</p>
+                        </div>
+                        <div class="row pl-2 mb-3">
+                            <div class="col-md-4">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-primary text-white border-0 fw-semibold"
+                                          id="inputGroup-sizing-default">
+                                        Count
+                                    </span>
+                                    <input type="number" value="1" class="form-control text-end"
+                                           aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 pb-1">
+                                <button type="submit"
+                                        class="btn btn-primary bg-gradient w-100 py-2 text-uppercase fw-semibold">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/ProductDetails/PhotoSlider.js"></script>
+
+    <script>
+        const photoSlider = new PhotoSlider('[@StaticData.PhotSliderSelector]',
+            '[@StaticData.SlidingDivSelector]',
+            '[@StaticData.SldierItemSelector]',
+            '[@StaticData.previousSelector]',
+            '[@StaticData.nextSelector]',
+        )
+    </script>
+}

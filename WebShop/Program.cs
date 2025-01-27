@@ -7,20 +7,20 @@ using DataAccess.Repository;
 using WebShop.DependencyInjections;
 using System.Text.Json.Serialization;
 using ControllersServices.ProductManagement;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
-builder.Host.UseSerilog(); 
+builder.Host.UseSerilog();
 
 try
 {
-    // Add services to the container.
     builder.Services.AddControllersWithViews();
     builder.Services.AddRazorPages();
     builder.Services.AddDbContext<ApplicationDbContext>(option =>
@@ -35,7 +35,6 @@ try
     builder.Services.AddUtilityServices();
     builder.Services.AddProductBrowserServices();
 
-
     builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
@@ -46,6 +45,16 @@ try
     builder.Services.AddHostedService<DiscountActivationService>();
     builder.Services.AddHostedService<DiscountDeletionService>();
 
+    var cultureInfo = new CultureInfo("en-US");
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+    builder.Services.Configure<RequestLocalizationOptions>(options =>
+    {
+        options.DefaultRequestCulture = new RequestCulture(cultureInfo);
+        options.SupportedCultures = new List<CultureInfo> { cultureInfo };
+        options.SupportedUICultures = new List<CultureInfo> { cultureInfo };
+    });
 
     var app = builder.Build();
 
@@ -62,10 +71,13 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.UseRequestLocalization();
+
     app.MapControllerRoute(
         name: "default",
         pattern: "{area=User}/{controller=Home}/{action=Index}/{id?}");
     app.MapRazorPages();
+
     app.Use(async (context, next) =>
     {
         var endpointDataSource = context.RequestServices.GetRequiredService<EndpointDataSource>();
@@ -75,7 +87,6 @@ try
         }
         await next();
     });
-
 
     app.Run();
 }

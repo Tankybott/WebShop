@@ -9,10 +9,13 @@
   <ItemGroup>
     <Content Remove="wwwroot\ts\DiscountHandler.ts" />
     <Content Remove="wwwroot\ts\PhotoUploader.ts" />
+    <Content Remove="wwwroot\ts\ProductBrowserAPIManager.ts" />
+    <Content Remove="wwwroot\ts\ProductBrowserCardGenerator.ts" />
     <Content Remove="wwwroot\ts\ProductBrowserFilter.ts" />
     <Content Remove="wwwroot\ts\ProductBrowserHandler.ts" />
+    <Content Remove="wwwroot\ts\ProductBrowser\ProductBrowserPagination.ts" />
+    <Content Remove="wwwroot\ts\ProductDetails\PhotoSlider.ts" />
     <Content Remove="wwwroot\ts\ProductFormUpsert.ts" />
-    <Content Remove="wwwroot\ts\ProductHandler.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,12 +52,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\ts\DiscountHandler.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\ProductBrowserFilter.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\ProductBrowserHandler.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\PhotoUploader.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\ProductFormUpsert.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\ProductHandler.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductBrowser\ProductBrowserPagination.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductDetails\PhotoSlider.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductUpsert\DiscountHandler.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductBrowser\ProductBrowserCardGenerator.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductBrowser\ProductBrowserFilter.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductBrowser\ProductBrowserCategoryHandler.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductUpsert\PhotoUploader.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductUpsert\ProductFormUpsert.ts" />
   </ItemGroup>
 
   <ItemGroup>

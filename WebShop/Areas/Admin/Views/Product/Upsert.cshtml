@@ -6,7 +6,7 @@
         public const string ProductNameId = "product-name";
         public const string ProductCategoryId = "product-category";
         public const string ProductPriceId = "product-price";
-        public const string ProductShortDescriptionId = "short-description";
+        public const string ProductShortStockQunatityId = "stock-quanityt";
         public const string ProductTextEditorSelector = "data-product-text-editor";
         public const string SubmitButtonSelector = "data-submit-button";
 
@@ -28,173 +28,164 @@
     }
 }
 
-<div class="card shadow-lg mt-4 p-4">
-    <div class="card-body">
-        <form id="product-form" method="post" class="d-flex flex-column justify-content-center">
-            <input asp-for="Product.Id" id="@StaticData.ProductId" hidden>
-            <input asp-for="Product.DiscountId" id="@StaticData.ProductDiscountId" hidden>
+<div class="container">
+    <div class="card shadow-lg mt-4 p-4">
+        <div class="card-body">
+            <form id="product-form" method="post" class="d-flex flex-column justify-content-center">
+                <input asp-for="Product.Id" id="@StaticData.ProductId" hidden>
+                <input asp-for="Product.DiscountId" id="@StaticData.ProductDiscountId" hidden>
 
-            <!-- Discount Section -->
-            <button class="btn btn-primary my-3 py-2 w-100 d-flex align-items-center justify-content-center mt-4 text-uppercase fw-bold"
-                    type="button" data-bs-toggle="collapse" data-bs-target="#discountCollapse" aria-expanded="false" aria-controls="discountCollapse" @StaticData.DiscountCollapseButtonSelector>
-                <div class="fade show">
-                    @if (Model.Product.DiscountId != 0 && Model.Product.DiscountId != null)
-                    {
-                        <p class="mb-0">Update Discount</p>
-                    }
-                    else
-                    {
-                        <p class="mb-0">Add Discount</p>
-                    }
-                </div>
-            </button>
-
-            <div class="collapse mb-2" id="discountCollapse">
-                <div class="container border border-secondary rounded p-3">
-                    <div class="mb-3">
-                        <label for="@StaticData.DiscountStartTimeInputId" class="mb-1">Discount Start Time</label>
-                        <input asp-for="Product.Discount.StartTime" type="datetime-local" class="form-control" id="@StaticData.DiscountStartTimeInputId" />
-                        <p class="text-danger"></p>
+                <!-- Discount Section -->
+                <button class="btn btn-primary my-3 py-2 w-100 d-flex align-items-center justify-content-center mt-4 text-uppercase fw-bold"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#discountCollapse" aria-expanded="false" aria-controls="discountCollapse" @StaticData.DiscountCollapseButtonSelector>
+                    <div class="fade show">
+                        @if (Model.Product.DiscountId != 0 && Model.Product.DiscountId != null)
+                        {
+                            <p class="mb-0">Update Discount</p>
+                        }
+                        else
+                        {
+                            <p class="mb-0">Add Discount</p>
+                        }
                     </div>
-
-                    <div class="mb-3">
-                        <label for="@StaticData.DiscountEndTimeInputId" class="mb-1">Discount End Time</label>
-                        <input asp-for="Product.Discount.EndTime" type="datetime-local" class="form-control" id="@StaticData.DiscountEndTimeInputId" />
-                        <p class="text-danger"></p>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="@StaticData.DiscountPercentageInputId" class="mb-1">Discount Percentage</label>
-                        <input asp-for="Product.Discount.Percentage" type="number" min="1" max="99" class="form-control" id="@StaticData.DiscountPercentageInputId" />
-                        <p class="text-danger"></p>
-                    </div>
-
-                    <button class="btn btn-danger" @StaticData.DiscountClearButtonSelector>Clear Discount</button>
-                </div>
-            </div>
-
-            <!-- Product Name -->
-            <div class="mb-3">
-                <label for="@StaticData.ProductNameId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Product Name</label>
-                <input asp-for="Product.Name" class="form-control" id="@StaticData.ProductNameId" />
-                <p class="text-danger"></p>
-            </div>
-
-            <!-- Category Dropdown -->
-            <div class="mb-3">
-                <label for="@StaticData.ProductCategoryId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Category</label>
-                <select asp-for="Product.CategoryId" asp-items="Model.CategoryListItems" class="form-select" id="@StaticData.ProductCategoryId">
-                    @if (Model.Product.CategoryId == 0)
-                    {
-                        <option value="" disabled selected>Select Category</option>
-                    }
-                    else
-                    {
-                        <option value="" disabled>Select Category</option>
-                    }
-                </select>
-                <p class="text-danger"></p>
-            </div>
-
-            <!-- Product Price -->
-            <div class="mb-3">
-                <label for="@StaticData.ProductPriceId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Product Price</label>
-                <input asp-for="Product.Price" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ProductPriceId" />
-                <p class="text-danger"></p>
-            </div>
-
-            <!-- Short Description -->
-            <div class="d-flex align-items-center mb-1">
-                <label for="@StaticData.ProductShortDescriptionId" class="mb-1 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Short Description</label>
-                <button type="button" class="border-0 bg-transparent p-0 d-none d-lg-block"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title="Short Description is displayed as a brief description of the product when searching through the shop.">
-                    <i class="bi bi-question-circle-fill"></i>
                 </button>
-            </div>
-            <div>
-                <input asp-for="Product.ShortDescription" class="form-control" id="@StaticData.ProductShortDescriptionId" />
-                <p class="text-danger"></p>
-            </div>
 
+                <div class="collapse mb-2" id="discountCollapse">
+                    <div class="container border border-secondary rounded p-3">
+                        <div class="mb-3">
+                            <label for="@StaticData.DiscountStartTimeInputId" class="mb-1">Discount Start Time</label>
+                            <input asp-for="Product.Discount.StartTime" type="datetime-local" class="form-control" id="@StaticData.DiscountStartTimeInputId" />
+                            <p class="text-danger"></p>
+                        </div>
 
+                        <div class="mb-3">
+                            <label for="@StaticData.DiscountEndTimeInputId" class="mb-1">Discount End Time</label>
+                            <input asp-for="Product.Discount.EndTime" type="datetime-local" class="form-control" id="@StaticData.DiscountEndTimeInputId" />
+                            <p class="text-danger"></p>
+                        </div>
 
-            <!-- Quill Editor -->
-            <fieldset>
-                <legend class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Content</legend>
-                <div class="mb-3">
-                    <div id="editor" @StaticData.ProductTextEditorSelector style="height: 300px;">@Html.Raw(Model?.Product?.FullDescription)</div>
-                    <input asp-for="Product.FullDescription" type="hidden" id="editorContent" />
+                        <div class="mb-3">
+                            <label for="@StaticData.DiscountPercentageInputId" class="mb-1">Discount Percentage</label>
+                            <input asp-for="Product.Discount.Percentage" type="number" min="1" max="99" class="form-control" id="@StaticData.DiscountPercentageInputId" />
+                            <p class="text-danger"></p>
+                        </div>
+
+                        <button class="btn btn-danger" @StaticData.DiscountClearButtonSelector>Clear Discount</button>
+                    </div>
                 </div>
-            </fieldset>
+
+                <!-- Product Name -->
+                <div class="mb-3">
+                    <label for="@StaticData.ProductNameId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Product Name</label>
+                    <input asp-for="Product.Name" class="form-control" id="@StaticData.ProductNameId" />
+                    <p class="text-danger"></p>
+                </div>
+
+                <!-- Category Dropdown -->
+                <div class="mb-3">
+                    <label for="@StaticData.ProductCategoryId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Category</label>
+                    <select asp-for="Product.CategoryId" asp-items="Model.CategoryListItems" class="form-select" id="@StaticData.ProductCategoryId">
+                        @if (Model.Product.CategoryId == 0)
+                        {
+                            <option value="" disabled selected>Select Category</option>
+                        }
+                        else
+                        {
+                            <option value="" disabled>Select Category</option>
+                        }
+                    </select>
+                    <p class="text-danger"></p>
+                </div>
+
+                <!-- Product Price -->
+                <div class="mb-3">
+                    <label for="@StaticData.ProductPriceId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Product Price</label>
+                    <input asp-for="Product.Price" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ProductPriceId" />
+                    <p class="text-danger"></p>
+                </div>
+
+                <!-- In stock qunatity -->
+                <div class="mb-3">
+                    <label for="@StaticData.ProductShortStockQunatityId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Quantity in stock</label>
+                    <input asp-for="Product.StockQuantity" type="number" min="0" class="form-control" id="@StaticData.ProductShortStockQunatityId" />
+                    <p class="text-danger"></p>
+                </div>
+
+                <!-- Quill Editor -->
+                <fieldset>
+                    <legend class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Content</legend>
+                    <div class="mb-3">
+                        <div id="editor" @StaticData.ProductTextEditorSelector style="height: 300px;">@Html.Raw(Model?.Product?.FullDescription)</div>
+                        <input asp-for="Product.FullDescription" type="hidden" id="editorContent" />
+                    </div>
+                </fieldset>
 
 
-            <!-- Photos -->
-            <div class="d-flex">
-                <p class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Photos</p>
-                <button type="button" class="border-0 bg-transparent justify-content-start align-items-start p-3 pt-0 d-none d-xl-flex"
-                        data-toggle="tooltip"
-                        data-placement="right"
-                        title="Photo Adder Instructions:
+                <!-- Photos -->
+                <div class="d-flex">
+                    <p class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Photos</p>
+                    <button type="button" class="border-0 bg-transparent justify-content-start align-items-start p-3 pt-0 d-none d-xl-flex"
+                            data-toggle="tooltip"
+                            data-placement="right"
+                            title="Photo Adder Instructions:
                             - You must add a Main Photo (this will be the main item photo shown in the shop).
                             - You can add up to 6 additional photos.
                             - The Main Photo is required, while additional photos are optional.">
-                    <i class="bi bi-question-circle-fill"></i>
-                </button>
-            </div>
+                        <i class="bi bi-question-circle-fill"></i>
+                    </button>
+                </div>
 
-            <!-- Main Photo -->
-            <p class="text-danger" @StaticData.MainPhotoValidationParagraph></p>
-            <div class="d-flex flex-column flex-md-row">
-                <div @StaticData.MainPhotoAreaSelector class="main-photo-container ps-2">
-                    <div class="main-photo-placeholder-container bg-light border border-secondary" 
-                         style="@(Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl == null ? "" : "display: none;")">
-                        <label for="main-photo-input" class="custom-file-button text-secondary"><i class="bi bi-image-fill"></i></label>
-                        <input @StaticData.UploadMainPhoto type="file" id="main-photo-input" accept="image/png, image/jpeg, image/jpg" class="hidden-file-input" />
-                    </div>
+                <!-- Main Photo -->
+                <p class="text-danger" @StaticData.MainPhotoValidationParagraph></p>
+                <div class="d-flex flex-column flex-md-row">
+                    <div @StaticData.MainPhotoAreaSelector class="main-photo-container ps-2">
+                        <div class="main-photo-placeholder-container bg-light border border-secondary"
+                             style="@(Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl == null ? "" : "display: none;")">
+                            <label for="main-photo-input" class="custom-file-button text-secondary"><i class="bi bi-image-fill"></i></label>
+                            <input @StaticData.UploadMainPhoto type="file" id="main-photo-input" accept="image/png, image/jpeg, image/jpg" class="hidden-file-input" />
+                        </div>
 
-                    <div class="main-photo-img-container" @StaticData.UpdateMainPhoto 
-                         style="@(Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl == null ? "display: none;" : "")">
-                        <img id="main-photo-preview" alt="Main Photo" src="@Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl " class="main-photo-preview" />
-                        <div class="main-photo-controllers d-flex flex-column">
-                            <label for="new-photo-input" class="btn btn-primary mt-2">Upload New Photo</label>
-                            <input type="file" id="new-photo-input" accept="image/png, image/jpeg, image/jpg" class="hidden-file-input" />
+                        <div class="main-photo-img-container" @StaticData.UpdateMainPhoto
+                             style="@(Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl == null ? "display: none;" : "")">
+                            <img id="main-photo-preview" alt="Main Photo" src="@Model?.Product?.PhotosUrlSets?.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl " class="main-photo-preview" />
+                            <div class="main-photo-controllers d-flex flex-column">
+                                <label for="new-photo-input" class="btn btn-primary mt-2">Upload New Photo</label>
+                                <input type="file" id="new-photo-input" accept="image/png, image/jpeg, image/jpg" class="hidden-file-input" />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Other Photos -->
-                <div id="other-photos-container" class="d-flex p-3 flex-wrap justify-content-center" @StaticData.OtherPhotosContainer>
-                    @if (Model?.Product?.PhotosUrlSets != null)
-                    {
-                        foreach (var photoUrlSet in Model?.Product?.PhotosUrlSets?.Where(s => s.IsMainPhoto == false))
+                    <!-- Other Photos -->
+                    <div id="other-photos-container" class="d-flex p-3 flex-wrap justify-content-center" @StaticData.OtherPhotosContainer>
+                        @if (Model?.Product?.PhotosUrlSets != null)
                         {
-                            <div class="image-wrapper">
-                                <img src="@photoUrlSet?.ThumbnailPhotoUrl" alt="Other Photo" class="other-photo" />
-                                <div class="d-flex flex-column">
-                                    <button type="button" class="btn btn-success btn-sm mx-2 mb-1" data-photo-url="@photoUrlSet?.ThumbnailPhotoUrl"><i class="bi bi-arrow-clockwise"></i></button>
-                                    <button type="button" class="btn btn-danger btn-sm mx-2" data-photo-url="@photoUrlSet?.ThumbnailPhotoUrl"><i class="bi bi-x-circle"></i></button>
+                            foreach (var photoUrlSet in Model?.Product?.PhotosUrlSets?.Where(s => s.IsMainPhoto == false))
+                            {
+                                <div class="image-wrapper">
+                                    <img src="@photoUrlSet?.ThumbnailPhotoUrl" alt="Other Photo" class="other-photo" />
+                                    <div class="d-flex flex-column">
+                                        <button type="button" class="btn btn-success btn-sm mx-2 mb-1" data-photo-url="@photoUrlSet?.ThumbnailPhotoUrl"><i class="bi bi-arrow-clockwise"></i></button>
+                                        <button type="button" class="btn btn-danger btn-sm mx-2" data-photo-url="@photoUrlSet?.ThumbnailPhotoUrl"><i class="bi bi-x-circle"></i></button>
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         }
-                    }
+                    </div>
                 </div>
-            </div>
 
-            <!-- Submit Button -->
-            <button @StaticData.SubmitButtonSelector type="button" id="save-button" class="btn btn-primary w-75 p-2 text-uppercase mt-4 mb-2 mx-auto text-uppercase fw-bold">Save Product</button>
-        </form>
+                <!-- Submit Button -->
+                <button @StaticData.SubmitButtonSelector type="button" id="save-button" class="btn btn-primary w-75 p-2 text-uppercase mt-4 mb-2 mx-auto text-uppercase fw-bold">Save Product</button>
+            </form>
+        </div>
     </div>
 </div>
-
 
 @section Scripts {
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/js/productQuill.js"></script>
-    <script src="~/js/PhotoUploader.js"></script>
-    <script src="~/js/DiscountHandler.js"></script>
-    <script src="~/js/ProductFormUpsert.js"></script>
+    <script src="~/js/ProductUpsert/PhotoUploader.js"></script>
+    <script src="~/js/ProductUpsert/DiscountHandler.js"></script>
+    <script src="~/js/ProductUpsert/ProductFormUpsert.js"></script>
 
 
 
@@ -227,7 +218,7 @@
                 `@StaticData.ProductNameId`,
                 `@StaticData.ProductCategoryId`,
                 `@StaticData.ProductPriceId`,
-                `@StaticData.ProductShortDescriptionId`,
+                `@StaticData.ProductShortStockQunatityId`,
                 "[@StaticData.ProductTextEditorSelector]",
                 "[@StaticData.SubmitButtonSelector]",
                 photoUploader,

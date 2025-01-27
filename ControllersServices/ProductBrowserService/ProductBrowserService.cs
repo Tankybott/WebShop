@@ -2,6 +2,7 @@
 using ControllersServices.CategoryService.Interfaces;
 using ControllersServices.ProductBrowserService.Interfaces;
 using DataAccess.Repository.IRepository;
+using DataAccess.Repository.Utility;
 using Models;
 using Models.DTOs;
 using Models.ProductFilterOptions;
@@ -18,6 +19,7 @@ namespace ControllersServices.ProductBrowserService
         private readonly ICategoryHierarchyRetriver _categoryHierarchyRetriver;
         private readonly ICategoryIdRetriver _categoryIdRetriver;
         private readonly IMapper _mapper;
+
         public ProductBrowserService(IUnitOfWork unitOfWork,
             IProductBrowserVmCreator vmCreator,
             ICategoryHierarchyRetriver categoryHierarchyRetriver,
@@ -36,7 +38,7 @@ namespace ControllersServices.ProductBrowserService
             return await _vmCreator.CreateProductBrowserVM();
         }
 
-        public async Task<IEnumerable<ProductCardDTO>> GetFilteredProductsDTO(ProductFilterOptionsRequest filterOptions)
+        public async Task<PaginatedResult<ProductCardDTO>> GetFilteredProductsDTO(ProductFilterOptionsRequest filterOptions)
         {
             var productCategory = await _unitOfWork.Category.GetAsync(c => c.Id == filterOptions.CategoryIDFilter);
             IEnumerable<int> categoriesTreeIds = [];

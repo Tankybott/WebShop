@@ -7,19 +7,27 @@
     public struct StaticData
     {
         public const string NavigationSelector = "data-navigation-ul";
-        public const string ItemsDivSelector = "data-items-category";
+        public const string ItemsDivSelector = "data-items-box";
+        public const string InformationParagraphSelector = "data-information";
+
+        public const string PaginationBoxSelector = "data-pagin";
+        public const string PaginationArrowSelector = "data-p-arrow";
+        public const string PaginationSpacerSelector = "data-p-spacer";
+        public const string PaginationEdgeSelector = "data-p-edge";
+        public const string PaginationNuberSelector = "data-p-number";
 
         public const string FilterTextInputId = "textFilter";
-        public const string FilterMinPriceInputId = "minPrice"; 
+        public const string FilterMinPriceInputId = "minPrice";
         public const string FilterMaxPriceInputId = "maxPrice";
         public const string SortSelectId = "sorting";
         public const string OnlyDiscountedCheckboxId = "onlyDiscounted";
 
         public const string ApplyFiltersButtonSelector = "data-apply-filter-button";
+        public const string ClearFiltersButtonSelector = "data-clear-filter-button";
     }
 }
 
-<div class="row mt-4">
+<div class="row mt-4 px-3 d-flex justify-content-center w-100" style="max-width: 1800px">
     <!-- Sidebar -->
     <aside class="col-md-3">
         <nav class="card">
@@ -28,10 +36,15 @@
             </div>
             <div class="card-body">
                 <ul class="nav flex-column" @StaticData.NavigationSelector>
-                    @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null))
-                    {
-                        @RenderCategory(category)
-                    }
+                    <li class='nav-item  my-1'>
+                        <a class='nav-link border-start border-end border-bottom border-primary rounded-2' style='text-decoration: none' href='#'>All</a>
+                        <p class='d-none'></p>
+                    </li>
+                    </br>
+                        @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null))
+                        {
+                            @RenderCategory(category)
+                        }
                 </ul>
             </div>
         </nav>
@@ -43,8 +56,7 @@
             <div class="card-header">
                 <h5>Products</h5>
             </div>
-            <form></form>
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
                 <form method="GET" action="/products" class="container mt-4 p-4 border rounded">
                     <div class="row">
                         <!-- Left Column -->
@@ -85,20 +97,30 @@
                                 <label class="form-check-label" for="@StaticData.OnlyDiscountedCheckboxId">Show Only Discounted</label>
                             </div>
 
+                            <!-- Clear Button -->
+                            <div class="mb-3">
+                                <button @StaticData.ClearFiltersButtonSelector type="submit" class="btn btn-primary w-100">Clear Filters</button>
+                            </div>
+
                             <!-- Submit Button -->
                             <div class="mb-3">
-                                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                                <button @StaticData.ApplyFiltersButtonSelector type="submit" class="btn btn-primary w-100">Apply Filters</button>
                             </div>
                         </div>
                     </div>
                 </form>
-                <div @StaticData.ItemsDivSelector></div>
-                <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                <p class="text-danger fs-3 align-self-center p-4" @StaticData.InformationParagraphSelector>Please choose category...</p>
+                <div @StaticData.ItemsDivSelector class="d-flex flex-wrap p-3" style="row-gap: 1rem"></div>
+                <ul @StaticData.PaginationBoxSelector class="pagination mt-4 align-self-center" style="display: none">
+                    <li class="page-item"><a class="page-link" @StaticData.PaginationArrowSelector href="#"><i class="bi bi-chevron-compact-left"></i></a></li>
+                    <li class="page-item"><a class="page-link"  @StaticData.PaginationEdgeSelector href="#"></a></li>
+                    <li class="page-item"><a class="page-link page-link--spacer"  @StaticData.PaginationSpacerSelector href="#">...</a></li>
+                    <li class="page-item"><a class="page-link "  @StaticData.PaginationNuberSelector href="#"></a></li>
+                    <li class="page-item"><a class="page-link " @StaticData.PaginationNuberSelector href="#"></a></li>
+                    <li class="page-item"><a class="page-link" @StaticData.PaginationNuberSelector href="#"></a></li>
+                    <li class="page-item"><a class="page-link page-link--spacer" @StaticData.PaginationSpacerSelector href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" @StaticData.PaginationEdgeSelector href="#"></a></li>
+                    <li class="page-item"><a class="page-link" @StaticData.PaginationArrowSelector href="#"><i class="bi bi-chevron-compact-right"></i></a></li>
                 </ul>
 
             </div>
@@ -111,8 +133,8 @@
     {
         var content = new HtmlContentBuilder();
 
-        content.AppendHtml("<li class='nav-item'>");
-        content.AppendHtml($"<a class='nav-link text-decoration-underline' href='#'>{HtmlEncoder.Default.Encode(category.Name)}</a>");
+        content.AppendHtml("<li class='nav-item  my-1'>");
+        content.AppendHtml($"<a class='nav-link border-start border-primary rounded-2' style='text-decoration: none' href='#'>{HtmlEncoder.Default.Encode(category.Name)}</a>");
         content.AppendHtml($"<p class='d-none'>{category.Id}</p>");
 
         var subCategories = category.SubCategories?.OrderBy(c => c.Name) ?? Enumerable.Empty<Category>();
@@ -134,23 +156,50 @@
 }
 
 @section Scripts {
-    <script src="~/js/ProductBrowserFilter.js"></script>
-    <script src="~/js/ProductBrowserHandler.js"></script>
+    <script src="~/js/ProductBrowser/ProductBrowserCardGenerator.js"></script>
+    <script src="~/js/ProductBrowser/ProductBrowserAPIManager.js"></script>
+    <script src="~/js/ProductBrowser/ProductBrowserCategoryHandler.js"></script>
+    <script src="~/js/ProductBrowser/ProductBrowserFilter.js"></script>
+    <script src="~/js/ProductBrowser/ProductBrowserPagination.js"></script>
 
     <script>
         (() => {
+            const productBrowserCardGenerator = new ProductBrowserCardGenerator()
+
+            const productBrowserApiManager = new ProductBrowserApiManager(
+                `[@StaticData.ItemsDivSelector]`,
+                `[@StaticData.InformationParagraphSelector]`,
+                productBrowserCardGenerator
+            )
+
+            const productBrowserPagination = new ProductBrowserPagination(
+                `[@StaticData.PaginationArrowSelector]`,
+                `[@StaticData.PaginationSpacerSelector]`,
+                `[@StaticData.PaginationEdgeSelector]`,
+                `[@StaticData.PaginationNuberSelector]`,
+                `[@StaticData.PaginationBoxSelector]`,
+                productBrowserApiManager
+            )
+
             const productBrowserFilter = new ProductBrowserFilter(
                 `@StaticData.FilterTextInputId`,
                 `@StaticData.FilterMinPriceInputId`,
                 `@StaticData.FilterMaxPriceInputId`,
                 `@StaticData.OnlyDiscountedCheckboxId`,
-                `@StaticData.SortSelectId`
+                `@StaticData.SortSelectId`,
+                `[@StaticData.ClearFiltersButtonSelector]`,
+                `[@StaticData.ApplyFiltersButtonSelector]`,
+                productBrowserApiManager,
+                productBrowserPagination
             )
-            const productBrowserHandler = new ProductBrowserHandler(
+
+            const productBrowserHandler = new ProductBrowserCategoryHandler(
                 `[@StaticData.NavigationSelector]`,
-                `[@StaticData.ItemsDivSelector]`,
-                productBrowserFilter
+                productBrowserFilter,
+                productBrowserApiManager
             )
+
+
 
         })();
     </script>

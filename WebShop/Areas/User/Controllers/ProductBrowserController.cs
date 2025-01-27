@@ -1,4 +1,5 @@
 ﻿using ControllersServices.ProductBrowserService.Interfaces;
+using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Models.ProductFilterOptions;
 
@@ -9,9 +10,11 @@ namespace WebShop.Areas.User.Controllers
     public class ProductBrowserController : Controller
     {
         private readonly IProductBrowserService _productBrowserService;
-        public ProductBrowserController(IProductBrowserService productBrowserService)
+        private readonly IUnitOfWork _unitOfWork;
+        public ProductBrowserController(IProductBrowserService productBrowserService, IUnitOfWork unitOfWork)
         {
             _productBrowserService = productBrowserService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index()
@@ -28,6 +31,19 @@ namespace WebShop.Areas.User.Controllers
             }
         }
 
+        public async Task<IActionResult> Details(int productId)
+        {
+            try
+            {
+                var product = await _unitOfWork.Product.GetAsync(p => p.Id == productId);
+                return View("~/Views/Shared/ProductDetails.cshtml", product);
+            }
+            catch (Exception)
+            {
+                TempData["error"] = "Something went wrong, try again later";
+                return RedirectToAction("Index", "Home", new { area = "User" });
+            }
+        }
 
         #region ApiCalls
 
