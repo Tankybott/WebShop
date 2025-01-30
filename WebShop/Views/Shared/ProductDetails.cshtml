@@ -1,41 +1,49 @@
-﻿<div class="container">
-    @model Product
+﻿
+@model Product
 
 
-    @functions {
-        public struct StaticData
-        {
-            public const string PhotSliderSelector = "photo-slider";
-            public const string SlidingDivSelector = "sliding-div";
-            public const string SldierItemSelector = "slider-item";
-            public const string previousSelector = "previous";
-            public const string nextSelector = "next";
+@functions {
+    public struct StaticData
+    {
+        public const string PhotSliderSelector = "photo-slider";
+        public const string SlidingDivSelector = "sliding-div";
+        public const string SldierItemSelector = "slider-item";
+        public const string PreviousSliderSelector = "previous";
+        public const string NextSliderSelector = "next";
 
-        }
+        public const string LightBoxSelector = "ligt-box";
+        public const string LightNextImgButtonSelector = "ligt-box-next";
+        public const string LightPrevImgButtonSelector = "ligt-box-prev";
+        public const string modalSelector = "modal";
+        public const string modalCloseButtonSelector = "modal-close";
+
     }
+}
+
+<div class="container">
 
 
     <form method="post">
         <input hidden asp-for="Id" />
         <div class="card shadow border-0 mt-4">
-            <div class="card-header bg-secondary bg-gradient text-light py-4">
+            <div class="card-header bg-primary bg-gradient text-light py-4">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h3 class="text-white text-uppercase">@Model.Name</h3>
+                        <h3 class="text-white text-uppercase">Product Details</h3>
                     </div>
                 </div>
             </div>
             <div class="card-body">
                 <div class="row d-flex justify-content-center justify-content-md-start">
-                    <div class="photo-slider d-flex flex-column m-3" @StaticData.PhotSliderSelector>
-                        <div class="d-flex border-1 border-primary" @StaticData.SlidingDivSelector>
-                            <div class="bg-dark carousel-thumbnail-img-container" @StaticData.SldierItemSelector>
+                    <div class="photo-slider d-flex flex-column m-3 ms-5" @StaticData.PhotSliderSelector>
+                        <div class="d-flex border-1 border-primary sliding-div" @StaticData.SlidingDivSelector>
+                            <div class="bg-light carousel-thumbnail-img-container" @StaticData.SldierItemSelector>
                                 <img class="thumbnail-photo" src="@Model.PhotosUrlSets.FirstOrDefault(p => p.IsMainPhoto == true)?.ThumbnailPhotoUrl"
                                      alt="Main Product Image">
                             </div>
                             @foreach (var photo in Model.PhotosUrlSets.Where(p => !p.IsMainPhoto))
                             {
-                                <div class="bg-dark carousel-thumbnail-img-container" @StaticData.SldierItemSelector>
+                                <div class="bg-light carousel-thumbnail-img-container" @StaticData.SldierItemSelector>
                                     <img class="thumbnail-photo" src="@photo.ThumbnailPhotoUrl" alt="Product Image">
                                 </div>
                             }
@@ -43,8 +51,8 @@
                         @if (Model.PhotosUrlSets.Where(p => !p.IsMainPhoto).Any())
                         {
                             <div class="photo-slider-button-cotainer w-100 d-flex">
-                                <button class="w-50 btn btn-primary rounded-0 photo-slider-nav-button" @StaticData.previousSelector><i class="bi bi-chevron-compact-left"></i></button>
-                                <button class="w-50 btn btn-primary rounded-0 photo-slider-nav-button" @StaticData.nextSelector><i class="bi bi-chevron-compact-right"></i></button>
+                                <button class="w-50 btn btn-primary rounded-0 photo-slider-nav-button" @StaticData.PreviousSliderSelector><i class="bi bi-chevron-compact-left"></i></button>
+                                <button class="w-50 btn btn-primary rounded-0 photo-slider-nav-button" @StaticData.NextSliderSelector><i class="bi bi-chevron-compact-right"></i></button>
                             </div>
                         }
 
@@ -52,19 +60,22 @@
 
                     <div class="col-12 col-lg-7 offset-lg-1">
                         <div class="row ps-2">
+                            <p class="text-black fw-bold fs-5 mt-3">@Model.Name</p>
+                        </div>
+                        <div class="row ps-2">
                             @if (Model.DiscountId != null && Model.DiscountId != 0)
                             {
                                 <div class="col-12 pb-2">
-                                    <h6 class="text-dark text-opacity-50">
+                                    <h6 class="text-dark text-opacity-50 p-1">
                                         Original Price:
                                         <span class="text-decoration-line-through text-muted">
-                                            @Model.Price.ToString("c")
+                                            @Model.Price
                                         </span>
                                     </h6>
-                                    <h6 class="text-dark">
+                                    <h6 class="text-primary p-1">
                                         Discounted Price:
-                                        <span class="text-warning fw-bold">
-                                            @(Model.Price * (1 - Model.Discount.Percentage / 100)).ToString("c")
+                                        <span class="text-dark fw-bold">
+                                            @((Model.Price * (1 - (decimal)Model.Discount.Percentage / 100)).ToString("F2"))
                                         </span>
                                     </h6>
                                 </div>
@@ -74,15 +85,15 @@
                                 <div class="col-12 pb-2">
                                     <h6 class="text-dark fw-bold">
                                         Price:
-                                        <span class="text-warning">
-                                            @Model.Price.ToString("c")
+                                        <span class="text-black">
+                                            @Model.Price
                                         </span>
                                     </h6>
                                 </div>
                             }
                         </div>
-                        <div class="row ps-2 my-3">
-                            <p class="text-secondary lh-sm">@Html.Raw(Model.FullDescription)</p>
+                        <div class="row ps-2 my-3" style="pointer-events: none" contenteditable="false">
+                            <p class="text-secondary lh-sm" contenteditable="false">@Html.Raw(Model.FullDescription)</p>
                         </div>
                         <div class="row pl-2 mb-3">
                             <div class="col-md-4">
@@ -111,15 +122,70 @@
     </form>
 </div>
 
+<div @StaticData.modalSelector id="lightboxModal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content" style="background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px);">
+            <button @StaticData.modalCloseButtonSelector
+                    type="button"
+                    class="btn-close btn-close-white position-absolute top-0 end-0 m-3 p-3 z-3 border border-2 bg-light"
+                    aria-label="Close">
+            </button>
+            <div class="modal-body d-flex justify-content-center align-items-center position-relative">
+                <!-- Left navigation -->
+                <div class="position-absolute top-50 start-0 translate-middle-y">
+                    <button @StaticData.LightPrevImgButtonSelector
+                            class="btn btn-dark rounded-circle m-2"
+                            style="width: 50px; height: 50px; opacity: 0.7;"
+                            aria-label="Previous">
+                        <i class="bi bi-chevron-compact-left"></i>
+                    </button>
+                </div>
+
+                <!-- Right navigation -->
+                <div class="position-absolute top-50 end-0 translate-middle-y">
+                    <button @StaticData.LightNextImgButtonSelector
+                            class="btn btn-dark rounded-circle m-2"
+                            style="width: 50px; height: 50px; opacity: 0.7;"
+                            aria-label="Next">
+                        <i class="bi bi-chevron-compact-right"></i>
+                    </button>
+                </div>
+                q
+                <div class="lightbox-photo-container" @StaticData.LightBoxSelector>
+                    <!-- Main Product Image -->
+                    <img class="lightbox-photo active-photo img-fluid" style="display: none" src="@Model.PhotosUrlSets.FirstOrDefault(p => p.IsMainPhoto == true)?.BigPhotoUrl"
+                         alt="Main Product Image" loading="lazy">
+
+                    <!-- Additional Product Images -->
+                    @foreach (var photo in Model.PhotosUrlSets.Where(p => !p.IsMainPhoto))
+                    {
+                        <img class="lightbox-photo img-fluid" style="display: none" src="@photo.BigPhotoUrl"
+                             alt="Product Image" loading="lazy">
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="~/js/ProductDetails/PhotoSlider.js"></script>
+    <script src="~/js/ProductDetails/LightBox.js"></script>
 
     <script>
+        const lightBox = new LightBox('[@StaticData.LightBoxSelector]',
+            '[@StaticData.LightNextImgButtonSelector]',
+            '[@StaticData.LightPrevImgButtonSelector]',
+            '[@StaticData.modalSelector]',
+            '[@StaticData.modalCloseButtonSelector]',
+        )
+
         const photoSlider = new PhotoSlider('[@StaticData.PhotSliderSelector]',
             '[@StaticData.SlidingDivSelector]',
             '[@StaticData.SldierItemSelector]',
-            '[@StaticData.previousSelector]',
-            '[@StaticData.nextSelector]',
+            '[@StaticData.PreviousSliderSelector]',
+            '[@StaticData.NextSliderSelector]',
+            lightBox,
         )
     </script>
 }

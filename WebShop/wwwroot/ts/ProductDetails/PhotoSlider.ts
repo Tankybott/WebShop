@@ -5,7 +5,7 @@
     private readonly previousButton: HTMLButtonElement;
     private readonly nextButton: HTMLButtonElement;
     private itemWidth: number = 0;
-    private activeSlide = 0;
+    private activeSlide: number = 0;
 
     constructor(
         photoSliderSelector: string,
@@ -13,6 +13,7 @@
         sliderItemSelector: string,
         previousButtonSelector: string,
         nextButtonSelector: string,
+        private readonly lightBox: LightBox,
     ) {
         this.photoSlider = document.querySelector(photoSliderSelector) as HTMLDivElement;
         this.slidingContainer = this.photoSlider.querySelector(slidingContainerSelector) as HTMLDivElement;
@@ -22,14 +23,16 @@
 
         this.adjustSizes();
         document.addEventListener('resize', () => this.adjustSizes());
-        this.previousButton.addEventListener('click', (e) => {
+
+        this.previousButton && this.previousButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.slideLeft();
         })
-        this.nextButton.addEventListener('click', (e) => {
+        this.nextButton && this.nextButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.slideRight();
         })
+        this.slidingContainer.addEventListener('click', () => this.handlePhotoZoom());
     }
 
     private getWidthOfItem(item: HTMLDivElement): number {
@@ -55,5 +58,9 @@
     private adjustSizes(): void {
         this.itemWidth = this.getWidthOfItem(this.sliderItems[0]);
         this.photoSlider.style.maxWidth = `${this.itemWidth}px`;
+    }
+
+    private handlePhotoZoom(): void {
+        this.lightBox.openWithActivePhto(this.activeSlide);
     }
 }

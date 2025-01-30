@@ -2,6 +2,7 @@
 using Utility.Common;
 using Utility.Common.Interfaces;
 using Utility.Queues;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace WebShop.DependencyInjections
 {
@@ -14,6 +15,7 @@ namespace WebShop.DependencyInjections
             services.AddTransient<IFileNameCreator, FileNameCreator>();
 
             services.AddScoped<IImageProcessor, ImageProcessor>();
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddSingleton<IActivationDiscountQueue, ActivationDiscountQueue>();
             services.AddSingleton<IDeletionDiscountQueue, DeletionDiscountQueue>();

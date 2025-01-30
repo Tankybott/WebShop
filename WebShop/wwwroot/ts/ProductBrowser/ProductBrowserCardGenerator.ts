@@ -109,7 +109,7 @@
 
             const discountSign = document.createElement("p");
             discountSign.className = "text-uppercase fw-bold text-primary"
-            discountSign.innerText = "Discount"
+            discountSign.innerText = `Discount: ${productDto.discountPercentage}%`
 
             const discountedPriceValue = price * (1 - discountPercentage / 100);
 

@@ -4,6 +4,9 @@
     padding: 0;
     margin: 0;
 }
+.sliding-div {
+    transition: transform .3s;
+}
 
 .carousel-thumbnail-img-container {
     height: 270px;

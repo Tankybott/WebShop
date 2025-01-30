@@ -14,11 +14,13 @@
     <Content Remove="wwwroot\ts\ProductBrowserFilter.ts" />
     <Content Remove="wwwroot\ts\ProductBrowserHandler.ts" />
     <Content Remove="wwwroot\ts\ProductBrowser\ProductBrowserPagination.ts" />
+    <Content Remove="wwwroot\ts\ProductDetails\LightBox.ts" />
     <Content Remove="wwwroot\ts\ProductDetails\PhotoSlider.ts" />
     <Content Remove="wwwroot\ts\ProductFormUpsert.ts" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="9.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
@@ -53,6 +55,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\ts\ProductBrowser\ProductBrowserPagination.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\ProductDetails\LightBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductDetails\PhotoSlider.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductUpsert\DiscountHandler.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductBrowser\ProductBrowserCardGenerator.ts" />

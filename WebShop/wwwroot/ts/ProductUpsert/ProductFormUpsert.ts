@@ -107,11 +107,22 @@
     }
 
     private getEditorContent(): string {
+        // Clone the editor to prevent modifying the original DOM
         const editorClone = this.textEditor.cloneNode(true) as HTMLElement;
+
+        // Remove tooltips
         const tooltips = editorClone.querySelectorAll(".ql-tooltip");
-        console.log(tooltips)
         tooltips.forEach(tooltip => tooltip.remove());
 
+        // Remove contenteditable attributes from all elements
+        const editableElements = editorClone.querySelectorAll("[contenteditable]");
+        editableElements.forEach(el => el.removeAttribute("contenteditable"));
+
+        // Optionally sanitize other attributes if needed (e.g., remove styles)
+        const elementsWithStyles = editorClone.querySelectorAll("[style]");
+        elementsWithStyles.forEach(el => el.removeAttribute("style"));
+
+        // Return the cleaned HTML
         return editorClone.innerHTML.trim();
     }
 

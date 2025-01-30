@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models.ProductModel;
 using Services.ProductManagement.Interfaces;
+using Utility.Constants;
 
 
 namespace WebShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;

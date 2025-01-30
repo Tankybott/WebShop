@@ -1,6 +1,7 @@
 "use strict";
 class PhotoSlider {
-    constructor(photoSliderSelector, slidingContainerSelector, sliderItemSelector, previousButtonSelector, nextButtonSelector) {
+    constructor(photoSliderSelector, slidingContainerSelector, sliderItemSelector, previousButtonSelector, nextButtonSelector, lightBox) {
+        this.lightBox = lightBox;
         this.itemWidth = 0;
         this.activeSlide = 0;
         this.photoSlider = document.querySelector(photoSliderSelector);
@@ -10,14 +11,15 @@ class PhotoSlider {
         this.nextButton = document.querySelector(nextButtonSelector);
         this.adjustSizes();
         document.addEventListener('resize', () => this.adjustSizes());
-        this.previousButton.addEventListener('click', (e) => {
+        this.previousButton && this.previousButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.slideLeft();
         });
-        this.nextButton.addEventListener('click', (e) => {
+        this.nextButton && this.nextButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.slideRight();
         });
+        this.slidingContainer.addEventListener('click', () => this.handlePhotoZoom());
     }
     getWidthOfItem(item) {
         return item.offsetWidth;
@@ -39,6 +41,9 @@ class PhotoSlider {
     adjustSizes() {
         this.itemWidth = this.getWidthOfItem(this.sliderItems[0]);
         this.photoSlider.style.maxWidth = `${this.itemWidth}px`;
+    }
+    handlePhotoZoom() {
+        this.lightBox.openWithActivePhto(this.activeSlide);
     }
 }
 //# sourceMappingURL=PhotoSlider.js.map

@@ -1,13 +1,16 @@
 ﻿using ControllersServices.CategoryService.Interfaces;
 using DataAccess.Repository;
 using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.ViewModels;
 using Serilog;
+using Utility.Constants;
 
 namespace WebShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

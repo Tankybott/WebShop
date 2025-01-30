@@ -10,10 +10,12 @@
     <link rel="stylesheet" href="~/css/productUpsert.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/PhotoUploader.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/PhotoSlider.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/LightBox.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/ExtraTopicUploader.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebShop.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
 </head>
 <body>
     <header>
@@ -33,14 +35,22 @@
                             <a class="nav-link text-dark" asp-area="User" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Admin Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Admin Products</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="User" asp-controller="ProductBrowser" asp-action="Index">Browse Products</a>
                         </li>
+                        @if (User.IsInRole(IdentityRoleNames.AdminRole) || User.IsInRole(IdentityRoleNames.HeadAdminRole))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Content Managment</a>
+                                <ul class="dropdown-menu"> 
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Admin Category</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Admin Products</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                     <partial name="_loginPartial" />
                 </div>

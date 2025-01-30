@@ -87,7 +87,7 @@ class ProductBrowserCardGenerator {
             originalPrice.textContent = `Price: ${price.toFixed(2)}`;
             const discountSign = document.createElement("p");
             discountSign.className = "text-uppercase fw-bold text-primary";
-            discountSign.innerText = "Discount";
+            discountSign.innerText = `Discount: ${productDto.discountPercentage}%`;
             const discountedPriceValue = price * (1 - discountPercentage / 100);
             const discountedPrice = document.createElement("p");
             discountedPrice.className = "text-dark text-center fw-bold";

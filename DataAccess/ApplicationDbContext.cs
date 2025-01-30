@@ -19,6 +19,8 @@ namespace DataAccess
         public DbSet<Product> Products { get; set; }
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<PhotoUrlSet> PhotoUrlSets { get; set; }
+        public DbSet<Cart> Cart { get; set; }
+        public DbSet<CartItem> CartItem { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -36,8 +38,21 @@ namespace DataAccess
                     .HasForeignKey(p => p.DiscountId)
                     .OnDelete(DeleteBehavior.SetNull);
             });
-        
-        builder.Entity<Category>().HasData(
+
+            builder.Entity<Cart>(entity =>
+            {
+                entity.HasOne(c => c.User)
+                .WithMany()               
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(c => c.Items)
+                .WithOne(ci => ci.Cart)
+                .HasForeignKey(ci => ci.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<Category>().HasData(
                 // Root categories
                 new Category { Id = 1, Name = "Vehicles", ParentCategoryId = null },
                 new Category { Id = 2, Name = "Electronics", ParentCategoryId = null },

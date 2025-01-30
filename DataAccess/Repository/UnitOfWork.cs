@@ -12,14 +12,18 @@ namespace DataAccess.Repository
         public IProductRepository Product { get; private set; }
         public IDiscountRepository Discount { get; private set; }
         public IPhotoUrlsSetRepository PhotoUrlSets { get; private set; }
+        public ICartRepository Cart { get; private set; }
+        public ICartItemRepository CartItem { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext db, ICategoryRepository category, IProductRepository product, IDiscountRepository discount, IPhotoUrlsSetRepository photoUrlsSet)
+        public UnitOfWork(ApplicationDbContext db, ICategoryRepository category, IProductRepository product, IDiscountRepository discount, IPhotoUrlsSetRepository photoUrlsSet, ICartRepository cart, ICartItemRepository cartItem)
         {
             _db = db;
             Category = category;
             Product = product;
             Discount = discount;
             PhotoUrlSets = photoUrlsSet;
+            Cart = cart;
+            CartItem = cartItem;
         }
 
         public async Task SaveAsync()

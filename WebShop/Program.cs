@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using ControllersServices.ProductManagement;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,12 +29,23 @@ try
         option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
     builder.Services.AddReoistoryServices();
-    builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+    builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = $"/Identity/Account/Login";
+        options.LogoutPath = $"/Identity/Account/Logout";
+        options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+
+    });
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     builder.Services.AddCategoryServices();
     builder.Services.AddProductServices();
     builder.Services.AddUtilityServices();
     builder.Services.AddProductBrowserServices();
+    builder.Services.AddAuthentication().AddFacebook(option => {
+        option.AppId = "990980045930779";
+        option.AppSecret = "7cfa3f805571384be84a996b6bb60af7";
+    });
 
     builder.Services.AddControllers().AddJsonOptions(options =>
     {
