@@ -7,8 +7,8 @@ namespace ControllersServices.CategoryService
 {
     public class CategoryVMCreator : ICategoryVMCreator
     {
-        private readonly ICategoryHierarchyCreator _hierarchyCreator;
-        public CategoryVMCreator(ICategoryHierarchyCreator creator)
+        private readonly ICategoryHierarchyManager _hierarchyCreator;
+        public CategoryVMCreator(ICategoryHierarchyManager creator)
         {
             _hierarchyCreator = creator;
         }

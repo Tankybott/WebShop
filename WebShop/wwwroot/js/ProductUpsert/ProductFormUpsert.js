@@ -80,7 +80,7 @@ class ProductFormUpsert {
         const stockQuantityInputValue = this.stockQuantityInput.value;
         const stockQuantityParagraph = (_a = this.stockQuantityInput.parentElement) === null || _a === void 0 ? void 0 : _a.querySelector('p');
         stockQuantityParagraph.innerText = "";
-        if (!stockQuantityInputValue || isNaN(Number(stockQuantityInputValue)) || parseFloat(stockQuantityInputValue) <= 1) {
+        if (!stockQuantityInputValue || isNaN(Number(stockQuantityInputValue)) || parseFloat(stockQuantityInputValue) < 0) {
             stockQuantityParagraph.innerText = "Stock quantity cannot be lower than 0.";
             isValid = false;
         }

@@ -16,7 +16,7 @@ namespace Tests.ControllerServicesTests.CategoryTests
     {
         private Mock<IUnitOfWork> _mockUnitOfWork;
         private Mock<ICategoryRepository> _mockCategoryRepository;
-        private CategoryHierarchyCreator _categoryHierarchyCreator;
+        private CategoryHierarchyManager _categoryHierarchyCreator;
 
         [SetUp]
         public void Setup()
@@ -24,7 +24,7 @@ namespace Tests.ControllerServicesTests.CategoryTests
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockCategoryRepository = new Mock<ICategoryRepository>();
             _mockUnitOfWork.Setup(u => u.Category).Returns(_mockCategoryRepository.Object);
-            _categoryHierarchyCreator = new CategoryHierarchyCreator(_mockUnitOfWork.Object);
+            _categoryHierarchyCreator = new CategoryHierarchyManager(_mockUnitOfWork.Object);
         }
 
         [Test]

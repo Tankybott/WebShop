@@ -99,7 +99,7 @@
         const stockQuantityParagraph: HTMLParagraphElement = this.stockQuantityInput.parentElement?.querySelector('p') as HTMLParagraphElement;
         stockQuantityParagraph.innerText = "";
 
-        if (!stockQuantityInputValue || isNaN(Number(stockQuantityInputValue)) || parseFloat(stockQuantityInputValue) <= 1) {
+        if (!stockQuantityInputValue || isNaN(Number(stockQuantityInputValue)) || parseFloat(stockQuantityInputValue) < 0) {
             stockQuantityParagraph.innerText = "Stock quantity cannot be lower than 0.";
             isValid = false;
         }

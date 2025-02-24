@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+
 
 namespace DataAccess.Repository.IRepository
 {
@@ -14,7 +11,10 @@ namespace DataAccess.Repository.IRepository
         IPhotoUrlsSetRepository PhotoUrlSets { get; }
         ICartItemRepository CartItem { get; }
         ICartRepository Cart { get; }
+        IApplicationUserRepository ApplicationUser { get;}
+        IOrderHeaderRepository OrderHeader { get; }
+        IOrderDetailRepository OrderDetail { get; }
         Task SaveAsync();
-        void DetachEntity<T>(T entity) where T : class;
+        DbContext GetDbContext();
     }
 }

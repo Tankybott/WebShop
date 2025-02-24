@@ -6,8 +6,8 @@ using DataAccess.Repository.IRepository;
 using Models;
 using Models.DatabaseRelatedModels;
 using Services.PhotoService.Interfaces;
-using Services.PhotoService.Interfaces.DiscountService.Interfaces;
 using ControllersServices.ProductManagement;
+using Services.DiscountService.Interfaces;
 
 namespace ControllersServices.ProductManagement.Tests
 {

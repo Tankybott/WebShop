@@ -27,7 +27,7 @@ namespace Services.PhotoService.Tests
             _photoService = new PhotoService(
                 _mockPathCreator.Object,
                 _mockImageProcessor.Object,
-                null, // Removed the synchronizer dependency as it is no longer used
+                null, 
                 _mockFileService.Object
             );
         }

@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Models.ContractInterfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    public class Cart
+    public class Cart: IHasId
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        public DateTime LastUpdate { get; set; } = DateTime.Now;
+        public DateTime? ExpiresTo { get; set; } = DateTime.Now;
         [ValidateNever]
         public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
         [ForeignKey("User")]

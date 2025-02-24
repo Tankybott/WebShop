@@ -14,9 +14,9 @@ namespace ControllersServices.ProductBrowserService
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ProductBrowserViewModel> CreateProductBrowserVM()
+        public async Task<ProductBrowserVM> CreateProductBrowserVM()
         {
-            var vm = new ProductBrowserViewModel();
+            var vm = new ProductBrowserVM();
             vm.Categories = await _unitOfWork.Category.GetAllAsync(tracked: true, sortBy: c => c.Name);
             return vm;
         }

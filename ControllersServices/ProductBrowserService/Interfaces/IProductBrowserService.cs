@@ -8,7 +8,7 @@ namespace ControllersServices.ProductBrowserService.Interfaces
 {
     public interface IProductBrowserService
     {
-        Task<ProductBrowserViewModel> GetProductBrowserVM();
+        Task<ProductBrowserVM> GetProductBrowserVM();
         Task<PaginatedResult<ProductCardDTO>> GetFilteredProductsDTO(ProductFilterOptionsRequest filterOptions);
     }
 }

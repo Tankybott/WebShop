@@ -16,5 +16,6 @@ namespace DataAccess.Repository.IRepository
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
         void UpdateRange(IEnumerable<T> entities);
+        void Detach(T entity);
     }
 }

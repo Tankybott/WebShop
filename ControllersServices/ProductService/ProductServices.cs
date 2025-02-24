@@ -1,8 +1,7 @@
 ﻿
 using DataAccess.Repository.IRepository;
-using Models;
 using Models.DTOs;
-using Models.ProductModel;
+using Models.FormModel;
 using Models.ViewModels;
 using Services.ProductManagement.Interfaces;
 

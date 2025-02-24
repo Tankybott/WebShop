@@ -10,12 +10,12 @@ namespace Tests.Utility.DiscountQueues
     [TestFixture]
     public class DeletionDiscountQueueTests
     {
-        private DeletionDiscountQueue _queue;
+        private DiscountDeletionQueue _queue;
 
         [SetUp]
         public void Setup()
         {
-            _queue = new DeletionDiscountQueue();
+            _queue = new DiscountDeletionQueue();
         }
 
         [Test]

@@ -1,7 +1,7 @@
 ﻿using Models;
 using Models.DiscountCreateModel;
 using Serilog;
-using Services.PhotoService.Interfaces.DiscountService.Interfaces;
+using Services.DiscountService.Interfaces;
 using Services.ProductManagement.Interfaces;
 
 namespace Services.ProductService

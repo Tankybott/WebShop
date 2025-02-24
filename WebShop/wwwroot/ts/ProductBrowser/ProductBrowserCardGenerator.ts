@@ -136,7 +136,7 @@
 
         const detailsButton = document.createElement("a");
         detailsButton.className = "btn btn-primary bg-gradient border-0 form-control";
-        detailsButton.href = `/User/ProductBrowser/Details?productId=${productDto.id}`;
+        detailsButton.href = `/User/ProductDetails/Details?productId=${productDto.id}`;
         detailsButton.textContent = "Details";
 
         buttonDiv.appendChild(detailsButton);

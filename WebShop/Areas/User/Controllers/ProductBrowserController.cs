@@ -31,20 +31,6 @@ namespace WebShop.Areas.User.Controllers
             }
         }
 
-        public async Task<IActionResult> Details(int productId)
-        {
-            try
-            {
-                var product = await _unitOfWork.Product.GetAsync(p => p.Id == productId);
-                return View("~/Views/Shared/ProductDetails.cshtml", product);
-            }
-            catch (Exception)
-            {
-                TempData["error"] = "Something went wrong, try again later";
-                return RedirectToAction("Index", "Home", new { area = "User" });
-            }
-        }
-
         #region ApiCalls
 
         [HttpGet]

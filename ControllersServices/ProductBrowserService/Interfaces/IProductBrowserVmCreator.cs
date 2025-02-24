@@ -4,6 +4,6 @@ namespace ControllersServices.ProductBrowserService.Interfaces
 {
     public interface IProductBrowserVmCreator
     {
-        Task<ProductBrowserViewModel> CreateProductBrowserVM();
+        Task<ProductBrowserVM> CreateProductBrowserVM();
     }
 }

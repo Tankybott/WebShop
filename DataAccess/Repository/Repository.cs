@@ -152,5 +152,23 @@ namespace DataAccess.Repository
                 throw new Exception("An error occurred while removing the entities.", ex);
             }
         }
+
+        public void Detach(T entity)
+        {
+            try
+            {
+                var entry = _db.Entry(entity);
+                if (entry != null)
+                {
+                    entry.State = EntityState.Detached;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to detach entity from database context");
+                throw new Exception("An error occurred while detaching the entity.", ex);
+            }
+        }
+
     }
 }

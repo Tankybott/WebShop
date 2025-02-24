@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.DatabaseRelatedModels;
 using Serilog;
+using SkiaSharp;
 namespace DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork
@@ -14,8 +15,17 @@ namespace DataAccess.Repository
         public IPhotoUrlsSetRepository PhotoUrlSets { get; private set; }
         public ICartRepository Cart { get; private set; }
         public ICartItemRepository CartItem { get; private set; }
+        public IOrderHeaderRepository OrderHeader { get; private set; }
+        public IOrderDetailRepository OrderDetail { get; private set; }
+        public IApplicationUserRepository ApplicationUser { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext db, ICategoryRepository category, IProductRepository product, IDiscountRepository discount, IPhotoUrlsSetRepository photoUrlsSet, ICartRepository cart, ICartItemRepository cartItem)
+        public UnitOfWork(ApplicationDbContext db, ICategoryRepository category,
+            IProductRepository product,
+            IDiscountRepository discount,
+            IPhotoUrlsSetRepository photoUrlsSet,
+            ICartRepository cart,
+            ICartItemRepository cartItem,
+            IApplicationUserRepository applicationUser, IOrderDetailRepository orderDetail, IOrderHeaderRepository orderHeader)
         {
             _db = db;
             Category = category;
@@ -24,6 +34,9 @@ namespace DataAccess.Repository
             PhotoUrlSets = photoUrlsSet;
             Cart = cart;
             CartItem = cartItem;
+            ApplicationUser = applicationUser;
+            OrderDetail = orderDetail;
+            OrderHeader = orderHeader;
         }
 
         public async Task SaveAsync()
@@ -31,21 +44,18 @@ namespace DataAccess.Repository
             try
             {
                 await _db.SaveChangesAsync();
+                _db.ChangeTracker.Clear(); 
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to save database");
-                throw new Exception("An error occurred while saving changes.", ex);
+                Log.Error(ex, "Failed to save changes to database");
+                throw new Exception("An error occurred while saving changes to the database.", ex);
             }
         }
 
-        public void DetachEntity<T>(T entity) where T : class 
+        public DbContext GetDbContext()
         {
-            var entry = _db.Entry(entity);
-            if (entry != null)
-            {
-                entry.State = EntityState.Detached;
-            }
+            return _db;
         }
     }
 }

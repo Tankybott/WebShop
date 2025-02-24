@@ -1,5 +1,9 @@
 ﻿using DataAccess.Repository.IRepository;
+using DataAccess.Repository.Utility;
+using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.DTOs;
+using Models.ProductFilterOptions;
 using System.Linq.Expressions;
 
 

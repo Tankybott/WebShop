@@ -13,13 +13,13 @@ namespace Tests.ControllerServicesTests.CategoryTests
     [TestFixture]
     public class AdminCategoryVMCreatorTests
     {
-        private Mock<ICategoryHierarchyCreator> _mockCategoryHierarchyCreator;
+        private Mock<ICategoryHierarchyManager> _mockCategoryHierarchyCreator;
         private ICategoryVMCreator _adminCategoryVMCreator;
 
         [SetUp]
         public void Setup()
         {
-            _mockCategoryHierarchyCreator = new Mock<ICategoryHierarchyCreator>();
+            _mockCategoryHierarchyCreator = new Mock<ICategoryHierarchyManager>();
             _adminCategoryVMCreator = new CategoryVMCreator(_mockCategoryHierarchyCreator.Object);
         }
 

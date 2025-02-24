@@ -7,12 +7,12 @@ namespace Tests.Utility.DiscountQueues
     [TestFixture]
     public class ActivationDiscountQueueTests
     {
-        private ActivationDiscountQueue _queue;
+        private DiscountActivationQueue _queue;
 
         [SetUp]
         public void Setup()
         {
-            _queue = new ActivationDiscountQueue();
+            _queue = new DiscountActivationQueue();
         }
 
         [Test]

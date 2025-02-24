@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models.ProductModel;
+using Models.FormModel;
 using Services.ProductManagement.Interfaces;
 using Utility.Constants;
 

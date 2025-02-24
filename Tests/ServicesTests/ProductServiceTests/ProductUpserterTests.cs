@@ -4,10 +4,12 @@ using AutoMapper;
 using DataAccess.Repository.IRepository;
 using Models;
 using Models.DiscountCreateModel;
-using Models.ProductModel;
-using Services.PhotoService.Interfaces.DiscountService.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Services.ProductManagement.Interfaces;
+using Models.FormModel;
+using System.Linq.Expressions;
+using Models.DatabaseRelatedModels;
+using Services.DiscountService.Interfaces;
 
 namespace ControllersServices.ProductManagement.Tests
 {
@@ -29,6 +31,11 @@ namespace ControllersServices.ProductManagement.Tests
             _mockUnitOfWork.Setup(u => u.SaveAsync()).Returns(Task.CompletedTask);
             _mockUnitOfWork.Setup(u => u.Product.Add(It.IsAny<Product>()));
             _mockUnitOfWork.Setup(u => u.Product.Update(It.IsAny<Product>()));
+            _mockUnitOfWork.Setup(u => u.PhotoUrlSets.GetAsync(
+                It.IsAny<Expression<Func<PhotoUrlSet, bool>>>(),
+                It.IsAny<string>(),
+                It.IsAny<bool>()
+            )).ReturnsAsync(new PhotoUrlSet());
 
             _mockDiscountService = new Mock<IDiscountService>();
             _mockProductPhotoUpserter = new Mock<IProductPhotoUpserter>();
@@ -118,6 +125,30 @@ namespace ControllersServices.ProductManagement.Tests
 
             // Assert
             _mockProductPhotoUpserter.Verify(p => p.SetPhotoMain(model.MainPhotoUrl), Times.Once, "SetPhotoMain should be called when the main flag is incorrect.");
+        }
+
+        [Test]
+        public async Task HandleUpsertAsync_ShouldntSetMainPhoto_WhenOldMainPhotoIsTheSame()
+        {
+            // Arrange
+            var mainThumbnailPhotoUrl = "main-url";
+            var model = new ProductFormModel { MainPhotoUrl = mainThumbnailPhotoUrl, MainPhoto = null };
+            _mockUnitOfWork.Setup(u => u.PhotoUrlSets.GetAsync(
+                It.IsAny<Expression<Func<PhotoUrlSet, bool>>>(),
+                It.IsAny<string>(),
+                It.IsAny<bool>()
+            )).ReturnsAsync(new PhotoUrlSet() {
+                ThumbnailPhotoUrl = mainThumbnailPhotoUrl
+
+            });
+            var product = new Product { Id = 1 };
+            _mockMapper.Setup(m => m.Map(model, It.IsAny<Product>())).Callback<ProductFormModel, Product>((src, dest) => dest.Id = product.Id);
+
+            // Act
+            await _productUpserter.HandleUpsertAsync(model);
+
+            // Assert
+            _mockProductPhotoUpserter.Verify(p => p.SetPhotoMain(model.MainPhotoUrl), Times.Never, "SetPhotoMain shouldnt be called if old and new main photo the same.");
         }
 
         [Test]

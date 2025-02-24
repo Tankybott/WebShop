@@ -1,7 +1,7 @@
 ﻿using DataAccess.Repository.IRepository;
 using Models;
+using Services.DiscountService.Interfaces;
 using Services.PhotoService.Interfaces;
-using Services.PhotoService.Interfaces.DiscountService.Interfaces;
 using Services.ProductManagement.Interfaces;
 
 namespace ControllersServices.ProductManagement

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Models;
+using Models.FormModel;
 using Models.ProductFilterOptions;
-using Models.ProductModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,7 +4,7 @@ using DataAccess.Repository.IRepository;
 using Models.DatabaseRelatedModels;
 using Utility.DiscountQueues.Interfaces;
 using System.Linq.Expressions;
-using Services.PhotoService.Interfaces.DiscountService;
+using Services.DiscountService;
 
 namespace Tests.ControllersServices.ProductService
 {
@@ -13,8 +13,8 @@ namespace Tests.ControllersServices.ProductService
     {
         private Mock<IUnitOfWork> _mockUnitOfWork;
         private Mock<IDiscountRepository> _mockDiscountRepository;
-        private Mock<IActivationDiscountQueue> _mockActivationDiscountQueue;
-        private Mock<IDeletionDiscountQueue> _mockDeletionDiscountQueue;
+        private Mock<IDiscountActivationQueue> _mockActivationDiscountQueue;
+        private Mock<IDiscountDeletionQueue> _mockDeletionDiscountQueue;
         private DiscountService _discountService;
 
         [SetUp]
@@ -22,8 +22,8 @@ namespace Tests.ControllersServices.ProductService
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockDiscountRepository = new Mock<IDiscountRepository>();
-            _mockActivationDiscountQueue = new Mock<IActivationDiscountQueue>();
-            _mockDeletionDiscountQueue = new Mock<IDeletionDiscountQueue>();
+            _mockActivationDiscountQueue = new Mock<IDiscountActivationQueue>();
+            _mockDeletionDiscountQueue = new Mock<IDiscountDeletionQueue>();
 
             _mockUnitOfWork.Setup(u => u.Discount).Returns(_mockDiscountRepository.Object);
 

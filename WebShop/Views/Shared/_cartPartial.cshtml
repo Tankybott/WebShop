@@ -1,0 +1,12 @@
+﻿<a class="text-decoration-none"  asp-area="User" asp-controller="Cart" asp-action="Index"><i class="bi bi-cart4"></i> (<span id="cartQuantity"> </span>)</a>
+
+<script src="~/js/Cart/CartManager.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cartManager = new CartManager(
+        )
+    });
+</script>
+
+

@@ -10,6 +10,7 @@ using Models.DTOs;
 using Models.ProductModel;
 using Services.ProductManagement.Interfaces;
 using ControllersServices.ProductManagement;
+using Models.FormModel;
 
 namespace Tests.ControllersServices.ProductManagement
 {

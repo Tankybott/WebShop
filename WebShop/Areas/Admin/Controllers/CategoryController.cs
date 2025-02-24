@@ -46,10 +46,9 @@ namespace WebShop.Areas.Admin.Controllers
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index");
             }
-
         }
 
-        public IActionResult AddSubcategoryToSpecyficCategory(string parentCategoryFilter)
+        public IActionResult AddSubcategory(string parentCategoryFilter)
         {
             try
             {
@@ -79,7 +78,7 @@ namespace WebShop.Areas.Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    await _categoryService.UpsertAsync(VM);
+                    await _categoryService.UpsertCategoryAsync(VM);
                     TempData["success"] = VM.Category.Id == 0 ? "Product added successfully" : "Product updated successfully";
                     return RedirectToAction("Index");
                 }
@@ -97,7 +96,7 @@ namespace WebShop.Areas.Admin.Controllers
 
         #region API CALLS
         [HttpGet]
-        public async  Task<IActionResult> GetAll(string filter)
+        public async Task<IActionResult> GetAll(string filter)
         {
             var categories = await _categoryService.GetSubcategoriesOfCateogryAsync(filter);
             return Json(new { data = categories });

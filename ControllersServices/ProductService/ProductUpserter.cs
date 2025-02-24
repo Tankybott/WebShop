@@ -2,8 +2,8 @@
 using DataAccess.Repository.IRepository;
 using Models;
 using Models.DiscountCreateModel;
-using Models.ProductModel;
-using Services.PhotoService.Interfaces.DiscountService.Interfaces;
+using Models.FormModel;
+using Services.DiscountService.Interfaces;
 using Services.ProductManagement.Interfaces;
 
 namespace ControllersServices.ProductManagement
@@ -55,7 +55,7 @@ namespace ControllersServices.ProductManagement
                 await _productPhotoUpserter.UploadOtherPhotoSetsAsync(product, model.OtherPhotos);
             }
 
-            if (IsMainFlagOnIncorrectPhotoSet(product, model))
+            if (await IsMainFlagOnIncorrectPhotoSet(product, model))
             {
                 await _productPhotoUpserter.SetPhotoMain(model.MainPhotoUrl);
             }
@@ -96,9 +96,10 @@ namespace ControllersServices.ProductManagement
             }
         }
 
-        private bool IsMainFlagOnIncorrectPhotoSet(Product product, ProductFormModel model)
+        private async Task<bool> IsMainFlagOnIncorrectPhotoSet(Product product, ProductFormModel model)
         {
-            return (product.Id != 0 && model.MainPhotoUrl != null && model.MainPhoto == null);
+            var currentMainPhotoUrl = await _unitOfWork.PhotoUrlSets.GetAsync(s => s.ProductId == product.Id && s.IsMainPhoto);
+            return (product.Id != 0 && model.MainPhotoUrl != null && model.MainPhoto == null && model.MainPhotoUrl != currentMainPhotoUrl?.ThumbnailPhotoUrl);
         }
     }
 }

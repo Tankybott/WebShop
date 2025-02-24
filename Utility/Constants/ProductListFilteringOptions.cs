@@ -1,6 +1,6 @@
 ﻿namespace Utility.Constants
 {
-    public class ProductListFilteringOptions
+    public static class ProductListFilteringOptions
     {
         public const string All = "all";
         public const string OnlyDiscounted = "discounted";

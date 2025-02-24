@@ -2,8 +2,8 @@
 using Moq;
 using Models;
 using Models.DiscountCreateModel;
-using Services.PhotoService.Interfaces.DiscountService.Interfaces;
 using Models.DatabaseRelatedModels;
+using Services.DiscountService.Interfaces;
 
 namespace Services.ProductService.Tests
 {

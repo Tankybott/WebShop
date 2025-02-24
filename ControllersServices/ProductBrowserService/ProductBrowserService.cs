@@ -33,7 +33,7 @@ namespace ControllersServices.ProductBrowserService
             _categoryIdRetriver = categoryIdRetriver;
         }
 
-        public async Task<ProductBrowserViewModel> GetProductBrowserVM()
+        public async Task<ProductBrowserVM> GetProductBrowserVM()
         {
             return await _vmCreator.CreateProductBrowserVM();
         }

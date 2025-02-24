@@ -15,8 +15,9 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
     "bootstrap": "^5.3.3",
-    "swiper": "^11.2.1",
+    "sweetalert2": "^11.15.10",
     "toastr": "^2.1.4"
   }
 }
