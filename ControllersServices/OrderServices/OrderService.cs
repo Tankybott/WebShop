@@ -22,40 +22,40 @@ namespace Services.OrderServices
             _userRetriver = userRetriver;
         }
 
-        public async Task CreateOrderVM(IEnumerable<OrderDetail> OrderDetails)
+        public async Task CreateOrderVM(IEnumerable<OrderDetail> orderDetails, OrderHeader orderHeader)
         {
             var currentApplicationUser = await _unitOfWork.ApplicationUser.GetAsync(u => u.Id == _userRetriver.GetCurrentUserId());
             if (currentApplicationUser != null) 
             {
-                var orderHeader = new OrderHeader
-                {
-                    ApplicationUserId = currentApplicationUser.Id,
-                    OrderStatus = OrderStatuses.CreatedStatus,
-                    Name = currentApplicationUser.Name,
-                    PhoneNumber = currentApplicationUser.PhoneNumber,
-                    StreetAdress = currentApplicationUser.StreetAdress,
-                    City = currentApplicationUser.City,
-                    Region = currentApplicationUser.Region,
-                    PostalCode = currentApplicationUser.PostalCode,
-                    Country = currentApplicationUser.Country
-                };
                 var vm = new OrderVM
                 {
-                    OrderDetails = OrderDetails,
+                    OrderDetails = orderDetails,
                     OrderHeader = orderHeader,
                 };
             }
         }
 
-        //public async Task<OrderHeader> CreateOrderHeader()
-        //{   
-        //    var user = _unitOfWork.
-        //    var orderHeader = new OrderHeader
-        //    {
-        //        ApplicationUserId = _userRetriver.GetCurrentUserId(),
 
-        //    };
-        //}
+
+        public async Task<OrderHeader> CreateOrderHeader(ApplicationUser currentApplicationUser)
+        {
+            var orderHeader = new OrderHeader
+            {
+                ApplicationUserId = currentApplicationUser.Id,
+                OrderStatus = OrderStatuses.CreatedStatus,
+                Name = currentApplicationUser.Name,
+                PhoneNumber = currentApplicationUser.PhoneNumber,
+                StreetAdress = currentApplicationUser.StreetAdress,
+                City = currentApplicationUser.City,
+                Region = currentApplicationUser.Region,
+                PostalCode = currentApplicationUser.PostalCode,
+                Country = currentApplicationUser.Country
+            };
+            _unitOfWork.OrderHeader.Add(orderHeader);
+            await _unitOfWork.SaveAsync();
+
+            return orderHeader;
+        }
     }
 }
 
