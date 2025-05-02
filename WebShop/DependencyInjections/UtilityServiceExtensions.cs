@@ -15,6 +15,7 @@ namespace WebShop.DependencyInjections
             services.AddTransient<IPathCreator, PathCreator>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IFileNameCreator, FileNameCreator>();
+            services.AddTransient<IBaseUrlRetriever, BaseUrlRetriever>();
 
             services.AddScoped<IImageProcessor, ImageProcessor>();
             services.AddScoped<IEmailSender, EmailSender>();

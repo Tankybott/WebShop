@@ -3,7 +3,7 @@
 
     constructor(
         postButtonSelector: string,
-        private readonly cartItemsQuantityValidator: CartItemsQuantityValidator,
+        private readonly cartItemsQuantityValidator: BaseCartQuantityValidator<HTMLInputElement>,
         private readonly synchronizationChecker: CartPricesSynchronizationChecker
     ) {
         this.postButton = document.querySelector(postButtonSelector) as HTMLButtonElement;
@@ -12,10 +12,10 @@
     }
 
     private async handlePostAsync(): Promise<void> {
-        this.synchronizationChecker.initialize();
-        let isValid = await this.cartItemsQuantityValidator.validateCartQuantities()
+        let isValid = await this.synchronizationChecker.synchronize();
+        if (isValid) isValid = await this.cartItemsQuantityValidator.validateCartQuantities()
         if (isValid) {
-            console.log('poszlo')
+            window.location.href = '/User/Order/CreateNewOrder';
         } 
     }
 }

@@ -7,10 +7,11 @@ class CartPoster {
         this.postButton.addEventListener('click', () => this.handlePostAsync());
     }
     async handlePostAsync() {
-        this.synchronizationChecker.initialize();
-        let isValid = await this.cartItemsQuantityValidator.validateCartQuantities();
+        let isValid = await this.synchronizationChecker.synchronize();
+        if (isValid)
+            isValid = await this.cartItemsQuantityValidator.validateCartQuantities();
         if (isValid) {
-            console.log('poszlo');
+            window.location.href = '/User/Order/CreateNewOrder';
         }
     }
 }

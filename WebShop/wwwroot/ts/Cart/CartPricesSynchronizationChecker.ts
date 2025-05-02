@@ -2,6 +2,7 @@
     private readonly loadingScreenDiv: HTMLDivElement;
     private readonly cartId: string;
     private readonly inputs: NodeListOf<HTMLInputElement>;
+    private isSynchronized: boolean = true;
 
     constructor(
         inputsSelector: string,
@@ -20,11 +21,17 @@
         this.checkForModifiedItemsInSession();
     }
 
-    public async initialize(): Promise<void> {
+    private async initialize(): Promise<void> {
         await this.synchronizePricesWithServerAsync();
     }
 
+    public async synchronize(): Promise<boolean> {
+        await this.synchronizePricesWithServerAsync();
+        return this.isSynchronized
+    }
+
     private async synchronizePricesWithServerAsync(): Promise<void> {
+        this.isSynchronized = true;
         this.loadingScreenDiv.style.display = "flex";
         try {
             const response = await fetch(`Cart/SynchronizeCartPrices?cartId=${this.cartId}`, {
@@ -42,6 +49,7 @@
                     this.sweetAlert.FireSweetAlert("Update", "Prices of some items have changed. Your cart will be updated accordingly.", () => {
                         location.reload();
                     });
+                    this.isSynchronized = false;
                 }
             } else {
                 console.error("There was an error when synchronizing cart prices");

@@ -19,7 +19,7 @@ namespace Tests.Services.CartServicesTests
         private Mock<IUnitOfWork> _mockUnitOfWork;
         private Mock<ICartItemQuantityUpdater> _mockCartItemQuantityUpdater;
         private Mock<ICartItemRepository> _mockCartItemRepository;
-        private ICartItemQuantityValidator _cartItemQuantityValidator;
+        private ICartItemQuantitySyncService _cartItemQuantityValidator;
 
         [SetUp]
         public void Setup()
@@ -30,7 +30,7 @@ namespace Tests.Services.CartServicesTests
 
             _mockUnitOfWork.Setup(u => u.CartItem).Returns(_mockCartItemRepository.Object);
 
-            _cartItemQuantityValidator = new CartItemQuantityValidator(
+            _cartItemQuantityValidator = new CartItemQuantitySyncService(
                 _mockUnitOfWork.Object,
                 _mockCartItemQuantityUpdater.Object
             );
@@ -59,7 +59,7 @@ namespace Tests.Services.CartServicesTests
             SetupMockForGetAllCartItemsAsync(new List<CartItem> { cartItem });
 
             // Act
-            var result = await _cartItemQuantityValidator.ValidateItemsQuantity(new List<CartItemQuantityDTO> { cartItemDto });
+            var result = await _cartItemQuantityValidator.AdjustOvercountedItemsQuantityAsync(new List<CartItemQuantityDTO> { cartItemDto });
 
             // Assert
             Assert.That(result.First().Quantity, Is.EqualTo(cartItem.Product.StockQuantity));
@@ -82,7 +82,7 @@ namespace Tests.Services.CartServicesTests
             SetupMockForGetAllCartItemsAsync(new List<CartItem> { cartItem });
 
             // Act
-            var result = await _cartItemQuantityValidator.ValidateItemsQuantity(new List<CartItemQuantityDTO> { cartItemDto });
+            var result = await _cartItemQuantityValidator.AdjustOvercountedItemsQuantityAsync(new List<CartItemQuantityDTO> { cartItemDto });
 
             // Assert
             Assert.That(result.First().Quantity, Is.EqualTo(0));
@@ -105,7 +105,7 @@ namespace Tests.Services.CartServicesTests
             SetupMockForGetAllCartItemsAsync(new List<CartItem> { cartItem });
 
             // Act
-            var result = await _cartItemQuantityValidator.ValidateItemsQuantity(new List<CartItemQuantityDTO> { cartItemDto });
+            var result = await _cartItemQuantityValidator.AdjustOvercountedItemsQuantityAsync(new List<CartItemQuantityDTO> { cartItemDto });
 
             // Assert
             Assert.That(result.First().Quantity, Is.EqualTo(cartItemDto.Quantity));
@@ -121,7 +121,7 @@ namespace Tests.Services.CartServicesTests
             SetupMockForGetAllCartItemsAsync(null); // No cart items returned
 
             // Act & Assert
-            var ex = Assert.ThrowsAsync<ArgumentException>(() => _cartItemQuantityValidator.ValidateItemsQuantity(new List<CartItemQuantityDTO> { cartItemDto }));
+            var ex = Assert.ThrowsAsync<ArgumentException>(() => _cartItemQuantityValidator.AdjustOvercountedItemsQuantityAsync(new List<CartItemQuantityDTO> { cartItemDto }));
             Assert.That(ex.Message, Is.EqualTo("At least one of cart items passed to validate is not existing"));
         }
     }

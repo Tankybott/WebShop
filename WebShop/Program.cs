@@ -11,6 +11,7 @@ using ControllersServices.ProductManagement;
 using DataAccess.Repository.IRepository;
 using DataAccess.Repository;
 using BackgroundServices.QueueProcessBackgroundServices;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,13 @@ try
     builder.Services.AddUtilityServices();
     builder.Services.AddCartServices();
     builder.Services.AddProductBrowserServices();
+    builder.Services.AddOrderServices();
+    builder.Services.AddCarrierService();
+    builder.Services.AddWebshopConfig();
+
+
+    //stripe
+    StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<String>();
 
     // Configure authentication
     builder.Services.AddCustomAuthentication(builder.Configuration);

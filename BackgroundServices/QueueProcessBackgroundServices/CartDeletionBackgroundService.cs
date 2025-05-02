@@ -21,7 +21,7 @@ namespace BackgroundServices.QueueProcessBackgroundServices
             await unitOfWork.SaveAsync();
         }
 
-        protected override void ProcessAsync(Cart entity, IUnitOfWork unitOfWork)
+        protected override void Process(Cart entity, IUnitOfWork unitOfWork)
         {
             unitOfWork.Cart.Remove(entity);
         }

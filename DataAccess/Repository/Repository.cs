@@ -36,6 +36,19 @@ namespace DataAccess.Repository
             }
         }
 
+        public virtual void AddRange(IEnumerable<T> entities)
+        {
+            try
+            {
+                dbSet.AddRange(entities);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to add range of entities to database");
+                throw new Exception("An error occurred while adding the entities.", ex);
+            }
+        }
+
         public async virtual Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked = false, Expression<Func<T, object>>? sortBy = null)
         {
             try

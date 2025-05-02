@@ -4,6 +4,7 @@ class CartPricesSynchronizationChecker {
         this.cartItemIdMetaSelector = cartItemIdMetaSelector;
         this.warningParagraphSelector = warningParagraphSelector;
         this.sweetAlert = sweetAlert;
+        this.isSynchronized = true;
         this.loadingScreenDiv = document.querySelector(loadingScreenSelector);
         this.inputs = document.querySelectorAll(inputsSelector);
         const cartIdMeta = document.querySelector(cartIdMetaSelector);
@@ -13,7 +14,12 @@ class CartPricesSynchronizationChecker {
     async initialize() {
         await this.synchronizePricesWithServerAsync();
     }
+    async synchronize() {
+        await this.synchronizePricesWithServerAsync();
+        return this.isSynchronized;
+    }
     async synchronizePricesWithServerAsync() {
+        this.isSynchronized = true;
         this.loadingScreenDiv.style.display = "flex";
         try {
             const response = await fetch(`Cart/SynchronizeCartPrices?cartId=${this.cartId}`, {
@@ -29,6 +35,7 @@ class CartPricesSynchronizationChecker {
                     this.sweetAlert.FireSweetAlert("Update", "Prices of some items have changed. Your cart will be updated accordingly.", () => {
                         location.reload();
                     });
+                    this.isSynchronized = false;
                 }
             }
             else {

@@ -8,10 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -155,7 +152,8 @@ namespace WebShop.Areas.Identity.Pages.Account
                 user.PhoneNumber = Input.PhoneNumber;
                 user.Name = Input.Name;
                 user.Region = Input.Region;
-
+                user.PostalCode = Input.PostalCode;
+                user.Country = Input.Country;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

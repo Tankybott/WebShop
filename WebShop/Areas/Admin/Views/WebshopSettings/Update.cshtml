@@ -1,0 +1,47 @@
+﻿@model Models.ViewModels.WebshopSettingsVm
+
+<div class="container">
+    <div class="card shadow-lg mt-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0 text-center p-2">Webshop Settings</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="Update" method="post">
+
+                <!-- Website Name -->
+                <div class="form-floating mb-3">
+                    <input asp-for="SiteName" class="form-control" id="SiteName" required />
+                    <label for="SiteName">Website Name</label>
+                    <span asp-validation-for="SiteName" class="text-danger d-block mt-2 p-1"></span>
+                </div>
+
+                <!-- Currency Selection -->
+
+                <div class="mb-3">
+                   
+                    <div class="d-flex">
+                        <button type="button" class="border-0 bg-transparent justify-content-start align-items-start p-2 pt-0 d-none d-xl-flex"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="⚠️ Some currencies may not be supported by Stripe in your country. It's recommended to test the selected currency in Stripe’s test mode to ensure it works correctly.
+-Read more: docs.stripe.com/currencies.">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </button>
+                        <label for="Currency">Currency</label>
+                    </div>
+                    <select asp-for="Currency" asp-items="Model.Currencies" class="form-select" id="Currency">
+                        <option value="">-- Select Currency --</option>
+                    </select>
+                    <span asp-validation-for="Currency" class="text-danger d-block mt-2 p-1"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100 p-2 text-uppercase">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

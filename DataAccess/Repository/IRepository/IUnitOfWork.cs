@@ -14,6 +14,8 @@ namespace DataAccess.Repository.IRepository
         IApplicationUserRepository ApplicationUser { get;}
         IOrderHeaderRepository OrderHeader { get; }
         IOrderDetailRepository OrderDetail { get; }
+        ICarrierRepository Carrier { get; }
+        IWebshopConfigRepository WebshopConfig { get; }
         Task SaveAsync();
         DbContext GetDbContext();
     }

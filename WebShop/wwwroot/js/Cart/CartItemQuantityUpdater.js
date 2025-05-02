@@ -56,7 +56,7 @@ class CartItemQuantityUpdater {
         this.loadingScreenDiv.style.display = "flex";
         try {
             const response = await fetch(`Cart/ChangeCartItemQuantity?cartItemId=${cartItemId}&newQuantity=${newQuantity}`, {
-                method: "PUT",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -69,6 +69,7 @@ class CartItemQuantityUpdater {
                 if (result.quantityLeft != null) {
                     toastr.error("Items out of stock, item quantity is automaticly assigned to maximum quantity of this item");
                     input.value = result.quantityLeft;
+                    this.postChangedInputValue(input);
                 }
                 else {
                     toastr.error("There was en error when updating items quantity");

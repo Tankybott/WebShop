@@ -1,0 +1,93 @@
+﻿@model decimal?
+
+
+
+@functions {
+    public struct StaticData
+    {
+        public const string OverloaySelector = "data-overlay";
+        public const string SaveButtonSelector = "data-save";
+        public const string EnableButtonSelector = "data-enable";
+        public const string DisableButtonSelector = "data-disable";
+        public const string InputSelector = "data-input";
+        public const string FreeShippingThresholdMetaSelector = "data-threshold";
+        public const string LoadingScreenSelector = "data-loading";
+    }
+}
+
+<meta @StaticData.FreeShippingThresholdMetaSelector  content="@Model">
+<div class="container">
+    <div class="card shadow-lg mt-4 mx-auto p-4" style="width: 100%;">
+
+        <div class="card-header mb-4 bg-primary text-white">
+            <h2 class="mb-0 text-center p-2">Carrier Management</h2>
+        </div>
+
+        <div class="container border border-primary rounded p-3 mb-3">
+            <div class="position-relative">
+                <!-- Grey Overlay using Bootstrap -->
+                <div @StaticData.OverloaySelector
+                     class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center rounded z-1"
+                     style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(1px);">
+                    <p class="text-white fw-bold fs-4">FREE SHIPPING DISABLED</p>
+                </div>
+                <!-- Original Content -->
+                <div class="p-3 border border-secondary rounded d-flex align-items-center bg-white position-relative">
+                    <label class="me-2 fw-bold">Free shipping from:</label>
+                    <input @StaticData.InputSelector type="number" class="form-control w-25 me-2" placeholder="Enter amount...">
+                    <button @StaticData.SaveButtonSelector class="btn btn-primary">Save</button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 mt-2">
+                <button @StaticData.EnableButtonSelector class="btn btn-primary">Enable</button>
+                <button @StaticData.DisableButtonSelector class="btn btn-danger">Disable</button>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mb-3">
+            <a asp-controller="Carrier" asp-action="Upsert" class="btn btn-primary w-75 border border-secondary mt-3 mb-2">
+                <i class="bi bi-plus-circle"></i> Add new Carrier
+            </a>
+        </div>
+
+        <div class="container border border-primary rounded p-3">
+            <div class="table-responsive">
+                <table id="tblData" class="table table-bordered table-striped mb-3">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div @StaticData.LoadingScreenSelector id="loading-overlay">
+    <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="module" src="~/js/carrierIndex.js"></script>
+    <script src="~/js/Carrier/CarrierFreeShippingSetup.js"></script>
+
+    <script>
+        (() => {
+            const carrierFreeShippingSetup = new CarrierFreeShippingSetup(
+                "[@StaticData.SaveButtonSelector]",
+                "[@StaticData.EnableButtonSelector]",
+                "[@StaticData.DisableButtonSelector]",
+                "[@StaticData.InputSelector]",
+                "[@StaticData.OverloaySelector]",  
+                "[@StaticData.LoadingScreenSelector]",  
+                "[@StaticData.FreeShippingThresholdMetaSelector]"
+            );
+        })();
+    </script>
+}

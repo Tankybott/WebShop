@@ -13,7 +13,7 @@ namespace Services.CartServices
         private readonly ICartItemRemover _cartItemRemover;
         private readonly ICartItemAdder _cartItemAdder;
         private readonly ICartItemQuantityUpdater _cartItemQuantityUpdater;
-        private readonly ICartItemQuantityValidator _cartItemQuantityValidator;
+        private readonly ICartItemQuantitySyncService _cartItemQuantityValidator;
 
         public CartServices(
             ICartPriceSynchronizer cartPriceSynchronizer,
@@ -21,7 +21,7 @@ namespace Services.CartServices
             ICartItemRemover cartItemRemover,
             ICartItemAdder cartItemAdder,
             ICartItemQuantityUpdater cartItemQuantityUpdater,
-            ICartItemQuantityValidator cartItemQuantityValidator
+            ICartItemQuantitySyncService cartItemQuantityValidator
             )
         {
             _cartPriceSynchronizer = cartPriceSynchronizer;
@@ -49,7 +49,7 @@ namespace Services.CartServices
 
         public async Task<IEnumerable<CartItemQuantityDTO>> ValidateCartProductsQuantityAsync(IEnumerable<CartItemQuantityDTO> DTOSToCheck)
         {
-            return await _cartItemQuantityValidator.ValidateItemsQuantity(DTOSToCheck);
+            return await _cartItemQuantityValidator.AdjustOvercountedItemsQuantityAsync(DTOSToCheck);
         }
 
         public async Task<IEnumerable<int>> SynchronizeCartPrices(int cartId) 

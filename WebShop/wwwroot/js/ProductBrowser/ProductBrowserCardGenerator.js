@@ -1,5 +1,9 @@
 "use strict";
 class ProductBrowserCardGenerator {
+    constructor(currencyMetaSelector) {
+        this.currencyMeta = document.querySelector(currencyMetaSelector);
+        console.log('ok');
+    }
     generateProductCard(productDto) {
         const colDiv = this.createMainContainer();
         const cardDiv = this.createCard(productDto);
@@ -84,14 +88,14 @@ class ProductBrowserCardGenerator {
         if (!isNaN(price) && !isNaN(discountPercentage) && discountPercentage > 0) {
             const originalPrice = document.createElement("p");
             originalPrice.className = "text-muted text-decoration-line-through text-center";
-            originalPrice.textContent = `Price: ${price.toFixed(2)}`;
+            originalPrice.textContent = `Price: ${price.toFixed(2)} ${this.currencyMeta.content}`;
             const discountSign = document.createElement("p");
             discountSign.className = "text-uppercase fw-bold text-primary";
             discountSign.innerText = `Discount: ${productDto.discountPercentage}%`;
             const discountedPriceValue = price * (1 - discountPercentage / 100);
             const discountedPrice = document.createElement("p");
             discountedPrice.className = "text-dark text-center fw-bold";
-            discountedPrice.textContent = `Price now: ${discountedPriceValue.toFixed(2)}`;
+            discountedPrice.textContent = `Price now: ${discountedPriceValue.toFixed(2)} ${this.currencyMeta.content}`;
             priceContainer.appendChild(originalPrice);
             priceContainer.appendChild(discountSign);
             priceContainer.appendChild(discountedPrice);
@@ -99,7 +103,7 @@ class ProductBrowserCardGenerator {
         else {
             const normalPrice = document.createElement("p");
             normalPrice.className = "text-dark text-center fw-bold";
-            normalPrice.textContent = `Price: ${price.toFixed(2)}`;
+            normalPrice.textContent = `Price: ${price.toFixed(2)} ${this.currencyMeta.content}`;
             priceContainer.appendChild(normalPrice);
         }
         return priceContainer;

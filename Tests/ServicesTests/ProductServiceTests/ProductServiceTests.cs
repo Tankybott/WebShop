@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 
 using Models.ViewModels;
 using Models.DTOs;
-using Models.ProductModel;
 using Services.ProductManagement.Interfaces;
 using ControllersServices.ProductManagement;
 using Models.FormModel;

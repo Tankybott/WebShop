@@ -18,7 +18,7 @@ public abstract class QueueProcessBackgroundService<TEntity> : BackgroundService
     }
 
     protected abstract Task InitializeQueueAsync(IUnitOfWork unitOfWork);
-    protected abstract void ProcessAsync(TEntity entity, IUnitOfWork unitOfWork);
+    protected abstract void Process(TEntity entity, IUnitOfWork unitOfWork);
     protected abstract bool ShouldProcess(TEntity entity, DateTime now);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -53,7 +53,7 @@ public abstract class QueueProcessBackgroundService<TEntity> : BackgroundService
 
                     await _entityQueue.DequeueAsync();
 
-                    ProcessAsync(entity, unitOfWork);
+                    Process(entity, unitOfWork);
                     wasProcessed = true;
                 }
 

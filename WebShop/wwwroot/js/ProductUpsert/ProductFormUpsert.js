@@ -1,6 +1,6 @@
 "use strict";
 class ProductFormUpsert {
-    constructor(productId, discountId, nameId, categoryId, priceId, stockQuantity, textEditorSelector, saveButtonSelector, photoUploader, discountHandler) {
+    constructor(productId, discountId, nameId, categoryId, priceId, shippingPriceFactorInputId, stockQuantity, textEditorSelector, saveButtonSelector, photoUploader, discountHandler) {
         this.photoUploader = photoUploader;
         this.discountHandler = discountHandler;
         this.productIdInput = document.querySelector(`#${productId}`);
@@ -8,17 +8,18 @@ class ProductFormUpsert {
         this.nameInput = document.querySelector(`#${nameId}`);
         this.categoryInput = document.querySelector(`#${categoryId}`);
         this.priceInput = document.querySelector(`#${priceId}`);
+        this.shippingPriceFactorInput = document.querySelector(`#${shippingPriceFactorInputId}`);
         this.stockQuantityInput = document.querySelector(`#${stockQuantity}`);
         this.textEditor = document.querySelector(textEditorSelector);
         this.saveButton = document.querySelector(saveButtonSelector);
         this.attachSaveButtonHandler();
+        console.log('ok');
     }
     attachSaveButtonHandler() {
         this.saveButton.addEventListener("click", async (event) => {
             event.preventDefault();
             if (this.validateInputs()) {
                 await this.handleProductUpsert();
-                console.log('dupek');
             }
         });
     }
@@ -33,6 +34,8 @@ class ProductFormUpsert {
         if (!this.validateCategory())
             isValid = false;
         if (!this.validatePrice())
+            isValid = false;
+        if (!this.validateShippingPriceFactor())
             isValid = false;
         if (!this.validateStockQuantity())
             isValid = false;
@@ -70,6 +73,18 @@ class ProductFormUpsert {
         priceValidationParagraph.innerText = "";
         if (!priceValue || isNaN(Number(priceValue)) || parseFloat(priceValue) <= 0) {
             priceValidationParagraph.innerText = "Price must be a number greater than 0.";
+            isValid = false;
+        }
+        return isValid;
+    }
+    validateShippingPriceFactor() {
+        var _a;
+        let isValid = true;
+        const priceValue = this.shippingPriceFactorInput.value;
+        const priceValidationParagraph = (_a = this.shippingPriceFactorInput.parentElement) === null || _a === void 0 ? void 0 : _a.querySelector('p');
+        priceValidationParagraph.innerText = "";
+        if (!priceValue || isNaN(Number(priceValue)) || parseFloat(priceValue) <= 0) {
+            priceValidationParagraph.innerText = "Shipping price factor must be a number greater than 0.";
             isValid = false;
         }
         return isValid;
@@ -115,6 +130,7 @@ class ProductFormUpsert {
         formData.append("FullDescription", editorContent);
         formData.append("CategoryId", this.categoryInput.value.trim());
         formData.append("StockQuantity", this.stockQuantityInput.value.trim());
+        formData.append("ShippingPriceFactor", this.shippingPriceFactorInput.value.trim());
         return formData;
     }
     async handleProductUpsert() {

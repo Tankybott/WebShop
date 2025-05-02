@@ -30,6 +30,8 @@ namespace WebShop.Areas.User.Controllers
         {
             try
             {
+                var webshopConfig = await _unitOfWork.WebshopConfig.GetAsync();
+                ViewBag.Currency = webshopConfig.Currency;
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var userCart = await _unitOfWork.Cart.GetAsync(c => c.UserId == userId, includeProperties: "Items,Items.Product,Items.Product.PhotosUrlSets");
 
@@ -87,7 +89,7 @@ namespace WebShop.Areas.User.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> ChangeCartItemQuantity(int cartItemId, int newQuantity)
         {
             try
@@ -125,8 +127,8 @@ namespace WebShop.Areas.User.Controllers
         {
             try
             {
-                var CartItemsWithMaxQuantity = await _cartServices.ValidateCartProductsQuantityAsync(CollectionOfDTOs);
-                return Json(new { success = true, itemsWithMaxQuantity = CartItemsWithMaxQuantity });
+                var maxQuantityOfItems = await _cartServices.ValidateCartProductsQuantityAsync(CollectionOfDTOs);
+                return Json(new { success = true, itemsWithMaxQuantity = maxQuantityOfItems });
             }
             catch (Exception ex)
             {

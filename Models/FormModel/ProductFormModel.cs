@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Models.ProductModel;
-
+using Models.DatabaseRelatedModels;
 
 namespace Models.FormModel
 {

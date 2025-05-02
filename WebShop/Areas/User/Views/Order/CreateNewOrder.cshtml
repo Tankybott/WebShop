@@ -1,0 +1,252 @@
+﻿@using Models.ViewModels
+@model OrderVM
+
+<meta @StaticData.CartIdMetaSelector content="@Model.OrderDetailsAsCartItems.First().CartId">
+
+<div class="container">
+    <div class="card shadow-lg mt-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0 text-center p-2">Create New Order</h3>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <!-- Left Side: Order Header Inputs -->
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input asp-for="OrderHeader.Name" class="form-control" id="@StaticData.NameInputId" />
+                            <label for="@StaticData.NameInputId">Full Name</label>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="OrderHeader.PhoneNumber" class="form-control" id="@StaticData.PhoneInputId" />
+                            <label for="@StaticData.PhoneInputId">Phone Number</label>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="OrderHeader.StreetAdress" class="form-control" id="@StaticData.StreetInputId" />
+                            <label for="@StaticData.StreetInputId">Street Address</label>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="OrderHeader.City" class="form-control" id="@StaticData.CityInputId" />
+                            <label for="@StaticData.CityInputId">City</label>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="OrderHeader.Region" class="form-control" id="@StaticData.RegionInputId" />
+                            <label for="@StaticData.RegionInputId">Region</label>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="OrderHeader.PostalCode" class="form-control" id="@StaticData.PostalCodeInputId" />
+                            <label for="@StaticData.PostalCodeInputId">Postal Code</label>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="OrderHeader.Country" class="form-control" id="@StaticData.CountryInputId" />
+                            <label for="@StaticData.CountryInputId">Country</label>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="mb-5">
+                            <select asp-for="OrderHeader.Carrier"
+                                    asp-items="Model.CarrierListItems"
+                                    class="form-select"
+                                    id="@StaticData.CarrierSelectId"
+                                    required>
+                                <option value="" disabled selected hidden>-- Select a carrier --</option>
+                            </select>
+                            <p class="text-danger mt-1"></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <a asp-area="User" asp-controller="ProductBrowser" asp-action="Index" class="btn btn-outline-primary text-uppercase"><small>Continue Shopping</small></a>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Order Items -->
+                    <div class="col-md-6">
+                        <h5 class="mb-3 text-center text-uppercase">Order Items</h5>
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                @if (Model.OrderDetailsAsCartItems != null && Model.OrderDetailsAsCartItems.Any())
+                                {
+                                    foreach (var item in Model.OrderDetailsAsCartItems)
+                                    {
+                                        <div @StaticData.CartItemSelector class="row border-bottom pb-3 mt-1">
+                                            <meta @StaticData.ShippingPriceFactorMetaSelector content="@item.Product.ShippingPriceFactor" />
+                                            <meta @StaticData.QuantityMetaSelector content="@item.ProductQuantity" />
+                                            <meta @StaticData.ItemIDMetaSelector content="@item.Id" />
+
+                                            <div class="col-6 d-flex align-items-center px-4 text-uppercase pt-0">
+                                                <h5 class="fw-bold">@item.Product.Name</h5>
+                                            </div>
+
+                                            <div class="col-3 col-md-3 text-md-right d-flex flex-row flex-lg-column justify-content-center pe-5 pe-lg-0">
+                                                <label class="text-muted px-3 px-lg-0">Price per Item</label>
+                                                <p class="fw-bold">@item.CurrentPrice @Model.Currency</p>
+                                            </div>
+
+                                            <div class="col-3 col-md-3 text-md-right d-flex flex-column justify-content-center align-items-center">
+                                                <label class="text-center text-muted">Quantity</label>
+                                                <p @StaticData.QuantityParagraphSelector>@item.ProductQuantity</p>
+                                            </div>
+                                            <p @StaticData.WarningParagraphSelector class="text-danger col-12 text-center p-1 mt-1"></p>
+                                        </div>          
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-center text-muted">No items in order</p>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Total Price Section -->
+                        <div class="mt-4">
+                            <ul class="list-group mb-4 m-lg-3">
+                                <li class="d-flex flex-column">
+                                    <div class="d-flex gap-2">
+                                        <p class="text-dark fs-5 fw-semibold text-uppercase">Shipping:</p>
+                                        <div class="text-dark fw-bold fs-5 d-flex">
+                                            <p @StaticData.PriceParagraph>0</p>
+                                            <span>&nbsp;@Model.Currency</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <p class="text-dark fs-5 fw-semibold text-uppercase"> Total :</p>
+                                        <div class="text-dark fw-bold fs-5 d-flex">
+                                            <p @StaticData.TotalPriceParagrapSelector>
+                                                @Model.OrderDetailsAsCartItems?.Sum(item => item.CurrentPrice * item.ProductQuantity)
+                                            </p>
+                                            <span>&nbsp;@Model.Currency</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <meta @StaticData.TotalProductsPriceMetaSelector content="@Model.OrderDetailsAsCartItems?.Sum(item => item.CurrentPrice * item.ProductQuantity)" />
+
+                <button @StaticData.PostButtonSelector class="btn btn-success w-100 p-2 text-uppercase mt-3">Create Order</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div @StaticData.LoadingScreenSelector id="loading-overlay">
+    <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+@functions {
+    public struct StaticData
+    {
+        // 📦 Form Input IDs
+        public const string NameInputId = "name";
+        public const string PhoneInputId = "phone-number";
+        public const string StreetInputId = "street-address";
+        public const string CityInputId = "city";
+        public const string RegionInputId = "region";
+        public const string PostalCodeInputId = "postal-code";
+        public const string CountryInputId = "country";
+        public const string CarrierSelectId = "carrier-select";
+
+        // 🛒 Cart & Order Selectors (data-* or ids)
+        public const string SelectCarrierId = "carrier-select";
+        public const string CartItemSelector = "data-cart-item";
+        public const string ShippingPriceFactorMetaSelector = "data-shipping-price-factor";
+        public const string QuantityMetaSelector = "data-quantity";
+        public const string WarningParagraphSelector = "data-warning-paragraph";
+        public const string QuantityParagraphSelector = "data-quantity-paragraph";
+        public const string ItemIDMetaSelector = "data-item-id";
+        public const string CartIdMetaSelector = "data-cart-id";
+
+        // 💸 Price & Totals
+        public const string PriceParagraph = "data-price-paragraph";
+        public const string TotalPriceParagrapSelector = "data-total-price-paragraph";
+        public const string TotalProductsPriceMetaSelector = "data-total-products-price";
+
+        // 🚚 Misc
+        public const string PostButtonSelector = "post-order-button";
+        public const string LoadingScreenSelector = "loading-screen";
+    }
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Order/ShippingPriceCalculator.js"></script>
+    <script src="~/js/Order/OrderInputsValidator.js"></script>
+    <script src="~/js/Cart/CartQuantityValidator.js"></script>
+    <script src="~/js/Utility/SweetAlertDisplayer.js"></script>
+    <script src="~/js/Order/OrderPoster.js"></script>
+
+    <script>
+        (() => {
+            const sweetAlertDisplayer = new SweetAlertDisplayer();
+
+            const shippingPriceCalculator = new ShippingPriceCalculator(
+                "#@StaticData.SelectCarrierId",
+                "[@StaticData.PriceParagraph]",
+                "[@StaticData.LoadingScreenSelector]",
+                "[@StaticData.TotalProductsPriceMetaSelector]",
+                "[@StaticData.TotalPriceParagrapSelector]",
+                "[@StaticData.CartItemSelector]",
+                "[@StaticData.ShippingPriceFactorMetaSelector]",
+                "[@StaticData.QuantityMetaSelector]",
+            );
+
+            const cartItemsQuantityValidator = new CartTextQuantityValidator(
+                "[@StaticData.LoadingScreenSelector]",
+                "[@StaticData.QuantityParagraphSelector]",
+                "[@StaticData.ItemIDMetaSelector]",
+                "[@StaticData.WarningParagraphSelector]",
+                sweetAlertDisplayer
+            );
+
+            const orderFormValidator = new OrderInputsValidator(
+                "@StaticData.NameInputId",
+                "@StaticData.PhoneInputId",
+                "@StaticData.StreetInputId",
+                "@StaticData.CityInputId",
+                "@StaticData.RegionInputId",
+                "@StaticData.PostalCodeInputId",
+                "@StaticData.CountryInputId",
+                "@StaticData.CarrierSelectId"
+            );
+
+            const orderPoster = new OrderPoster(
+                "[@StaticData.PostButtonSelector]",
+                cartItemsQuantityValidator,
+                orderFormValidator,
+
+                "@StaticData.NameInputId",
+                "@StaticData.PhoneInputId",
+                "@StaticData.StreetInputId",
+                "@StaticData.CityInputId",
+                "@StaticData.RegionInputId",
+                "@StaticData.PostalCodeInputId",
+                "@StaticData.CountryInputId",
+                "@StaticData.CarrierSelectId",
+                "[@StaticData.CartIdMetaSelector]"
+            );
+
+            document.querySelector("form")?.addEventListener("submit", async (e) => {
+                const isValid = await cartItemsQuantityValidator.validateCartQuantities();
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        })();
+    </script>
+}

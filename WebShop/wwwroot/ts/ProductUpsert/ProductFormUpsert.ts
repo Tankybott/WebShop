@@ -4,6 +4,7 @@
     private readonly nameInput: HTMLInputElement;
     private readonly categoryInput: HTMLInputElement;
     private readonly priceInput: HTMLInputElement;
+    private readonly shippingPriceFactorInput: HTMLInputElement;
     private readonly stockQuantityInput: HTMLInputElement;
     private readonly textEditor: HTMLElement;
     private readonly saveButton: HTMLButtonElement;
@@ -13,6 +14,7 @@
         nameId: string,
         categoryId: string,
         priceId: string,
+        shippingPriceFactorInputId: string,
         stockQuantity: string,
         textEditorSelector: string,
         saveButtonSelector: string,
@@ -24,11 +26,14 @@
         this.nameInput = document.querySelector(`#${nameId}`) as HTMLInputElement;
         this.categoryInput = document.querySelector(`#${categoryId}`) as HTMLInputElement;
         this.priceInput = document.querySelector(`#${priceId}`) as HTMLInputElement;
+        this.shippingPriceFactorInput = document.querySelector(`#${shippingPriceFactorInputId}`) as HTMLInputElement;
         this.stockQuantityInput = document.querySelector(`#${stockQuantity}`) as HTMLInputElement;
         this.textEditor = document.querySelector(textEditorSelector) as HTMLElement;
         this.saveButton = document.querySelector(saveButtonSelector) as HTMLButtonElement;
 
         this.attachSaveButtonHandler();
+
+        console.log('ok')
     }
 
     private attachSaveButtonHandler(): void {
@@ -37,7 +42,6 @@
 
             if (this.validateInputs()) {
                 await this.handleProductUpsert();
-                console.log('dupek')
             }
         });
     }
@@ -49,6 +53,7 @@
         if (!this.validateName()) isValid = false;
         if (!this.validateCategory()) isValid = false;
         if (!this.validatePrice()) isValid = false;
+        if (!this.validateShippingPriceFactor()) isValid = false;
         if (!this.validateStockQuantity()) isValid = false;
 
         return isValid;
@@ -87,6 +92,20 @@
 
         if (!priceValue || isNaN(Number(priceValue)) || parseFloat(priceValue) <= 0) {
             priceValidationParagraph.innerText = "Price must be a number greater than 0.";
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private validateShippingPriceFactor(): boolean {
+        let isValid = true;
+        const priceValue: string = this.shippingPriceFactorInput.value;
+        const priceValidationParagraph: HTMLParagraphElement = this.shippingPriceFactorInput.parentElement?.querySelector('p') as HTMLParagraphElement;
+        priceValidationParagraph.innerText = "";
+
+        if (!priceValue || isNaN(Number(priceValue)) || parseFloat(priceValue) <= 0) {
+            priceValidationParagraph.innerText = "Shipping price factor must be a number greater than 0.";
             isValid = false;
         }
 
@@ -142,7 +161,8 @@
         formData.append("Price", this.priceInput.value.trim());
         formData.append("FullDescription", editorContent);
         formData.append("CategoryId", this.categoryInput.value.trim());
-        formData.append("StockQuantity", this.stockQuantityInput.value.trim())
+        formData.append("StockQuantity", this.stockQuantityInput.value.trim());
+        formData.append("ShippingPriceFactor", this.shippingPriceFactorInput.value.trim());
         return formData;
     }
 

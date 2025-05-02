@@ -22,6 +22,8 @@ namespace WebShop.DependencyInjections
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            services.AddScoped<ICarrierRepository, CarrierRepository>();
+            services.AddScoped<IWebshopConfigRepository, WebshopConfigRepository>();
             return services;
         }
     }

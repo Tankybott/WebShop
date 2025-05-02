@@ -34,7 +34,9 @@ namespace Services.DiscountService
 
             if (startTime <= DateTime.Now)
             {
-                SetActive(discount);
+                SetActiveAsync(discount);
+                _unitOfWork.Discount.Update(discount);
+                await _unitOfWork.SaveAsync();
             }
             else
             {
@@ -61,7 +63,7 @@ namespace Services.DiscountService
             return discount;
         }
 
-        public void SetActive(Discount discount)
+        public async void SetActiveAsync(Discount discount)
         {
             discount.isActive = true;
         }

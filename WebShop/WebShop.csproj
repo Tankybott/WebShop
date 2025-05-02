@@ -7,14 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\ts\Cart\CartItemQuantityUpdater.ts" />
+    <Content Remove="wwwroot\ts\CarrierFreeShippingSetup.ts" />
     <Content Remove="wwwroot\ts\Cart\CartItemRemover.ts" />
-    <Content Remove="wwwroot\ts\Cart\CartItemsQuantityValidator.ts" />
     <Content Remove="wwwroot\ts\Cart\CartManager.ts" />
     <Content Remove="wwwroot\ts\Cart\CartPoster.ts" />
     <Content Remove="wwwroot\ts\Cart\CartPricesSynchronizationChecker.ts" />
+    <Content Remove="wwwroot\ts\Cart\CartQuantityValidator.ts" />
     <Content Remove="wwwroot\ts\Cart\CartTotalPriceCounter.ts" />
     <Content Remove="wwwroot\ts\DiscountHandler.ts" />
+    <Content Remove="wwwroot\ts\Order\OrderInputsValidator.ts" />
+    <Content Remove="wwwroot\ts\Order\OrderPoster.ts" />
+    <Content Remove="wwwroot\ts\Order\ShippingPriceCalculator.ts" />
     <Content Remove="wwwroot\ts\PhotoUploader.ts" />
     <Content Remove="wwwroot\ts\ProductBrowserAPIManager.ts" />
     <Content Remove="wwwroot\ts\ProductBrowserCardGenerator.ts" />
@@ -57,6 +60,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Stripe.net" Version="48.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,13 +73,16 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="global.d.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Carrier\CarrierFreeShippingSetup.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Cart\CartQuantityValidator.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartItemRemover.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartManager.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\Cart\CartItemsQuantityValidator.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartPoster.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\Cart\CartItemQuantityUpdater.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartPricesSynchronizationChecker.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartTotalPriceCounter.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Order\OrderInputsValidator.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Order\OrderPoster.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Order\ShippingPriceCalculator.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductBrowser\ProductBrowserPagination.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductDetails\CartItemAdder.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ProductDetails\LightBox.ts" />

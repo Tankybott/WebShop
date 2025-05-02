@@ -18,6 +18,8 @@ namespace ControllersServices.ProductBrowserService
         {
             var vm = new ProductBrowserVM();
             vm.Categories = await _unitOfWork.Category.GetAllAsync(tracked: true, sortBy: c => c.Name);
+            var webshopCofig = await _unitOfWork.WebshopConfig.GetAsync();
+            vm.Currency = webshopCofig.Currency;
             return vm;
         }
     }

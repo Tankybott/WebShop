@@ -224,7 +224,7 @@ namespace Tests.ControllersServices.ProductService
             var discount = new Discount { isActive = false };
 
             // Act
-            _discountService.SetActive(discount);
+            _discountService.SetActiveAsync(discount);
 
             // Assert
             Assert.That(discount.isActive, Is.True);

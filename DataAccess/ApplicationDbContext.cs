@@ -23,6 +23,8 @@ namespace DataAccess
         public DbSet<CartItem> CartItem { get; set; }
         public DbSet<OrderDetail> OrderDetail { get; set;}
         public DbSet<OrderHeader> OrderHeaders { get; set;}
+        public DbSet<Carrier> Carrier { get; set; }
+        public DbSet<WebshopConfig> WebshopConfig { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -82,7 +84,10 @@ namespace DataAccess
                 new Category { Id = 14, Name = "Non-Fiction", ParentCategoryId = 3 },
 
                 new Category { Id = 15, Name = "Maciek", ParentCategoryId = 13 }
+            );
 
+            builder.Entity<WebshopConfig>().HasData(
+                new WebshopConfig { Id = 1, SiteName = "Webshop", Currency = "USD", FreeShippingFrom = null }
             );
         }
     }

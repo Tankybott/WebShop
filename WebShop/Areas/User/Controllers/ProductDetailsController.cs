@@ -24,6 +24,8 @@ namespace WebShop.Areas.User.Controllers
             try
             {
                 var product = await _unitOfWork.Product.GetAsync(p => p.Id == productId);
+                var webshopConfig = await _unitOfWork.WebshopConfig.GetAsync();
+                ViewBag.Currency = webshopConfig.Currency;
                 return View("~/Views/Shared/ProductDetails.cshtml", product);
             }
             catch (Exception)

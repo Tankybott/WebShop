@@ -26,7 +26,7 @@ public class DiscountDeletionService : QueueProcessBackgroundService<Discount>
         return discount.EndTime <= now;
     }
 
-    protected override void ProcessAsync(Discount discount, IUnitOfWork unitOfWork)
+    protected override void Process(Discount discount, IUnitOfWork unitOfWork)
     {
         unitOfWork.Discount.Remove(discount);
     }

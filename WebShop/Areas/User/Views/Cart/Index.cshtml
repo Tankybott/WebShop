@@ -39,7 +39,7 @@
                                 {
                                     <div class="col-3 col-md-2 text-md-right d-flex flex-column justify-content-center">
                                         <p class="fw-bold text-muted">Per Item:</p>
-                                        <p class="fw-bold text-muted text-decoration-line-through">@item.Product.Price</p>
+                                        <p class="fw-bold text-muted text-decoration-line-through">@item.Product.Price  @ViewBag.Currency</p>
                                     </div>
                                     <div class="col-3 col-md-2 text-md-right d-flex flex-column justify-content-center fw-bold border border-primary border-2 rounded">
                                         <p class="fw-bold">Per Item NOW:</p>
@@ -52,7 +52,7 @@
                                     </div>
                                     <div class="col-3 col-md-2 text-md-right d-flex flex-column justify-content-center">
                                         <p class="fw-bold">Per Item:</p>
-                                        <p class="fw-bold">@item.CurrentPrice</p>
+                                        <p class="fw-bold">@item.CurrentPrice @ViewBag.Currency</p>
                                     </div>
                                 }
                                 <div class="col-3 col-md-2 text-md-right d-flex flex-column justify-content-center align-items-center">
@@ -76,14 +76,21 @@
                         <ul class="list-group mb-4">
                             <li class="d-flex justify-content-between align-items-center">
                                 <h5 class="text-dark fw-semibold text-uppercase"> Total :</h5>
-                                <h4 @StaticData.TotalPriceHeadingSelector class="text-dark fw-bolder"></h4>
+                                <div class="d-flex gap-1">
+                                    <h4 @StaticData.TotalPriceHeadingSelector class="text-dark fw-bolder"></h4>
+                                    <h4>@ViewBag.Currency</h4>
+                                </div>
+
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-2 offset-md-5">
-                        <button @StaticData.PostButtonSelector class="btn btn-primary border-0 bg-gradient w-100 py-2">Summary</button>
+                        <button @StaticData.PostButtonSelector class="btn btn-primary border-0 bg-gradient w-100 py-2"
+                                disabled="@(Model?.Items != null ? null : "disabled")">
+                            Summary
+                        </button>
                     </div>
                 </div>
             </div>
@@ -118,12 +125,12 @@
 
 @section Scripts {
     <script src="~/js/Cart/CartTotalPriceCounter.js"></script>
-    <script src="~/js/Cart/ItemQuantityUpdater.js"></script>
+    <script src="~/js/Cart/CartItemQuantityUpdater.js"></script>
     <script src="~/js/Utility/SweetAlertDisplayer.js"></script>
     <script src="~/js/Cart/CartPricesSynchronizationChecker.js"></script>
     <script src="~/js/Cart/CartItemRemover.js"></script>
-    <script src="~/js/Cart/CartItemsQuantityValidator.js"></script>
     <script src="~/js/Cart/CartPoster.js"></script>
+    <script src="~/js/Cart/CartQuantityValidator.js"></script>
 
     <script>
         (() => {
@@ -139,12 +146,12 @@
                 `[@StaticData.CartItemIdMetaSelector]`,
                 sweetAlertDisplayer
             );
-            const itemQuantityUpdater = new ItemQuantityUpdater(
+            const itemQuantityUpdater = new CartItemQuantityUpdater(
                 `[@StaticData.inputSelector]`,
                 `[@StaticData.CartItemIdMetaSelector]`,
                 `[@StaticData.LoadingScreenSelector]`,
             );
-            const cartItemsQuantityValidator = new CartItemsQuantityValidator(
+            const cartItemsQuantityValidator = new CartInputQuantityValidator(
                 `[@StaticData.LoadingScreenSelector]`,
                 `[@StaticData.inputSelector]`,
                 `[@StaticData.CartItemIdMetaSelector]`,

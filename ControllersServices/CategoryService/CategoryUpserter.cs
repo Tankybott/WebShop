@@ -19,10 +19,8 @@ namespace Services.CategoryService
         }
 
         public async Task UpsertAsync(CategoryVM categoryVM)
-
         {
-            categoryVM.AllCategories = await _unitOfWork.Category.GetAllAsync();
-            if (categoryVM.Category.Id == 0)
+            if (categoryVM.Category.Id == 0 )
             {
                 _unitOfWork.Category.Add(categoryVM.Category);
                 await _unitOfWork.SaveAsync();

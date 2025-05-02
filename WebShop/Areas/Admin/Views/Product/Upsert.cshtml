@@ -21,6 +21,8 @@
         public const string DiscountStartTimeInputId = "discount-start";
         public const string DiscountEndTimeInputId = "discount-end";
         public const string DiscountPercentageInputId = "discount-percentage";
+        public const string ShippingPriceFactorId = "shipping-price-factor";
+
 
 
         public const string ProductId = "productInput";
@@ -101,6 +103,26 @@
                 <div class="mb-3">
                     <label for="@StaticData.ProductPriceId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Product Price</label>
                     <input asp-for="Product.Price" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ProductPriceId" />
+                    <p class="text-danger"></p>
+                </div>
+
+                <!-- Product Shipping Price Factor -->
+                <div class="mb-3">
+                    <div class="d-flex">
+                        <label for="@StaticData.ShippingPriceFactorId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Product Shipping Price Factor</label>
+                        <button type="button" class="border-0 bg-transparent justify-content-start align-items-start p-3 pt-0 d-none d-xl-flex"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Shipping Price Factor Instructions:
+                                - This value defaults to the product's weight and is used to calculate shipping costs.
+                                - If the selected carrier charges per kg, shipping cost = Shipping Price Factor × price per kg.
+                                - For standard products, leave this as the product's weight.
+                                - If the product is large but lightweight, you can increase this factor to better reflect the actual shipping cost.
+                                - Setting a higher factor will result in a higher shipping price.">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </button>
+                    </div>
+                    <input asp-for="Product.ShippingPriceFactor" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ShippingPriceFactorId" />
                     <p class="text-danger"></p>
                 </div>
 
@@ -218,6 +240,7 @@
                 `@StaticData.ProductNameId`,
                 `@StaticData.ProductCategoryId`,
                 `@StaticData.ProductPriceId`,
+                `@StaticData.ShippingPriceFactorId`,
                 `@StaticData.ProductShortStockQunatityId`,
                 "[@StaticData.ProductTextEditorSelector]",
                 "[@StaticData.SubmitButtonSelector]",

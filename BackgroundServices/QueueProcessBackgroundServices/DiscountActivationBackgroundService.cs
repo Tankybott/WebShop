@@ -26,7 +26,7 @@ public class DiscountActivationService : QueueProcessBackgroundService<Discount>
         return discount.StartTime <= now;
     }
 
-    protected override void ProcessAsync(Discount discount, IUnitOfWork unitOfWork)
+    protected override void Process(Discount discount, IUnitOfWork unitOfWork)
     {
         discount.isActive = true;
         unitOfWork.Discount.Update(discount);

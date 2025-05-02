@@ -1,0 +1,95 @@
+﻿@model Models.DatabaseRelatedModels.Carrier
+
+<div class="container">
+    <div class="card shadow-lg mt-4 p-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0 text-center p-2">Carrier Management</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="Upsert" method="post" class="d-flex flex-column justify-content-center">
+                <input asp-for="Id" hidden />
+
+                <!-- Carrier Name -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Carrier Name</label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Price Type Selection -->
+                <div class="mb-3">
+                    <label class="form-label">Pricing Type</label>
+
+                    <!-- Price per Kg -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="IsPricePerKg" value="true" id="pricePerKg"
+                               checked="@(Model.IsPricePerKg == true || Model.IsPricePerKg == null)" />
+                        <label class="form-check-label" for="pricePerKg">Price per Kg</label>
+                    </div>
+
+                    <!-- Minimal Shipping Price -->
+                    <div class="my-3" data-minimal-shipping>
+                        <div class="d-flex gap-2">
+                            <label asp-for="MinimalShippingPrice" class="form-label">Minimal shipping price</label>
+                            <button type="button" class="border-0 bg-transparent justify-content-start align-items-start p-2 pt-0 d-none d-xl-flex"
+                                    data-toggle="tooltip"
+                                    data-placement="right"
+                                    title="The minimal shipping price is the lowest amount that can be charged for shipping. If set to 0, no minimum shipping price will be applied.">
+                                <i class="bi bi-question-circle-fill"></i>
+                            </button>
+                        </div>
+
+                        <input asp-for="MinimalShippingPrice" type="number" step="0.01" min="0"
+                               class="form-control" id="MinimalShippingPrice" />
+                        <span asp-validation-for="MinimalShippingPrice" class="text-danger"></span>
+                    </div>
+
+                    <!-- Fixed Price -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="IsPricePerKg" value="false" id="fixedPrice"
+                               checked="@(Model.IsPricePerKg == false)" />
+                        <label class="form-check-label" for="fixedPrice">Fixed Price</label>
+                    </div>
+                </div>
+
+                <!-- Price Input -->
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label">Price</label>
+                    <input asp-for="Price" type="number" step="0.01" min="0" class="form-control" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100 mt-3">Save Carrier</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const pricePerKgRadio = document.getElementById("pricePerKg");
+        const fixedPriceRadio = document.getElementById("fixedPrice");
+        const minimalShippingGroup = document.querySelector("[data-minimal-shipping]");
+        const minimalShippingInput = document.getElementById("MinimalShippingPrice");
+
+        function toggleMinimalShipping() {
+            if (pricePerKgRadio.checked) {
+                minimalShippingGroup.style.display = "block";
+                minimalShippingInput.required = true;
+            } else {
+                minimalShippingGroup.style.display = "none";
+                minimalShippingInput.value = 0;
+                minimalShippingInput.required = false;
+            }
+        }
+
+        pricePerKgRadio.addEventListener("change", toggleMinimalShipping);
+        fixedPriceRadio.addEventListener("change", toggleMinimalShipping);
+
+        // Run once on page load
+        toggleMinimalShipping();
+    </script>
+}

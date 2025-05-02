@@ -1,9 +1,6 @@
 ﻿using DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
-using Models;
-using Models.DatabaseRelatedModels;
 using Serilog;
-using SkiaSharp;
 namespace DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork
@@ -18,6 +15,8 @@ namespace DataAccess.Repository
         public IOrderHeaderRepository OrderHeader { get; private set; }
         public IOrderDetailRepository OrderDetail { get; private set; }
         public IApplicationUserRepository ApplicationUser { get; private set; }
+        public ICarrierRepository Carrier { get; private set; }
+        public IWebshopConfigRepository WebshopConfig { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db, ICategoryRepository category,
             IProductRepository product,
@@ -25,7 +24,11 @@ namespace DataAccess.Repository
             IPhotoUrlsSetRepository photoUrlsSet,
             ICartRepository cart,
             ICartItemRepository cartItem,
-            IApplicationUserRepository applicationUser, IOrderDetailRepository orderDetail, IOrderHeaderRepository orderHeader)
+            IApplicationUserRepository applicationUser,
+            IOrderDetailRepository orderDetail,
+            IOrderHeaderRepository orderHeader,
+            ICarrierRepository carrier,
+            IWebshopConfigRepository webshopConfig)
         {
             _db = db;
             Category = category;
@@ -37,6 +40,8 @@ namespace DataAccess.Repository
             ApplicationUser = applicationUser;
             OrderDetail = orderDetail;
             OrderHeader = orderHeader;
+            Carrier = carrier;
+            WebshopConfig = webshopConfig;
         }
 
         public async Task SaveAsync()

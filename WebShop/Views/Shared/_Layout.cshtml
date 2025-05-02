@@ -19,14 +19,14 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebShop</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav mi-auto">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="User" asp-controller="Home" asp-action="Index">Home</a>
@@ -37,8 +37,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="User" asp-controller="ProductBrowser" asp-action="Index">Browse Products</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="User" asp-controller="Order" asp-action="Index">Orders</a>
+                        </li>
                         @if (User.IsInRole(IdentityRoleNames.AdminRole) || User.IsInRole(IdentityRoleNames.HeadAdminRole))
                         {
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Content Managment</a>
                                 <ul class="dropdown-menu">
@@ -48,12 +52,18 @@
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Admin Products</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Carrier" asp-action="Index">Admin Products</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="WebshopSettings" asp-action="Update">Settings</a>
+                                    </li>
                                 </ul>
                             </li>
                         }
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item d-flex align-items-center justify-content-center border border-primary rounded border-2 p-1">F
+                            <li class="nav-item d-flex align-items-center justify-content-center border border-primary rounded border-2 p-1">
                                 <partial name="_CartPartial" />
                             </li>
                         }
@@ -63,6 +73,7 @@
                 </div>
             </div>
         </nav>
+
     </header>
     <div class="">
         <main role="main" class="pb-3 d-flex justify-content-center">

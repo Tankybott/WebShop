@@ -17,7 +17,7 @@ namespace Tests.Services.CartServicesTests
         private Mock<ICartItemRemover> _mockCartItemRemover;
         private Mock<ICartItemAdder> _mockCartItemAdder;
         private Mock<ICartItemQuantityUpdater> _mockCartItemQuantityUpdater;
-        private Mock<ICartItemQuantityValidator> _mockCartItemQuantityValidator;
+        private Mock<ICartItemQuantitySyncService> _mockCartItemQuantityValidator;
         private ICartServices _cartServices;
 
         [SetUp]
@@ -28,7 +28,7 @@ namespace Tests.Services.CartServicesTests
             _mockCartItemRemover = new Mock<ICartItemRemover>();
             _mockCartItemAdder = new Mock<ICartItemAdder>();
             _mockCartItemQuantityUpdater = new Mock<ICartItemQuantityUpdater>();
-            _mockCartItemQuantityValidator = new Mock<ICartItemQuantityValidator>();
+            _mockCartItemQuantityValidator = new Mock<ICartItemQuantitySyncService>();
 
             _cartServices = new CartServices(
                 _mockCartPriceSynchronizer.Object,
@@ -91,7 +91,7 @@ namespace Tests.Services.CartServicesTests
             };
 
             _mockCartItemQuantityValidator
-                .Setup(v => v.ValidateItemsQuantity(cartItemsToCheck))
+                .Setup(v => v.AdjustOvercountedItemsQuantityAsync(cartItemsToCheck))
                 .ReturnsAsync(cartItemsToCheck);
 
             // Act
@@ -99,7 +99,7 @@ namespace Tests.Services.CartServicesTests
 
             // Assert
             Assert.That(result, Is.EqualTo(cartItemsToCheck));
-            _mockCartItemQuantityValidator.Verify(v => v.ValidateItemsQuantity(cartItemsToCheck), Times.Once);
+            _mockCartItemQuantityValidator.Verify(v => v.AdjustOvercountedItemsQuantityAsync(cartItemsToCheck), Times.Once);
         }
 
         [Test]
