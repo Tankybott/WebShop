@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Services.CartServices.Interfaces;
 using System.Security.Claims;
-using Models;
+using Models; 
 
 namespace WebShop.ProgramConfiguration
 {
@@ -12,7 +12,8 @@ namespace WebShop.ProgramConfiguration
     {
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -27,7 +28,6 @@ namespace WebShop.ProgramConfiguration
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
                 options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = true;
             });
 
             services.ConfigureApplicationCookie(options =>
@@ -48,12 +48,19 @@ namespace WebShop.ProgramConfiguration
                     OnSigningOut = async context =>
                     {
                         var unitOfWork = context.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+
+
                         var userId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                         if (!string.IsNullOrEmpty(userId))
                         {
+                            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                            {
+                                new Claim(ClaimTypes.NameIdentifier, userId)
+                            }, context.Options.LoginPath));
+
                             var cart = await unitOfWork.Cart.GetAsync(c => c.UserId == userId);
-                            if (cart != null)
+                            if (cart != null) 
                             {
                                 cart.ExpiresTo = DateTime.Now.AddMinutes(2);
                                 unitOfWork.Cart.Update(cart);
@@ -65,6 +72,7 @@ namespace WebShop.ProgramConfiguration
                     OnValidatePrincipal = async context =>
                     {
                         var unitOfWork = context.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+                        
 
                         if (context.Principal.Identity?.IsAuthenticated == true)
                         {
