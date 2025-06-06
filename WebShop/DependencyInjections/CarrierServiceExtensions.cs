@@ -21,7 +21,6 @@ namespace WebShop.DependencyInjections
             services.AddScoped<ICartItemAdder, CartItemAdder>();
             services.AddScoped<ICartItemQuantityUpdater, CartItemQuantityUpdater>();
             services.AddScoped<ICartItemQuantitySyncService, CartItemQuantitySyncService>();
-            services.AddScoped<ICartDeletionQueueManager, CartDeletionQueueManager>();
             return services;
         }
     }

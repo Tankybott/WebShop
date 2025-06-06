@@ -15,6 +15,7 @@
     <Content Remove="wwwroot\ts\Cart\CartQuantityValidator.ts" />
     <Content Remove="wwwroot\ts\Cart\CartTotalPriceCounter.ts" />
     <Content Remove="wwwroot\ts\DiscountHandler.ts" />
+    <Content Remove="wwwroot\ts\OrderDetails\OrderDetailsHandler.ts" />
     <Content Remove="wwwroot\ts\Order\OrderInputsValidator.ts" />
     <Content Remove="wwwroot\ts\Order\OrderPoster.ts" />
     <Content Remove="wwwroot\ts\Order\ShippingPriceCalculator.ts" />
@@ -36,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mailjet.Api" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2">
@@ -80,6 +82,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartPoster.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartPricesSynchronizationChecker.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cart\CartTotalPriceCounter.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\OrderDetails\OrderDetailsHandler.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Order\OrderInputsValidator.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Order\OrderPoster.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Order\ShippingPriceCalculator.ts" />

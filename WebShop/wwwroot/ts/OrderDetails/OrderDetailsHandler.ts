@@ -1,0 +1,104 @@
+﻿class OrderDetailHandler {
+    private readonly processingButton: HTMLButtonElement;
+    private readonly idInput: HTMLInputElement;
+    private readonly sweetAlert: SweetAlertDisplayer;
+    private readonly form: HTMLFormElement;
+    private readonly formInputs: NodeListOf<HTMLInputElement>;
+    private readonly isValidToSend: boolean;
+    private readonly sendButton: HTMLButtonElement;
+
+    constructor(
+        orderIdInpuId: string,
+        processingButtonId: string,
+        formId: string,
+        sendButtonId: string,
+        sweetAlert: SweetAlertDisplayer
+    ) {
+        this.processingButton = document.querySelector(processingButtonId) as HTMLButtonElement;
+        this.idInput = document.querySelector(orderIdInpuId) as HTMLInputElement;
+        this.form = document.querySelector(formId) as HTMLFormElement;
+        this.formInputs = this.form.querySelectorAll("input");
+        this.sweetAlert = sweetAlert;
+        this.sendButton = document.querySelector(sendButtonId) as HTMLButtonElement;
+
+        this.isValidToSend = this.checkInputsValidity();
+        if (this.processingButton) this.processingButton.addEventListener("click", this.handleStartProcessingClick.bind(this));
+        if (this.sendButton) this.sendButton.addEventListener("click", this.handleSendClick.bind(this));
+        
+    }
+
+    private checkInputsValidity(): boolean {
+        for (const input of this.formInputs) {
+            if (input.type === "date") {
+                if (!input.value || input.value === "0001-01-01") {
+                    return false;
+                }
+            } else {
+                if (!input.value.trim()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private async handleStartProcessingClick(e: Event): Promise<void> {
+        console.log("wysyla")
+        e.preventDefault();
+
+        const orderId = this.idInput?.value;
+        if (!orderId) return;
+
+        try {
+            const baseUrl = window.location.origin;
+            const response = await fetch(`${baseUrl}/User/Order/StartProcessing`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(orderId)
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
+            }
+        } catch {
+            this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
+        } finally {
+            location.reload();
+        }
+    }
+
+    private async handleSendClick(e: Event): Promise<void> {
+        console.log("leci")
+        e.preventDefault();
+
+        const orderId = this.idInput?.value;
+        if (!orderId) return;
+        if (!this.isValidToSend) {
+            this.sweetAlert.FireSweetAlert("Update order info!!!", "You must first update order information to set order sent...", () => { });
+            return;
+        }
+
+        try {
+            const baseUrl = window.location.origin;
+            const response = await fetch(`${baseUrl}/User/Order/SetOrderSent`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(orderId)
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
+            } 
+        } catch {
+            this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
+        } finally {
+            location.reload();
+        }
+    }
+}

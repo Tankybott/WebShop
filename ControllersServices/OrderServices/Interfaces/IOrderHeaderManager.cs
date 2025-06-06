@@ -8,5 +8,6 @@ namespace Services.OrderServices.Interfaces
     {
         void AddUserDataToOrderHeader(OrderHeader orderHeader, ApplicationUser currentApplicationUser);
         Task<OrderHeader> CreateAsync(OrderFormModel formModel);
+        Task UpdateAsync(OrderHeader orderHeader);
     }
 }

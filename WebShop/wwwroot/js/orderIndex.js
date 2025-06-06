@@ -83,8 +83,8 @@ function loadDataTable() {
                     }
 
                     return `<div class="text-center">
-                                <a href="/Admin/Order/Details/${data.id}" class="btn btn-primary btn-sm">
-                                    View
+                                <a href="/user/Order/Details/${data.id}" class="btn btn-primary btn-sm">
+                                    Details
                                 </a>
                             </div>`;
                 },

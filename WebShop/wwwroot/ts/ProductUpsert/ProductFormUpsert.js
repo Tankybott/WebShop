@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 class ProductFormUpsert {
-    constructor(productId, discountId, nameId, categoryId, priceId, shortDescriptionId, textEditorSelector, saveButtonSelector, photoUploader, discountHandler) {
+    constructor(productId, discountId, nameId, categoryId, priceId, shippingPriceFactorInputId, stockQuantity, textEditorSelector, saveButtonSelector, photoUploader, discountHandler) {
         this.photoUploader = photoUploader;
         this.discountHandler = discountHandler;
         this.productIdInput = document.querySelector(`#${productId}`);
@@ -17,17 +17,18 @@ class ProductFormUpsert {
         this.nameInput = document.querySelector(`#${nameId}`);
         this.categoryInput = document.querySelector(`#${categoryId}`);
         this.priceInput = document.querySelector(`#${priceId}`);
-        this.shortDescriptionInput = document.querySelector(`#${shortDescriptionId}`);
+        this.shippingPriceFactorInput = document.querySelector(`#${shippingPriceFactorInputId}`);
+        this.stockQuantityInput = document.querySelector(`#${stockQuantity}`);
         this.textEditor = document.querySelector(textEditorSelector);
         this.saveButton = document.querySelector(saveButtonSelector);
         this.attachSaveButtonHandler();
+        console.log('ok');
     }
     attachSaveButtonHandler() {
         this.saveButton.addEventListener("click", (event) => __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
             if (this.validateInputs()) {
                 yield this.handleProductUpsert();
-                console.log('dupek');
             }
         }));
     }
@@ -43,7 +44,9 @@ class ProductFormUpsert {
             isValid = false;
         if (!this.validatePrice())
             isValid = false;
-        if (!this.validateShortDescription())
+        if (!this.validateShippingPriceFactor())
+            isValid = false;
+        if (!this.validateStockQuantity())
             isValid = false;
         return isValid;
     }
@@ -71,17 +74,6 @@ class ProductFormUpsert {
         }
         return isValid;
     }
-    validateShortDescription() {
-        var _a;
-        let isValid = true;
-        const shortDescriptionValue = this.shortDescriptionInput.value;
-        const shortDescriptionParagraph = (_a = this.shortDescriptionInput.parentElement) === null || _a === void 0 ? void 0 : _a.querySelector('p');
-        shortDescriptionParagraph.innerText = "";
-        if (!shortDescriptionValue || shortDescriptionValue.length < 1 || shortDescriptionValue.length > 500) {
-            shortDescriptionParagraph.innerText = "Short description must be between 1 and 500 characters.";
-        }
-        return isValid;
-    }
     validatePrice() {
         var _a;
         let isValid = true;
@@ -94,8 +86,44 @@ class ProductFormUpsert {
         }
         return isValid;
     }
+    validateShippingPriceFactor() {
+        var _a;
+        let isValid = true;
+        const priceValue = this.shippingPriceFactorInput.value;
+        const priceValidationParagraph = (_a = this.shippingPriceFactorInput.parentElement) === null || _a === void 0 ? void 0 : _a.querySelector('p');
+        priceValidationParagraph.innerText = "";
+        if (!priceValue || isNaN(Number(priceValue)) || parseFloat(priceValue) <= 0) {
+            priceValidationParagraph.innerText = "Shipping price factor must be a number greater than 0.";
+            isValid = false;
+        }
+        return isValid;
+    }
+    validateStockQuantity() {
+        var _a;
+        let isValid = true;
+        const stockQuantityInputValue = this.stockQuantityInput.value;
+        const stockQuantityParagraph = (_a = this.stockQuantityInput.parentElement) === null || _a === void 0 ? void 0 : _a.querySelector('p');
+        stockQuantityParagraph.innerText = "";
+        if (!stockQuantityInputValue || isNaN(Number(stockQuantityInputValue)) || parseFloat(stockQuantityInputValue) < 0) {
+            stockQuantityParagraph.innerText = "Stock quantity cannot be lower than 0.";
+            isValid = false;
+        }
+        return isValid;
+    }
     getEditorContent() {
-        return this.textEditor.innerHTML.trim();
+        // Clone the editor to prevent modifying the original DOM
+        const editorClone = this.textEditor.cloneNode(true);
+        // Remove tooltips
+        const tooltips = editorClone.querySelectorAll(".ql-tooltip");
+        tooltips.forEach(tooltip => tooltip.remove());
+        // Remove contenteditable attributes from all elements
+        const editableElements = editorClone.querySelectorAll("[contenteditable]");
+        editableElements.forEach(el => el.removeAttribute("contenteditable"));
+        // Optionally sanitize other attributes if needed (e.g., remove styles)
+        const elementsWithStyles = editorClone.querySelectorAll("[style]");
+        elementsWithStyles.forEach(el => el.removeAttribute("style"));
+        // Return the cleaned HTML
+        return editorClone.innerHTML.trim();
     }
     prepareFormData() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -108,10 +136,11 @@ class ProductFormUpsert {
             formData.append("Id", this.productIdInput.value.trim());
             formData.append("DiscountId", this.discountIdInput.value.trim());
             formData.append("Name", this.nameInput.value.trim());
-            formData.append("ShortDescription", this.shortDescriptionInput.value.trim());
             formData.append("Price", this.priceInput.value.trim());
             formData.append("FullDescription", editorContent);
             formData.append("CategoryId", this.categoryInput.value.trim());
+            formData.append("StockQuantity", this.stockQuantityInput.value.trim());
+            formData.append("ShippingPriceFactor", this.shippingPriceFactorInput.value.trim());
             return formData;
         });
     }
@@ -119,6 +148,7 @@ class ProductFormUpsert {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const formData = yield this.prepareFormData();
+                console.log(formData);
                 const response = yield fetch("/Admin/Product/UpsertAjax", {
                     method: "POST",
                     body: formData,

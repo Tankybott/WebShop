@@ -1,10 +1,4 @@
-﻿using Utility.DiscountQueues.Interfaces;
-using Utility.Common;
-using Utility.Common.Interfaces;
-using Utility.Queues;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Services.CartServices.Interfaces;
-using Services.CartServices;
+﻿
 using Services.CarrierService.Interfaces;
 using Services.CarrierService;
 

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseRelatedModels;
 using Models.FormModel;
+using Models.ViewModels;
 using Services.OrderServices.Interfaces;
 using Stripe;
+using Utility.Constants;
 
 namespace WebShop.Areas.User.Controllers
 {
@@ -25,41 +27,39 @@ namespace WebShop.Areas.User.Controllers
         {
             return View();
         }
-        [Authorize]
-        public IActionResult Details(int? orderId) 
-        {
-            return View();
-        }
 
-        //public async Task<IActionResult> OrderSucess(int orderHeaderId)
-        //{
-        //    try
-        //    {
-        //        await _orderService.ProcessSucessPayementAsync(orderHeaderId);
-        //        return Json(new
-        //        {
-        //            success = true,
-        //            paymentRedirectionScuess = true,
-        //        });
-        //    }
-        //    catch (StripeException)
-        //    {
-        //        return Json(new { success = true, paymentRedirectionScuess = false, messege = "There was a problem redirecting to the payment page. Please try to retry the payment from your orders list. If the payment is not completed within 1 hour, the order will be deleted. If the problem persists, please contact the administration." });
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return Json(new
-        //        {
-        //            success = true,
-        //            paymentRedirectionSuccess = false,
-        //            message = "Something went wrong, try again later"
-        //        });
-        //    };
-        //}
         [Authorize]
-        public async Task<IActionResult> CreateNewOrder() {
+        public async Task<IActionResult> CreateNewOrder()
+        {
             var vm = await _orderService.GetVmForNewOrderAsync();
             return View(vm);
+
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Details(int id)
+        {
+            var vm = await _orderService.GetOrderVMByIdAsync(id);
+            return View(vm);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Details(OrderVM vm)
+        {
+            var orderHeader = vm.OrderHeader;
+
+            if (orderHeader != null)
+            {
+                await _orderService.UpdateOrderHeaderAsync(vm.OrderHeader);
+                TempData["success"] = "Order details updated successfully.";
+                return RedirectToAction(nameof(Details), new { id = orderHeader.Id });
+            }
+            else
+            {
+                TempData["error"] = "Something went wrong while updating the order.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         public async Task<IActionResult> OrderConfirmation(int orderHeaderId)
@@ -157,6 +157,46 @@ namespace WebShop.Areas.User.Controllers
             };
         }
 
+        [Authorize(Roles = $"{IdentityRoleNames.AdminRole},{IdentityRoleNames.HeadAdminRole}")]
+        [HttpPost]
+        public async Task<IActionResult> StartProcessing([FromBody] int orderId) 
+        {
+            try 
+            {
+                await _orderService.StartProcessingAsync(orderId);
+                return Json(new
+                {
+                    success = true,
+                });
+            } catch 
+            {
+                return Json(new
+                {
+                    success = false,
+                });
+            }
+        }
+
+        [Authorize(Roles = $"{IdentityRoleNames.AdminRole},{IdentityRoleNames.HeadAdminRole}")]
+        [HttpPost]
+        public async Task<IActionResult> SetOrderSent([FromBody] int orderId) 
+        {
+            try 
+            {
+                await _orderService.SetOrderSentAsync(orderId);
+                return Json(new
+                {
+                    success = true,
+                });
+            }
+            catch
+            {
+                return Json(new
+                {
+                    success = false,
+                });
+            }
+        } 
         #endregion
     }
 }

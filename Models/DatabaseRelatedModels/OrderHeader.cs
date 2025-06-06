@@ -18,7 +18,6 @@ namespace Models.DatabaseRelatedModels
         public DateTime PaymentDate { get; set; }
 
         public string? OrderStatus { get; set; }
-        public string? TrackingNumber { get; set; }
         public string? TrackingLink { get; set; }
         public int? CarrierId { get; set; }
         [ForeignKey("CarrierId")]

@@ -59,5 +59,22 @@ namespace Services.OrderServices
             }
             return vm;
         }
+
+        public async Task<OrderVM> GetVmByIdAsync(int orderHeaderId) 
+        {
+            var vm = new OrderVM();
+            var orderHeader = await _unitOfWork.OrderHeader.GetAsync(
+               h => h.Id == orderHeaderId,
+               includeProperties: "OrderDetails,ApplicationUser,Carrier");
+            var webshopConfig = await _unitOfWork.WebshopConfig.GetAsync();
+            var currency = webshopConfig.Currency;
+            if (orderHeader != null) 
+            {
+                vm.OrderHeader = orderHeader;
+                vm.Currency = currency;
+            }
+
+            return vm;
+        }
     }
 }

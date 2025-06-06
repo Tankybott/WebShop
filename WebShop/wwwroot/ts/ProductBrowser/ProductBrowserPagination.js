@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 class ProductBrowserPagination {
     constructor(paginationArrowSelector, paginationSpacerSelector, paginationEdgeSelector, paginationNumberSelector, paginationBoxSelector, apiManager) {
         this.apiManager = apiManager;
-        this.PAGE_SIZE = 1;
+        this.PAGE_SIZE = 20;
         this.itemsAmount = 0;
         this.activePageNumber = 1;
         this.pagesAmount = 0;
@@ -29,12 +29,11 @@ class ProductBrowserPagination {
         this.paginationNumbers = document.querySelectorAll(paginationNumberSelector);
         this.paginationUl = document.querySelector(paginationBoxSelector);
         this.gatherParentElements();
-        this.resetToDefault();
-        this.initValues();
         this.apiManager.setInitPaginationCallback(this.initPagination.bind(this));
         this.apiManager.setItemsAmountCallback(this.setItemsAmount.bind(this));
         this.addEventListenersToNumbers();
         this.addEventListenersToEdges();
+        this.addEventListenerToArrows();
     }
     gatherParentElements() {
         this.paginationArrows.forEach((arrow) => {
@@ -55,8 +54,11 @@ class ProductBrowserPagination {
         });
     }
     resetToDefault() {
-        this.paginationValues.PageNumber = this.activePageNumber.toString();
+        this.activePageNumber = 1;
+        this.paginationValues.PageNumber = "1";
         this.paginationValues.PageSize = this.PAGE_SIZE.toString();
+        this.initValues();
+        this.initPagination();
     }
     initValues() {
         this.apiManager.ApiCallOptions.PageNumber = this.paginationValues.PageNumber;
@@ -74,6 +76,12 @@ class ProductBrowserPagination {
     }
     initPagination() {
         this.pagesAmount = Math.ceil(this.itemsAmount / this.PAGE_SIZE);
+        if (this.itemsAmount > 0) {
+            this.paginationUl.style.display = 'flex';
+        }
+        else {
+            this.paginationUl.style.display = 'none';
+        }
         this.resetPaginationInterface();
         this.paginationEdges[1].innerText = this.pagesAmount.toString();
         if (this.pagesAmount === 1) {
@@ -91,7 +99,7 @@ class ProductBrowserPagination {
         if (this.pagesAmount > 4 && this.activePageNumber === this.pagesAmount) {
             this.setupForLastActive();
         }
-        if (this.pagesAmount > 4 && this.activePageNumber < this.pagesAmount - 2) {
+        if (this.pagesAmount > 4 && this.activePageNumber < this.pagesAmount - 1) {
             this.setupForOverFourPages();
         }
         this.setupPaginationArrows(this.pagesAmount);
@@ -131,38 +139,26 @@ class ProductBrowserPagination {
         }
     }
     setupForLastActive() {
-        const parent0 = this.paginationNumbers[0].parentElement;
-        const parent1 = this.paginationNumbers[1].parentElement;
-        const parent2 = this.paginationNumbers[2].parentElement;
-        if (parent0) {
-            parent0.style.display = "block";
-            this.paginationNumbers[0].innerText = (this.activePageNumber - 3).toString();
-        }
-        if (parent1) {
-            parent1.style.display = "block";
-            this.paginationNumbers[1].innerText = (this.activePageNumber - 2).toString();
-        }
-        if (parent2) {
-            parent2.style.display = "block";
-            this.paginationNumbers[2].innerText = (this.activePageNumber - 1).toString();
-        }
+        this.paginationNumbersParents[1].style.display = "block";
+        this.paginationNumbers[1].innerText = (this.activePageNumber - 2).toString();
+        this.paginationNumbersParents[2].style.display = "block";
+        this.paginationNumbers[2].innerText = (this.activePageNumber - 1).toString();
     }
     setupForBeforeLastActive() {
-        this.paginationNumbersParents[0].style.display = "block";
-        this.paginationNumbers[0].innerText = (this.activePageNumber - 2).toString();
         this.paginationNumbersParents[1].style.display = "block";
         this.paginationNumbers[1].innerText = (this.activePageNumber - 1).toString();
         this.paginationNumbersParents[2].style.display = "block";
         this.paginationNumbers[2].innerText = (this.activePageNumber).toString();
     }
     setupPaginationSpacers(pagesAmount) {
-        var _a, _b;
-        const parent0 = (_a = this.paginationSpacers[0]) === null || _a === void 0 ? void 0 : _a.parentElement;
-        const parent1 = (_b = this.paginationSpacers[1]) === null || _b === void 0 ? void 0 : _b.parentElement;
-        if (parent0 && this.activePageNumber <= 4)
-            parent0.style.display = "none";
-        if (parent1 && (pagesAmount <= 4 || this.activePageNumber > pagesAmount - 3)) {
-            parent1.style.display = "none";
+        if (pagesAmount <= 4) {
+            this.paginationSpacersParents[0].style.display = "none";
+        }
+        if (this.activePageNumber < 4) {
+            this.paginationSpacersParents[0].style.display = "none";
+        }
+        if (pagesAmount <= 4 || this.activePageNumber > pagesAmount - 3) {
+            this.paginationSpacersParents[1].style.display = "none";
         }
     }
     setupPaginationArrows(pagesAmount) {
@@ -174,6 +170,8 @@ class ProductBrowserPagination {
         }
     }
     setupActivePage(pagesAmount) {
+        if (this.apiManager.ApiCallOptions.PageNumber != "")
+            this.activePageNumber = Number(this.apiManager.ApiCallOptions.PageNumber);
         if (this.activePageNumber === 1) {
             this.paginationEdges[0].classList.add("active");
         }
@@ -190,6 +188,7 @@ class ProductBrowserPagination {
     }
     resetPaginationInterface() {
         this.paginationArrows.forEach((a) => a.classList.remove("disabled"));
+        this.paginationSpacersParents.forEach(p => p.style.display = "block");
         this.paginationNumbers.forEach((n) => {
             n.classList.remove("active");
             const parent = n.parentElement;
@@ -246,6 +245,30 @@ class ProductBrowserPagination {
                 this.apiManager.ApiCallOptions.PageSize = this.PAGE_SIZE.toString();
                 this.apiManager.ApiCallOptions.PageNumber = `${this.pagesAmount}`;
                 this.activePageNumber = this.pagesAmount;
+                yield this.apiManager.getProducts();
+            }
+            catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }));
+    }
+    addEventListenerToArrows() {
+        this.paginationArrows[0].addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+            try {
+                this.apiManager.ApiCallOptions.PageSize = this.PAGE_SIZE.toString();
+                this.apiManager.ApiCallOptions.PageNumber = `${this.activePageNumber - 1}`;
+                this.activePageNumber = this.activePageNumber - 1;
+                yield this.apiManager.getProducts();
+            }
+            catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }));
+        this.paginationArrows[1].addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
+            try {
+                this.apiManager.ApiCallOptions.PageSize = this.PAGE_SIZE.toString();
+                this.apiManager.ApiCallOptions.PageNumber = `${this.activePageNumber + 1}`;
+                this.activePageNumber = this.activePageNumber + 1;
                 yield this.apiManager.getProducts();
             }
             catch (error) {

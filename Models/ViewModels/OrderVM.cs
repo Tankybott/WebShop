@@ -9,8 +9,7 @@ namespace Models.ViewModels
         public OrderHeader? OrderHeader { get; set; }
         public IEnumerable<OrderDetail>? OrderDetails { get; set; }
         public IEnumerable<CartItem>? OrderDetailsAsCartItems { get; set; }
-        public IEnumerable<SelectListItem> CarrierListItems { get; set; }
+        public IEnumerable<SelectListItem>? CarrierListItems { get; set; }
         public string Currency { get; set; }
-        public bool? IsPricePerKg { get; set; }
     }
 }

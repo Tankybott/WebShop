@@ -9,7 +9,7 @@ namespace Models
     {
         [Key]
         public int Id { get; set; }
-        public DateTime? ExpiresTo { get; set; } = DateTime.Now;
+        public DateTime? ExpiresTo { get; set; } = null;
         [ValidateNever]
         public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
         [ForeignKey("User")]

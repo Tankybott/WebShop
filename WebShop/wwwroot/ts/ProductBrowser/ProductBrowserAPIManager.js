@@ -17,10 +17,10 @@ class ProductBrowserApiManager {
     setInitPaginationCallback(callback) {
         this.initPaginationCallback = callback;
     }
-    constructor(itemsDisplayDivSelector, cardGenerator) {
+    constructor(itemsDisplayDivSelector, informationPSelector, cardGenerator) {
         this.cardGenerator = cardGenerator;
         this.ApiCallOptions = {
-            categoryID: "",
+            categoryIDFilter: "",
             typedTextFilter: "",
             minimalPriceFilter: "",
             maximalPriceFilter: "",
@@ -30,9 +30,31 @@ class ProductBrowserApiManager {
             PageSize: ""
         };
         this.itemDisplayDiv = document.querySelector(itemsDisplayDivSelector);
+        this.informationP = document.querySelector(informationPSelector);
+        this.handleBackNavigation();
+    }
+    saveApiCallOptions() {
+        sessionStorage.setItem("ApiCallOptions", JSON.stringify(this.ApiCallOptions));
+    }
+    restoreApiCallOptions() {
+        const savedOptions = sessionStorage.getItem("ApiCallOptions");
+        if (savedOptions) {
+            this.ApiCallOptions = JSON.parse(savedOptions);
+        }
+    }
+    handleBackNavigation() {
+        const navigationEntry = performance.getEntriesByType("navigation")[0];
+        if ((navigationEntry === null || navigationEntry === void 0 ? void 0 : navigationEntry.type) === "back_forward") {
+            this.restoreApiCallOptions();
+            this.getProducts();
+        }
+        else {
+            sessionStorage.removeItem("ApiCallOptions");
+        }
     }
     getProducts() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.saveApiCallOptions();
             const url = `/User/ProductBrowser/GetChoosenProducts?${this.getFilteringString()}`;
             try {
                 const response = yield fetch(url, {
@@ -66,8 +88,11 @@ class ProductBrowserApiManager {
         if (products.length > 0) {
             products.forEach(p => {
                 this.itemDisplayDiv.appendChild(this.cardGenerator.generateProductCard(p));
+                this.informationP.innerText = "";
             });
         }
+        else
+            this.informationP.innerText = "Products not found...";
     }
     cleanItemDisplayDiv() {
         this.itemDisplayDiv.innerHTML = "";

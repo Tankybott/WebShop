@@ -1,11 +1,6 @@
 ﻿using DataAccess.Repository.IRepository;
 using Models.DatabaseRelatedModels;
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Models.FormModel;
 using Utility.Constants;
 using Utility.Common.Interfaces;
@@ -55,5 +50,23 @@ namespace Services.OrderServices
             orderHeader.Country = currentApplicationUser.Country;
         }
 
+        public async Task UpdateAsync(OrderHeader orderHeader) 
+        {
+            var orderHeaderToUpdate = await _unitOfWork.OrderHeader.GetAsync(o => o.Id == orderHeader.Id);
+            if (orderHeaderToUpdate != null) 
+            {
+                orderHeaderToUpdate.Name = orderHeader.Name;
+                orderHeaderToUpdate.PhoneNumber = orderHeader.PhoneNumber;
+                orderHeaderToUpdate.StreetAdress = orderHeader.StreetAdress;
+                orderHeaderToUpdate.City = orderHeader.City;
+                orderHeaderToUpdate.Region = orderHeader.Region;
+                orderHeaderToUpdate.PostalCode = orderHeader.PostalCode;
+                orderHeaderToUpdate.TrackingLink = orderHeader.TrackingLink;
+                orderHeaderToUpdate.ShippingDate = orderHeader.ShippingDate;
+
+                _unitOfWork.OrderHeader.Update(orderHeaderToUpdate);
+                await _unitOfWork.SaveAsync();
+            }
+        }
     }
 }

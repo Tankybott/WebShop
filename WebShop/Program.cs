@@ -6,12 +6,14 @@ using System.Globalization;
 using WebShop.DependencyInjections;
 using WebShop.ProgramConfiguration;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Routing;
 using ControllersServices.ProductManagement;
 using DataAccess.Repository.IRepository;
 using DataAccess.Repository;
-using BackgroundServices.QueueProcessBackgroundServices;
 using Stripe;
+using BackgroundServices.BackgroundProcessors;
+using Mailjet.Client;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Services.EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +59,16 @@ try
     builder.Services.AddCarrierService();
     builder.Services.AddWebshopConfig();
 
+    builder.Services.AddSingleton<IMailjetClient>(sp =>
+    {
+        var config = builder.Configuration.GetSection("Mailjet");
+        var publicKey = config["PublicKey"];
+        var privateKey = config["PrivateKey"];
+        return new MailjetClient(publicKey, privateKey);
+    });
+
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
     //stripe
     StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<String>();
@@ -92,6 +104,9 @@ try
     builder.Services.AddHostedService<DiscountActivationService>();
     builder.Services.AddHostedService<DiscountDeletionService>();
     builder.Services.AddHostedService<CartDeletionBackgroundService>();
+
+    //services.AddHostedService<CartDeletionBackgroundService>();
+    builder.Services.AddHostedService<OrderDeletionBackgroundService>();
 
     // Configure localization
     var cultureInfo = new CultureInfo("en-US");
