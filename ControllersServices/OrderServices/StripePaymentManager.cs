@@ -3,11 +3,6 @@ using Models.DatabaseRelatedModels;
 using Services.OrderServices.Interfaces;
 using Stripe;
 using Stripe.Checkout;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility.Common.Interfaces;
 
 namespace Services.OrderServices

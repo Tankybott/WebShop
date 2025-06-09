@@ -12,8 +12,8 @@ namespace Services.OrderServices.Interfaces
         Task<bool> ProcessSucessPayementAsync(int orderHeaderId);
         Task<IEnumerable<OrderDTO>> GetOrderTableDTOEntitiesAsync();
         Task<OrderVM> GetOrderVMByIdAsync(int orderHeaderId);
-        Task StartProcessingAsync(int orderHeaderId);
+        Task StartProcessingOrderAsync(int orderHeaderId);
         Task UpdateOrderHeaderAsync(OrderHeader orderHeader);
-        Task SetOrderSentAsync(int orderHeaderId);
+        Task SendOrderAsync(int orderHeaderId);
     }
 }

@@ -1,10 +1,12 @@
 ﻿
 
 using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Models.DatabaseRelatedModels;
 using Models.DTOs;
 using Models.FormModel;
 using Models.ViewModels;
+using Services.EmailFactory.interfaces;
 using Services.OrderServices.Interfaces;
 using Stripe.Checkout;
 using Stripe.Climate;
@@ -15,116 +17,41 @@ namespace Services.OrderServices
 {
     public class OrderService : IOrderService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IOrderCreator _orderCreator;
         private readonly IOrderVMManager _orderVMManager;
-        private readonly IOrderStockReducer _orderStockReducer;
-        private readonly IUserRetriver _userRetriver;
         private readonly IOrderHeaderManager _orderHeaderManager;
+        private readonly IOrderStatusManager _orderStatusManager;   
+        private readonly IOrderTableDtoRetriever _orderTableDtoRetriever;
+        private readonly IOrderSuccessPaymentProcessor _orderSuccessPaymentProcessor;
 
-        public OrderService(IUnitOfWork unitOfWork, IUserRetriver userRetriver, IOrderCreator orderCreator, IOrderVMManager orderVMManager, IOrderStockReducer orderStockReducer, IOrderHeaderManager orderHeaderManager)
+        public OrderService(IUnitOfWork unitOfWork, IOrderCreator orderCreator, IOrderVMManager orderVMManager, IOrderStockReducer orderStockReducer, IOrderHeaderManager orderHeaderManager, IOrderStatusManager orderStatusManager, IOrderTableDtoRetriever orderTableDtoRetriever, IOrderSuccessPaymentProcessor orderSuccessPaymentProcessor)
         {
-            _unitOfWork = unitOfWork;
             _orderCreator = orderCreator;
             _orderVMManager = orderVMManager;
-            _orderStockReducer = orderStockReducer;
-            _userRetriver = userRetriver;
             _orderHeaderManager = orderHeaderManager;
+            _orderStatusManager = orderStatusManager;
+            _orderTableDtoRetriever = orderTableDtoRetriever;
+            _orderSuccessPaymentProcessor = orderSuccessPaymentProcessor;
         }
 
-        public async Task<bool> ProcessSucessPayementAsync(int orderHeaderId) 
+        public async Task<bool> ProcessSucessPayementAsync(int orderHeaderId)
         {
-            var orderHeader = await _unitOfWork.OrderHeader.GetAsync(h => h.Id == orderHeaderId, includeProperties: "OrderDetails");
-            if (orderHeader != null)
-            {
-                var service = new SessionService();
-                Session session = service.Get(orderHeader.SessionId);
-                if(session.PaymentStatus.ToLower()=="paid") 
-                {
-                    orderHeader.PaymentIntentId = session.PaymentIntentId;
-                    orderHeader.OrderStatus = OrderStatuses.PaymentConfirmed;
-                    orderHeader.PaymentDate = DateTime.Now;
-                    _unitOfWork.OrderHeader.Update(orderHeader);
-                    await _unitOfWork.SaveAsync();
-                    await _orderStockReducer.ReduceStockByOrderDetailsAsync(orderHeader.OrderDetails);
-                    return true;
-                } else 
-                {
-                    return false;
-                }
-            }
-            else 
-            {
-                return false;
-            }
+            return await _orderSuccessPaymentProcessor.ProcessAsync(orderHeaderId);
         }
 
         public async Task<IEnumerable<OrderDTO>> GetOrderTableDTOEntitiesAsync() 
         {
-            var DTOs = await _unitOfWork.OrderHeader.GetOrderTableDtoAsync();
-            var currentUser = _userRetriver.GetCurrentUser();
-            var currentUserId = _userRetriver.GetCurrentUserId();
-            if (currentUser.IsInRole(IdentityRoleNames.HeadAdminRole) || currentUser.IsInRole(IdentityRoleNames.AdminRole))
-            {
-                return DTOs;
-            }
-            else 
-            {
-                return DTOs.Where(d => d.ApplicationUserId == currentUserId);
-            }
+           return await _orderTableDtoRetriever.GetEntitiesAsync();
         }
 
-        public async Task StartProcessingAsync(int orderHeaderId) 
+        public async Task StartProcessingOrderAsync(int orderHeaderId)
         {
-            var orderToUpdateHeader =  await  _unitOfWork.OrderHeader.GetAsync(o => o.Id == orderHeaderId);
-            if (orderToUpdateHeader != null) 
-            {
-                orderToUpdateHeader.OrderStatus = OrderStatuses.Processing;
-                _unitOfWork.OrderHeader.Update(orderToUpdateHeader);
-                await _unitOfWork.SaveAsync();
-            }
+            await _orderStatusManager.StartProcessingAsync(orderHeaderId);          
         }
 
-        public async Task SetOrderSentAsync(int orderHeaderId) 
+        public async Task SendOrderAsync(int orderHeaderId)
         {
-            var orderHeader = await _unitOfWork.OrderHeader.GetAsync(o => o.Id == orderHeaderId);
-            if (orderHeader != null) 
-            {
-                if (!ValidateOrderToSend(orderHeader)) throw new InvalidOperationException("some of order values are null or empty");
-
-                orderHeader.OrderStatus = OrderStatuses.Shipped;
-                _unitOfWork.OrderHeader.Update(orderHeader);
-                await _unitOfWork.SaveAsync();
-            }
-        }
-
-        private bool ValidateOrderToSend(OrderHeader orderHeader) 
-        {
-            if (orderHeader == null)
-                return false;
-
-            if (string.IsNullOrWhiteSpace(orderHeader.ApplicationUserId)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.OrderStatus)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.TrackingLink)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.SessionId)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.PaymentIntentId)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.PaymentLink)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.Name)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.PhoneNumber)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.StreetAdress)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.City)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.Region)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.PostalCode)) return false;
-            if (string.IsNullOrWhiteSpace(orderHeader.Country)) return false;
-
-            if (orderHeader.ShippingDate == default) return false;
-            if (orderHeader.CreationDate == default) return false;
-            if (orderHeader.PaymentDate == default) return false;
-
-            if (!orderHeader.CarrierId.HasValue) return false;
-
-            return true;
-
+            await _orderStatusManager.SendAsync(orderHeaderId);
         }
 
         public async Task<string> CreateOrderAsync(OrderFormModel formModel) 

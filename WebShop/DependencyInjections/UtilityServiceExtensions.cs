@@ -3,6 +3,8 @@ using Utility.Common;
 using Utility.Common.Interfaces;
 using Utility.Queues;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Services.EmailFactory.interfaces;
+using Services.EmailFactory;
 
 
 namespace WebShop.DependencyInjections
@@ -15,6 +17,7 @@ namespace WebShop.DependencyInjections
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IFileNameCreator, FileNameCreator>();
             services.AddTransient<IBaseUrlRetriever, BaseUrlRetriever>();
+            services.AddTransient<IEmailFactory, EmailFactory>();
 
             services.AddScoped<IImageProcessor, ImageProcessor>();
             services.AddScoped<IUserRetriver, UserRetriver>();

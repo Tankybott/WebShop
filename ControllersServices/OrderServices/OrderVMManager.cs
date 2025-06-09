@@ -71,8 +71,8 @@ namespace Services.OrderServices
             if (orderHeader != null) 
             {
                 vm.OrderHeader = orderHeader;
-                vm.Currency = currency;
             }
+            vm.Currency = currency;
 
             return vm;
         }

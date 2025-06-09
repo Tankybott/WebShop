@@ -13,12 +13,16 @@ namespace WebShop.DependencyInjections
         {
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderHeaderManager, OrderHeaderManager>();
-            services.AddScoped<IOrderDetailsPriceCalculator, OrderDetailsPriceCalculator>();
             services.AddScoped<IOrderDetailsCreator, OrderDetailsCreator>();
             services.AddScoped<IOrderVMManager, OrderVMManager>();
             services.AddScoped<IStripePaymentManager, StripePaymentManager>();
             services.AddScoped<IOrderCreator, OrderCreator>();
             services.AddScoped<IOrderStockReducer, OrderStockReducer>();
+            services.AddScoped<IOrderStatusManager, OrderStatusManager>();
+            services.AddScoped<IOrderTableDtoRetriever, OrderTableDtoRetriever>();
+            services.AddScoped<IOrderSuccessPaymentProcessor, OrderSuccessPaymentProcessor>();
+
+            services.AddTransient<IOrderDetailsPriceCalculator, OrderDetailsPriceCalculator>();
 
             return services;
         }

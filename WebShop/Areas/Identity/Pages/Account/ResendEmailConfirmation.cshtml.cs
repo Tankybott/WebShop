@@ -13,19 +13,23 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Models;
+using Services.EmailFactory.interfaces;
 
 namespace WebShop.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class ResendEmailConfirmationModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IEmailFactory _emailFactory;
 
-        public ResendEmailConfirmationModel(UserManager<IdentityUser> userManager, IEmailSender emailSender)
+        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailFactory emailFactory)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _emailFactory = emailFactory;
         }
 
         /// <summary>
@@ -76,10 +80,16 @@ namespace WebShop.Areas.Identity.Pages.Account
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
+
+            var emailBody = _emailFactory.BuildLinkEmail(
+                 "Please confirm your account by clicking the button below:",
+                 callbackUrl
+             );
+
             await _emailSender.SendEmailAsync(
                 Input.Email,
                 "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                emailBody);
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();

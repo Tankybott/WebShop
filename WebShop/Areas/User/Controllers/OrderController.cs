@@ -1,7 +1,6 @@
 ﻿using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models.DatabaseRelatedModels;
 using Models.FormModel;
 using Models.ViewModels;
 using Services.OrderServices.Interfaces;
@@ -25,40 +24,71 @@ namespace WebShop.Areas.User.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch
+            {
+                TempData["error"] = "Unexpected error while loading the orders list.";
+                return Redirect("/");
+            }
         }
 
         [Authorize]
         public async Task<IActionResult> CreateNewOrder()
         {
-            var vm = await _orderService.GetVmForNewOrderAsync();
-            return View(vm);
-
+            try
+            {
+                var vm = await _orderService.GetVmForNewOrderAsync();
+                return View(vm);
+            }
+            catch
+            {
+                TempData["error"] = "Unexpected error while preparing a new order.";
+                return Redirect("/");
+            }
         }
 
         [Authorize]
         public async Task<IActionResult> Details(int id)
         {
-            var vm = await _orderService.GetOrderVMByIdAsync(id);
-            return View(vm);
+            try
+            {
+                var vm = await _orderService.GetOrderVMByIdAsync(id);
+                return View(vm);
+            }
+            catch
+            {
+                TempData["error"] = "Unexpected error while loading order details.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Details(OrderVM vm)
         {
-            var orderHeader = vm.OrderHeader;
+            try
+            {
+                var orderHeader = vm.OrderHeader;
 
-            if (orderHeader != null)
-            {
-                await _orderService.UpdateOrderHeaderAsync(vm.OrderHeader);
-                TempData["success"] = "Order details updated successfully.";
-                return RedirectToAction(nameof(Details), new { id = orderHeader.Id });
+                if (orderHeader != null)
+                {
+                    await _orderService.UpdateOrderHeaderAsync(orderHeader);
+                    TempData["success"] = "Order details updated successfully.";
+                    return RedirectToAction(nameof(Details), new { id = orderHeader.Id });
+                }
+                else
+                {
+                    TempData["error"] = "Order header not found.";
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            else
+            catch
             {
-                TempData["error"] = "Something went wrong while updating the order.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "Unexpected error while updating order.";
+                return Redirect("/");
             }
         }
 
@@ -163,7 +193,8 @@ namespace WebShop.Areas.User.Controllers
         {
             try 
             {
-                await _orderService.StartProcessingAsync(orderId);
+                await _orderService.StartProcessingOrderAsync(orderId);
+                TempData["success"] = "Order status updated";
                 return Json(new
                 {
                     success = true,
@@ -183,7 +214,8 @@ namespace WebShop.Areas.User.Controllers
         {
             try 
             {
-                await _orderService.SetOrderSentAsync(orderId);
+                await _orderService.SendOrderAsync(orderId);
+                TempData["success"] = "Order status updated";
                 return Json(new
                 {
                     success = true,

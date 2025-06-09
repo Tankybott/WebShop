@@ -32,7 +32,7 @@ function loadDataTable() {
 
                 const statusMap = {
                     "AwaitingPayment": "created",
-                    "PaymentConfirmed": "", // Only match empty string
+                    "PaymentConfirmed": "payment-confirmed", 
                     "Processing": "processing",
                     "Shipped": "shipped"
                 };
