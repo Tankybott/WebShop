@@ -16,6 +16,8 @@ using Mailjet.Client;
 using Utility.Common;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Services.EmailSender;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +62,8 @@ try
     builder.Services.AddOrderServices();
     builder.Services.AddCarrierService();
     builder.Services.AddWebshopConfig();
+
+    builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
 
     builder.Services.AddSingleton<IMailjetClient>(sp =>
     {

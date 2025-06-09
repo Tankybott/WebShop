@@ -5,6 +5,7 @@ using Models.FormModel;
 using Models.ViewModels;
 using Services.OrderServices.Interfaces;
 using Stripe;
+using Utility.Common.Interfaces;
 using Utility.Constants;
 
 namespace WebShop.Areas.User.Controllers
@@ -14,11 +15,17 @@ namespace WebShop.Areas.User.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPdfFileGenerator _pdfFileGenerator;
+        private readonly IOrderTableHTMLBuilder _orderTableHtmlBuilder;
+        private readonly IFileService _fileService;
 
-        public OrderController(IOrderService orderService, IUnitOfWork unitOfWork)
+        public OrderController(IOrderService orderService, IUnitOfWork unitOfWork, IPdfFileGenerator pdfFileGenerator, IOrderTableHTMLBuilder htmlBuilder, IFileService fileService)
         {
             _orderService = orderService;
             _unitOfWork = unitOfWork;
+            _pdfFileGenerator = pdfFileGenerator;
+            _orderTableHtmlBuilder = htmlBuilder;
+            _fileService = fileService;
         }
 
         [Authorize]
@@ -228,7 +235,34 @@ namespace WebShop.Areas.User.Controllers
                     success = false,
                 });
             }
-        } 
+        }
+
+        [Authorize(Roles = $"{IdentityRoleNames.AdminRole},{IdentityRoleNames.HeadAdminRole}")]
+        public async Task<IActionResult> DownloadOrderPdf(int id)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrderHeader.GetAsync(o => o.Id == id, includeProperties: "OrderDetails");
+                if (order == null)
+                {
+                    TempData["error"] = "Order not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var html = _orderTableHtmlBuilder.BuildHtml(order);
+                var filePath = await _pdfFileGenerator.GeneratePdfFromHtmlAsync(html);
+
+                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                await _fileService.DeleteFileAsync(filePath);
+
+                return File(fileBytes, "application/pdf", $"order_{order.Id}.pdf");
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Failed to generate the PDF. Please try again.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
         #endregion
     }
 }

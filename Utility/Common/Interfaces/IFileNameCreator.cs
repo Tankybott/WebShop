@@ -5,7 +5,8 @@ namespace Utility.Common.Interfaces
 {
     public interface IFileNameCreator
     {
-        public string CreateFileName(IFormFile file);
-        public string CreateJpegFileName();
+        string CreateFileName(IFormFile file);
+        string CreateJpegFileName();
+        string CreateFileName(string extension);
     }
 }

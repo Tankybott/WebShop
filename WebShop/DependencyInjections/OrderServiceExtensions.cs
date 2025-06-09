@@ -23,6 +23,7 @@ namespace WebShop.DependencyInjections
             services.AddScoped<IOrderSuccessPaymentProcessor, OrderSuccessPaymentProcessor>();
 
             services.AddTransient<IOrderDetailsPriceCalculator, OrderDetailsPriceCalculator>();
+            services.AddTransient<IOrderTableHTMLBuilder, OrderTableHTMLBuilder>();
 
             return services;
         }

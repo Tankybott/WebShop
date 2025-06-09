@@ -6,12 +6,14 @@
     private readonly formInputs: NodeListOf<HTMLInputElement>;
     private readonly isValidToSend: boolean;
     private readonly sendButton: HTMLButtonElement;
+    private readonly printButton: HTMLButtonElement;
 
     constructor(
         orderIdInpuId: string,
         processingButtonId: string,
         formId: string,
         sendButtonId: string,
+        printButtonId: string,
         sweetAlert: SweetAlertDisplayer
     ) {
         this.processingButton = document.querySelector(processingButtonId) as HTMLButtonElement;
@@ -20,10 +22,12 @@
         this.formInputs = this.form.querySelectorAll("input");
         this.sweetAlert = sweetAlert;
         this.sendButton = document.querySelector(sendButtonId) as HTMLButtonElement;
+        this.printButton = document.querySelector(printButtonId) as HTMLButtonElement;
 
         this.isValidToSend = this.checkInputsValidity();
         if (this.processingButton) this.processingButton.addEventListener("click", this.handleStartProcessingClick.bind(this));
         if (this.sendButton) this.sendButton.addEventListener("click", this.handleSendClick.bind(this));
+        if (this.printButton) this.printButton.addEventListener("click", this.handlePrintClick.bind(this));
         
     }
 
@@ -100,5 +104,22 @@
         } finally {
             location.reload();
         }
+    }
+
+    private handlePrintClick(e: Event): void {
+        e.preventDefault();
+
+        const orderId = this.idInput?.value;
+        if (!orderId) return;
+
+        const baseUrl = window.location.origin;
+        const downloadUrl = `${baseUrl}/User/Order/DownloadOrderPdf/${orderId}`;
+
+        const anchor = document.createElement("a");
+        anchor.href = downloadUrl;
+        anchor.download = `order_${orderId}.pdf`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
     }
 }

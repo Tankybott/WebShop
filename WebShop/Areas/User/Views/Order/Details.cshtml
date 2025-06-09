@@ -10,7 +10,7 @@
                         <i class="fas fa-shopping-cart"></i> &nbsp; Order Summary
                     </div>
                     <div class="col-12 col-md-4 offset-md-2 text-end">
-                        <a asp-action="Index" class="btn bg-danger form-control btn-sm">Back to Orders</a>
+                        <a asp-action="Index" class="btn bg-white text-bg-primary form-control btn-sm">Back to Orders</a>
                     </div>
                 </div>
             </div>
@@ -182,7 +182,7 @@
                             </div>
                             @if (User.IsInRole(IdentityRoleNames.HeadAdminRole) || User.IsInRole(IdentityRoleNames.AdminRole))
                             {
-                                <button type="submit" asp-action="Details" class="btn btn-warning form-control my-1">Update Order Details</button>
+                                <button type="submit" asp-action="Details" class="btn bg-primary form-control my-2">Update Order Details</button>
                             }
                         </div>
                         <div class="col-12 col-lg-5 offset-lg-1">
@@ -214,13 +214,14 @@
                             }
                             @if (User.IsInRole(IdentityRoleNames.HeadAdminRole) || User.IsInRole(IdentityRoleNames.AdminRole))
                             {
+                                <button type="button" id="@StaticData.printPdfButtonId" class="btn btn-primary form-control my-1">Print order as PDF</button>
                                 @if (Model.OrderHeader.OrderStatus == OrderStatuses.PaymentConfirmed)
                                 {
-                                    <button type="button" id="@StaticData.processButtonId" asp-action="StartProcessing" class="btn btn-primary form-control my-1">Start Processing</button>
+                                    <button type="button" id="@StaticData.processButtonId" class="btn btn-primary form-control my-1">Start Processing</button>
                                 }
                                 @if (Model.OrderHeader.OrderStatus == OrderStatuses.Processing)
                                 {
-                                    <button type="button" id="@StaticData.sendButtonId" asp-action="ShipOrder" class="btn btn-primary form-control my-1">Ship Order</button>
+                                    <button type="button" id="@StaticData.sendButtonId"class="btn btn-primary form-control my-1">Ship Order</button>
                                 }
                             }
                         </div>
@@ -238,6 +239,7 @@
         public const string processButtonId = "process-btn";
         public const string formId = "form";
         public const string sendButtonId = "send-button";
+        public const string printPdfButtonId = "print-button";
     }
 }
 
@@ -254,6 +256,7 @@
                 "#@StaticData.processButtonId",
                 "#@StaticData.formId",
                 "#@StaticData.sendButtonId",
+                "#@StaticData.printPdfButtonId",
                 swal
             );
         })();

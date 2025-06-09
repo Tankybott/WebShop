@@ -12,10 +12,16 @@ namespace Utility.Common
             return fileName;
         }
 
+        public string CreateFileName(string extension)
+        {
+            return Guid.NewGuid().ToString() + "." + extension;
+        }
+
         public string CreateJpegFileName()
         {
-            string fileName = Guid.NewGuid().ToString() + ".jpeg";
-            return fileName;
+            return CreateFileName(".jpeg");
         }
+
+
     }
 }
