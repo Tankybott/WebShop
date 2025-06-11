@@ -70,7 +70,7 @@ namespace WebShop.Areas.Admin.Controllers
             {
                 await _productService.UpsertAsync(model);
 
-                TempData["success"] = model.Id != 0 ? "Product upserted successfully" : "Product added successfully";
+                TempData["success"] = model.Id != 0 ? "Product updated successfully" : "Product added successfully";
                 return Json(new { });
             }
             catch (Exception ex)

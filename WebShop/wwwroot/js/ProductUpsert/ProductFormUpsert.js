@@ -136,7 +136,6 @@ class ProductFormUpsert {
     async handleProductUpsert() {
         try {
             const formData = await this.prepareFormData();
-            console.log(formData);
             const response = await fetch("/Admin/Product/UpsertAjax", {
                 method: "POST",
                 body: formData,
@@ -144,15 +143,18 @@ class ProductFormUpsert {
                     "X-Requested-With": "XMLHttpRequest",
                 },
             });
-            if (!response.ok) {
-                throw new Error("Failed to upsert product.");
+            if (response.redirected || response.url.includes("/AccessDenied") || response.url.includes("/Login")) {
+                toastr.error("Access denied.");
+                return;
             }
+            if (!response.ok) {
+                toastr.error("Failed to upsert product. Please try again.");
+                return;
+            }
+            window.location.href = "/Admin/Product/Index";
         }
         catch (error) {
-            console.error("Error during product upsert:", error);
-        }
-        finally {
-            window.location.href = "/Admin/Product/Index";
+            toastr.error("Something went wrong. Try again later.");
         }
     }
 }

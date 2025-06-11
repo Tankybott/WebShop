@@ -62,15 +62,21 @@
                 body: JSON.stringify(orderId)
             });
 
+            if (response.redirected || response.url.includes("/AccessDenied") || response.url.includes("/Login")) {
+                toastr.error("Access denied.");
+                return;
+            }
+
             const result = await response.json();
             if (!result.success) {
-                this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
+                toastr.error("Something went wrong, please try again later.");
             }
-        } catch {
-            this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
-        } finally {
+
             location.reload();
-        }
+        } catch {
+            location.reload();
+            toastr.error("Something went wrong, please try again later.");
+        } 
     }
 
     private async handleSendClick(e: Event): Promise<void> {
@@ -93,15 +99,20 @@
                 body: JSON.stringify(orderId)
             });
 
+            if (response.redirected || response.url.includes("/AccessDenied") || response.url.includes("/Login")) {
+                toastr.error("Access denied.");
+                return;
+            }
+
             const result = await response.json();
             if (!result.success) {
-                this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
+                toastr.error("Something went wrong, please try again later.");
             } 
-        } catch {
-            this.sweetAlert.FireSweetAlert("Something went wrong", "Please try again later.", () => { });
-        } finally {
+
             location.reload();
-        }
+        } catch {location.reload();
+            toastr.error("Something went wrong, please try again later.");
+        } 
     }
 
     private handlePrintClick(e: Event): void {
