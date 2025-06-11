@@ -134,12 +134,8 @@ try
     // Build the app
     var app = builder.Build();
 
-    // Error handling
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler("/User/Home/Error");
-        app.UseHsts();
-    }
+    app.UseExceptionHandler("/User/Home/Error");
+    app.UseHsts();
 
     // Configure middleware
     app.UseHttpsRedirection();
