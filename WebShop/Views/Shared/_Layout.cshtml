@@ -21,53 +21,50 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebShop</a>
+                <a class="navbar-brand" asp-area="User" asp-controller="ProductBrowser" asp-action="Index">WebShop</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav mi-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="User" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="User" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="User" asp-controller="ProductBrowser" asp-action="Index">Browse Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="User" asp-controller="Order" asp-action="Index">Orders</a>
-                        </li>
-                        @if (User.IsInRole(IdentityRoleNames.AdminRole) || User.IsInRole(IdentityRoleNames.HeadAdminRole))
-                        {
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Content Managment</a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Admin Category</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Admin Products</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Carrier" asp-action="Index">Admin Products</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="WebshopSettings" asp-action="Update">Settings</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item d-flex align-items-center justify-content-center border border-primary rounded border-2 p-1">
+                            <li class="nav-item d-flex align-items-center justify-content-center border border-primary rounded border-2 p-1
+                                       order-0 order-lg-last mt-3 mt-lg-0">
                                 <partial name="_CartPartial" />
                             </li>
                         }
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="User" asp-controller="ProductBrowser" asp-action="Index">Browse Products</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                 <a class="nav-link text-dark" asp-area="User" asp-controller="Order" asp-action="Index">Orders</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole(IdentityRoleNames.AdminRole) || User.IsInRole(IdentityRoleNames.HeadAdminRole) || User.IsInRole(IdentityRoleNames.TestAdmin))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Content Management
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-controller="Carrier" asp-action="Index">Carriers</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-controller="WebshopSettings" asp-action="Update">Settings</a></li>
+                                    @if (User.IsInRole(IdentityRoleNames.HeadAdminRole) || User.IsInRole(IdentityRoleNames.TestAdmin))
+                                    {
+
+                                    }
+                                        <li><a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
+                                    </ul>
+                            </li>
+                        }
                     </ul>
                     <partial name="_loginPartial" />
                 </div>
@@ -84,7 +81,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - WebShop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - WebShop - <a asp-area="" asp-controller="ProductBrowser" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -93,6 +90,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tiny.cloud/1/xwhn5sl5nlzrep7giqfdg32ktdu31rywzvjlov1le9n1epyy/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script>
+        if (window.location.hash === '#_=_') {
+            history.replaceState(null, null, window.location.href.split('#')[0]);
+            window.location.reload(); // Force full reload so authentication shows up
+        }
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

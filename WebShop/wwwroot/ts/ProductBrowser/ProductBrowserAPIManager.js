@@ -17,7 +17,7 @@ class ProductBrowserApiManager {
     setInitPaginationCallback(callback) {
         this.initPaginationCallback = callback;
     }
-    constructor(itemsDisplayDivSelector, informationPSelector, cardGenerator) {
+    constructor(itemsDisplayDivSelector, informationPSelector, spinnerDivSelector, cardGenerator) {
         this.cardGenerator = cardGenerator;
         this.ApiCallOptions = {
             categoryIDFilter: "",
@@ -31,6 +31,7 @@ class ProductBrowserApiManager {
         };
         this.itemDisplayDiv = document.querySelector(itemsDisplayDivSelector);
         this.informationP = document.querySelector(informationPSelector);
+        this.spinnerDiv = document.querySelector(spinnerDivSelector);
         this.handleBackNavigation();
     }
     saveApiCallOptions() {

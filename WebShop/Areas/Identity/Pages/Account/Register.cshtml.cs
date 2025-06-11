@@ -121,11 +121,6 @@ namespace WebShop.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(IdentityRoleNames.HeadAdminRole).GetAwaiter().GetResult()) {
-                _roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.HeadAdminRole)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.UserRole)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(IdentityRoleNames.AdminRole)).GetAwaiter().GetResult();
-            }
 
             Input = new()
             {

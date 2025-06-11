@@ -8,7 +8,7 @@ class ProductBrowserApiManager {
     setInitPaginationCallback(callback) {
         this.initPaginationCallback = callback;
     }
-    constructor(itemsDisplayDivSelector, informationPSelector, cardGenerator) {
+    constructor(itemsDisplayDivSelector, informationPSelector, spinnerDivSelector, cardGenerator) {
         this.cardGenerator = cardGenerator;
         this.ApiCallOptions = {
             categoryIDFilter: "",
@@ -22,7 +22,9 @@ class ProductBrowserApiManager {
         };
         this.itemDisplayDiv = document.querySelector(itemsDisplayDivSelector);
         this.informationP = document.querySelector(informationPSelector);
+        this.spinnerDiv = document.querySelector(spinnerDivSelector);
         this.handleBackNavigation();
+        this.getProducts();
     }
     saveApiCallOptions() {
         sessionStorage.setItem("ApiCallOptions", JSON.stringify(this.ApiCallOptions));
@@ -46,6 +48,7 @@ class ProductBrowserApiManager {
     async getProducts() {
         this.saveApiCallOptions();
         const url = `/User/ProductBrowser/GetChoosenProducts?${this.getFilteringString()}`;
+        this.spinnerDiv.style.display = "flex";
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -65,6 +68,9 @@ class ProductBrowserApiManager {
         }
         catch (error) {
             console.error('Error during API call:', error);
+        }
+        finally {
+            this.spinnerDiv.style.display = "none";
         }
     }
     getFilteringString() {

@@ -4,7 +4,6 @@
         currencyMetaSelector: string
     ) {
         this.currencyMeta = document.querySelector(currencyMetaSelector) as HTMLMetaElement;
-        console.log('ok')
     }
 
     public generateProductCard(productDto: IProductDTO): HTMLDivElement {

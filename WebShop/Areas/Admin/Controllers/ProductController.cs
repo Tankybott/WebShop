@@ -8,7 +8,7 @@ using Utility.Constants;
 namespace WebShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
+    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole + "," + IdentityRoleNames.TestAdmin)]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -29,7 +29,7 @@ namespace WebShop.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 TempData["error"] = "Something went wrong, try again later";
-                return RedirectToAction("Index", "Home", new { area = "User" });
+                return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
         }
 
@@ -49,7 +49,6 @@ namespace WebShop.Areas.Admin.Controllers
         }
 
         #region Api Calls
-
         [HttpGet]
         public async Task<IActionResult> GetAllForTable(int? categoryFilter, string? productFilterOption)
         {
@@ -57,6 +56,7 @@ namespace WebShop.Areas.Admin.Controllers
             return Json(new { data = products });
         }
 
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpPost]
         public async Task<IActionResult> UpsertAjax([FromForm] ProductFormModel model)
         {
@@ -80,6 +80,7 @@ namespace WebShop.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

@@ -155,8 +155,8 @@ namespace WebShop.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-            // Get the information about the user from the external login provider
+            returnUrl ??= Url.Content("~/");
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
@@ -175,55 +175,52 @@ namespace WebShop.Areas.Identity.Pages.Account
                 user.PhoneNumber = Input.PhoneNumber;
                 user.Name = Input.Name;
                 user.Region = Input.Region;
+                user.PostalCode = Input.PostalCode;
+                user.Country = Input.Country;
+                user.EmailConfirmed = true;
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, IdentityRoleNames.UserRole);
                     result = await _userManager.AddLoginAsync(user, info);
+
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
-                        var userId = await _userManager.GetUserIdAsync(user);
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                           "/Account/ConfirmEmail",
-                           pageHandler: null,
-                           values: new { area = "Identity", userId = userId, code = code },
-                           protocol: Request.Scheme);
+                        var message = "WebShop account registered via external provider";
+                        var paragraphs = new[]
+                        {
+                    $"You have successfully registered using <strong>{info.LoginProvider}</strong>.",
+                    "Your email has been automatically confirmed and you can start shopping right away.",
+                    "If you did not perform this action, please contact our support team immediately."
+                };
 
-                        var emailBody = _emailFactory.BuildLinkEmail(
-                            "Please confirm your account by clicking the button below:",
-                            callbackUrl
-                        );
+                        var emailBody = _emailFactory.BuildInformationEmail(message, paragraphs);
 
                         await _emailSender.SendEmailAsync(
                             Input.Email,
-                            "Confirm your email",
-                            emailBody);
-
-                        // If account confirmation is required, we need to show the link if we don't have a real email sender
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                        }
+                            "Your WebShop Account Has Been Created",
+                            emailBody
+                        );
 
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            ProviderDisplayName = info.ProviderDisplayName;
+            ProviderDisplayName = info?.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();
         }
+
 
         private ApplicationUser CreateUser()
         {

@@ -88,7 +88,7 @@
                 const id = "otherPhotoUploadInput"
                 input.type = "file";
                 input.id = id; 
-                input.accept = "image/png, image/jpeg, image/jpg";
+                input.accept = "image/png, image/jpeg, image/jpg, image/webp";
                 input.style.display = "none";
                 input.addEventListener("change", () => {
                     this.handleOtherPhotoUpload(input);
@@ -191,7 +191,6 @@
             this.photoToUploadUrls = this.photoToUploadUrls.filter(url => url.trim() !== imgSrc.trim());
         } else {
             this.photoToDeleteUrls.push(this.getRelativeUrl(imgSrc));
-            console.log("pushing photo to delte" + imgSrc)
         }
     }
 

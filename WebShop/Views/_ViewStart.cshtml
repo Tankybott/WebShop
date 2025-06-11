@@ -1,3 +1,7 @@
 ﻿@{
     Layout = "_Layout";
+
+    var unitOfWork = Context.RequestServices.GetService<DataAccess.Repository.IRepository.IUnitOfWork>();
+    var config = unitOfWork.WebshopConfig.GetAsync().Result;
+    ViewBag.WebshopName = string.IsNullOrEmpty(config?.SiteName) ? "WebShop" : config.SiteName;
 }

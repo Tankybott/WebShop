@@ -19,7 +19,7 @@ namespace Utility.Common
 
         public string CreateJpegFileName()
         {
-            return CreateFileName(".jpeg");
+            return CreateFileName("jpeg");
         }
 
 

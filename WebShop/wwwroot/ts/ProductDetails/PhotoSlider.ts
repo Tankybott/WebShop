@@ -58,7 +58,6 @@
     private adjustSizes(): void {
         this.itemWidth = this.getWidthOfItem(this.sliderItems[0]);
         this.photoSlider.style.maxWidth = `${this.itemWidth}px`;
-        console.log(this.photoSlider)
         this.photoSlider.classList.remove('opacity-0')
     }
 

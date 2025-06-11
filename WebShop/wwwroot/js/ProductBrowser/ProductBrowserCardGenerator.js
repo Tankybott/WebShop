@@ -2,7 +2,6 @@
 class ProductBrowserCardGenerator {
     constructor(currencyMetaSelector) {
         this.currencyMeta = document.querySelector(currencyMetaSelector);
-        console.log('ok');
     }
     generateProductCard(productDto) {
         const colDiv = this.createMainContainer();

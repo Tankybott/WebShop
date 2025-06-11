@@ -20,7 +20,7 @@ namespace Utility.Common
 
             var samplingOptions = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
 
-            var thumbnail = ResizeToFit(original, 150, 150, samplingOptions);
+            var thumbnail = ResizeToFitBoxPreservingAspectRatio(original, 250, 250, samplingOptions);
             if (thumbnail != null)
             {
                 await SaveImageAsync(thumbnail, outputThumbnailPath, 90);
@@ -34,14 +34,14 @@ namespace Utility.Common
 
             var samplingOptions = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
 
-            var fullSize = ResizeToFit(original, 1200, 800, samplingOptions);
+            var fullSize = ResizeToFitBoxPreservingAspectRatio(original, 1200, 800, samplingOptions);
             if (fullSize != null)
             {
                 await SaveImageAsync(fullSize, outputFullSizePath, 90);
             }
         }
 
-        private SKBitmap ResizeToFit(SKBitmap original, int maxWidth, int maxHeight, SKSamplingOptions samplingOptions)
+        private SKBitmap ResizeToFitBoxPreservingAspectRatio(SKBitmap original, int maxWidth, int maxHeight, SKSamplingOptions samplingOptions)
         {
             float widthRatio = (float)maxWidth / original.Width;
             float heightRatio = (float)maxHeight / original.Height;
@@ -57,7 +57,7 @@ namespace Utility.Common
         {
             using var image = SKImage.FromBitmap(bitmap);
             using var memoryStream = new MemoryStream();
-            image.Encode(SKEncodedImageFormat.Jpeg, quality).SaveTo(memoryStream);
+            image.Encode(SKEncodedImageFormat.Webp, quality).SaveTo(memoryStream);
 
             memoryStream.Position = 0;
             await _fileService.CreateFileAsync(memoryStream, outputPath);

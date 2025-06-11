@@ -72,7 +72,7 @@ namespace WebShop.Areas.User.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = $"{IdentityRoleNames.AdminRole},{IdentityRoleNames.HeadAdminRole}")]
         [HttpPost]
         public async Task<IActionResult> Details(OrderVM vm)
         {
@@ -111,13 +111,13 @@ namespace WebShop.Areas.User.Controllers
                 else
                 {
                     TempData["error"] = "Something went wrong. Please check your order status in the orders table and verify it via email. If you encounter any issues, contact the administration.";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "ProductBrowser");
                 }
             }
             catch (Exception ex) 
             {
                 TempData["error"] = "Something went wrong. Please check your order status in the orders table and verify it via email. If you encounter any issues, contact the administration.";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "ProductBrowser");
             }
         }
 

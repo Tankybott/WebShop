@@ -18,5 +18,6 @@ namespace DataAccess.Repository.IRepository
         void RemoveRange(IEnumerable<T> entities);
         void UpdateRange(IEnumerable<T> entities);
         void Detach(T entity);
+        public bool Any(Expression<Func<T, bool>> predicate);
     }
 }

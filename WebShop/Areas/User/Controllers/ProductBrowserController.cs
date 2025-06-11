@@ -27,7 +27,7 @@ namespace WebShop.Areas.User.Controllers
             catch (Exception)
             {
                 TempData["error"] = "Something went wrong, try again later";
-                return RedirectToAction("Index", "Home", new { area = "User" });
+                return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
         }
 

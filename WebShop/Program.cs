@@ -19,6 +19,10 @@ using Services.EmailSender;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 
+using Services.UsersServices;
+using Microsoft.AspNetCore.Identity;
+using Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Get environment name
@@ -62,6 +66,7 @@ try
     builder.Services.AddOrderServices();
     builder.Services.AddCarrierService();
     builder.Services.AddWebshopConfig();
+    builder.Services.AddScoped<IUsersService, UsersService>();
 
     builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
 
@@ -147,19 +152,19 @@ try
     // Configure endpoint routing
     app.MapControllerRoute(
         name: "default",
-        pattern: "{area=User}/{controller=Home}/{action=Index}/{id?}");
+        pattern: "{area=User}/{controller=ProductBrowser}/{action=Index}/{id?}");
     app.MapRazorPages();
 
-    // Debugging: Print available endpoints
-    app.Use(async (context, next) =>
+    // Seed roles and users
+    using (var scope = app.Services.CreateScope())
     {
-        var endpointDataSource = context.RequestServices.GetRequiredService<EndpointDataSource>();
-        foreach (var endpoint in endpointDataSource.Endpoints)
-        {
-            Console.WriteLine(endpoint.DisplayName);
-        }
-        await next();
-    });
+        var services = scope.ServiceProvider;
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var config = services.GetRequiredService<IConfiguration>();
+
+        await DbInitializer.SeedRolesAndAdminsAsync(roleManager, userManager, config);
+    }
 
     // Run the app
     app.Run();

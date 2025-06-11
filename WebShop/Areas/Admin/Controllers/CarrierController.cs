@@ -10,7 +10,7 @@ using Utility.Constants;
 namespace WebShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
+    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole + "," + IdentityRoleNames.TestAdmin)]
     public class CarrierController : Controller
     {
         private readonly ICarrierService _carrierService;
@@ -31,7 +31,7 @@ namespace WebShop.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 TempData["error"] = "Something went wrong, try again later";
-                return RedirectToAction("Index", "Home", new { area = "User" });
+                return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
         }
 
@@ -44,11 +44,12 @@ namespace WebShop.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 TempData["error"] = "Something went wrong, try again later";
-                return RedirectToAction("Index", "Home", new { area = "User" });
+                return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
         }
 
-        [HttpPost]
+       [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
+       [HttpPost]
         public async Task<IActionResult> Upsert(Carrier carrier)
         {
             try
@@ -79,6 +80,7 @@ namespace WebShop.Areas.Admin.Controllers
             return Json(new { data = carriers });
         }
 
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
@@ -94,6 +96,7 @@ namespace WebShop.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpPut]
         public async Task<IActionResult> SetFreeShippingFromPrice([FromBody] decimal? price) 
         {

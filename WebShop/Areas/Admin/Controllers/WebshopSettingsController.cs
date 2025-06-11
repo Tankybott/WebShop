@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models.ViewModels;
 using Services.WebshopConfigServices.Interfaces;
+using Utility.Constants;
 
 namespace WebShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole + "," + IdentityRoleNames.TestAdmin)]
     public class WebshopSettingsController : Controller
     {
         private readonly IWebshopSettingsServices _webshopSettingsServices;
@@ -19,6 +22,7 @@ namespace WebShop.Areas.Admin.Controllers
             return View(await _webshopSettingsServices.GetVmAsync());
         }
 
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpPost]
         public async Task<IActionResult> Update(WebshopSettingsVm vm)
         {

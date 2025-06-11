@@ -1,5 +1,7 @@
 ﻿using DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Models;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace DataAccess.Repository
@@ -99,6 +101,11 @@ namespace DataAccess.Repository
             {
                 entry.State = EntityState.Detached;
             }
+        }
+
+        public bool Any(Expression<Func<T, bool>> predicate)
+        {
+            return dbSet.Any(predicate);
         }
     }
 }

@@ -3,7 +3,6 @@ class ProductBrowserFilter {
     constructor(textInputId, minimalPriceInputId, maximalPirceInputId, showOnlyDiscountedCheckboxId, sortBySelectId, clearButtonSelector, applyButtonSelector, productBrowserApiManager, pagination) {
         this.productBrowserApiManager = productBrowserApiManager;
         this.pagination = pagination;
-        console.log(clearButtonSelector);
         this.textInput = document.querySelector(`#${textInputId}`);
         this.minimalPriceInput = document.querySelector(`#${minimalPriceInputId}`);
         this.maximalPriceInput = document.querySelector(`#${maximalPirceInputId}`);

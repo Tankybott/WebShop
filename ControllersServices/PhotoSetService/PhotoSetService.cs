@@ -25,8 +25,8 @@ namespace Services.PhotoSetService
 
         public async Task<PhotoUrlSet> CreatePhotoSetAsync(IFormFile photo, bool isMain)
         {
-            string thumbnailPhotoFileName = _fileNameCreator.CreateJpegFileName();
-            string fullSizePhotoFileName = _fileNameCreator.CreateJpegFileName();
+            string thumbnailPhotoFileName = _fileNameCreator.CreateFileName("webp");
+            string fullSizePhotoFileName = _fileNameCreator.CreateFileName("webp");
             await _productPhotoService.UploadPhotosFromSet(photo, thumbnailPhotoFileName, fullSizePhotoFileName, ProductImageDirectory);
             return new PhotoUrlSet
             {

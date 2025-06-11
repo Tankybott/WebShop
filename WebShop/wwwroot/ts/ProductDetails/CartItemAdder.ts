@@ -34,7 +34,6 @@
         formData.append("ProductQuantity", this.productQuantityInput.value);
         formData.append("IsAddedWithDiscount", this.productDiscountedMeta.content === "true" ? "true" : "false");
 
-        console.log(this.productDiscountedMeta.content)
 
         try {
             const response = await fetch("AddItemToCart", {

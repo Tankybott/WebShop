@@ -47,7 +47,6 @@
     }
 
     private async handleStartProcessingClick(e: Event): Promise<void> {
-        console.log("wysyla")
         e.preventDefault();
 
         const orderId = this.idInput?.value;
@@ -75,7 +74,6 @@
     }
 
     private async handleSendClick(e: Event): Promise<void> {
-        console.log("leci")
         e.preventDefault();
 
         const orderId = this.idInput?.value;

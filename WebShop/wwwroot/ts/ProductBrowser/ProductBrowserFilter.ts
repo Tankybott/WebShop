@@ -26,7 +26,6 @@ class ProductBrowserFilter {
         private readonly productBrowserApiManager: ProductBrowserApiManager,
         private readonly pagination: ProductBrowserPagination
     ) {
-        console.log(clearButtonSelector)
         this.textInput = document.querySelector(`#${textInputId}`) as HTMLInputElement;
         this.minimalPriceInput = document.querySelector(`#${minimalPriceInputId}`) as HTMLInputElement;
         this.maximalPriceInput = document.querySelector(`#${maximalPirceInputId}`) as HTMLInputElement;

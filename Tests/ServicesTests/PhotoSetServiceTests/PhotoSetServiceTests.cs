@@ -43,13 +43,13 @@ namespace Services.PhotoSetService.Tests
         {
             // Arrange
             var photo = new Mock<IFormFile>().Object;
-            _mockFileNameCreator.Setup(fc => fc.CreateJpegFileName()).Returns("filename.jpg");
+            _mockFileNameCreator.Setup(fc => fc.CreateFileName("webp")).Returns("filename.webp");
 
             // Act
             await _photoSetService.CreatePhotoSetAsync(photo, true);
 
             // Assert
-            _mockPhotoService.Verify(ps => ps.UploadPhotosFromSet(photo, "filename.jpg", "filename.jpg", "images/product"), Times.Once);
+            _mockPhotoService.Verify(ps => ps.UploadPhotosFromSet(photo, "filename.webp", "filename.webp", "images/product"), Times.Once);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Services.PhotoSetService.Tests
         {
             // Arrange
             var photo = new Mock<IFormFile>().Object;
-            _mockFileNameCreator.Setup(fc => fc.CreateJpegFileName()).Returns("filename.jpg");
+            _mockFileNameCreator.Setup(fc => fc.CreateFileName("webp")).Returns("filename.webp");
             _mockPathCreator.Setup(pc => pc.CreateUrlPath(It.IsAny<string>(), It.IsAny<string>()))
                             .Returns((string dir, string file) => $"{dir}/{file}");
 
@@ -65,8 +65,8 @@ namespace Services.PhotoSetService.Tests
             var result = await _photoSetService.CreatePhotoSetAsync(photo, true);
 
             // Assert
-            Assert.That(result.ThumbnailPhotoUrl, Is.EqualTo("images/product/filename.jpg"));
-            Assert.That(result.BigPhotoUrl, Is.EqualTo("images/product/filename.jpg"));
+            Assert.That(result.ThumbnailPhotoUrl, Is.EqualTo("images/product/filename.webp"));
+            Assert.That(result.BigPhotoUrl, Is.EqualTo("images/product/filename.webp"));
             Assert.That(result.IsMainPhoto, Is.True);
         }
 

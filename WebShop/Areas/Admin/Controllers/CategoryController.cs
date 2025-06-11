@@ -10,7 +10,7 @@ using Utility.Constants;
 namespace WebShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
+    [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole + "," + IdentityRoleNames.TestAdmin)]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -30,7 +30,7 @@ namespace WebShop.Areas.Admin.Controllers
             catch (Exception) 
             {
                 TempData["error"] = "Something went wrong, try again later";
-                return RedirectToAction("Index", "Home", new { area = "User" });
+                return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
         }
 
@@ -70,7 +70,7 @@ namespace WebShop.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
         }
-
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpPost]
         public async Task<IActionResult> Upsert(CategoryVM VM)
         {
@@ -102,6 +102,7 @@ namespace WebShop.Areas.Admin.Controllers
             return Json(new { data = categories });
         }
 
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpDelete]
         public async  Task<IActionResult> Delete(int? id)
         {

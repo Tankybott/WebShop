@@ -40,12 +40,12 @@ class CartPricesSynchronizationChecker {
             }
             else {
                 console.error("There was an error when synchronizing cart prices");
-                window.location.href = "/User/Home";
+                window.location.href = "/User/ProductBrowser";
             }
         }
         catch (error) {
             console.error("There was an error when synchronizing cart prices");
-            window.location.href = "/User/Home";
+            window.location.href = "/User/ProductBrowser";
         }
         finally {
             this.loadingScreenDiv.style.display = "none";
@@ -60,12 +60,9 @@ class CartPricesSynchronizationChecker {
             return;
         this.inputs.forEach(input => {
             const cartItemId = this.getCartItemId(input);
-            console.log(cartItemId);
             if (modifiedIds.map(String).includes(cartItemId)) {
                 const warningParagraph = this.getInputWarningParagraph(input);
-                console.log(warningParagraph);
                 if (warningParagraph) {
-                    console.log(warningParagraph);
                     warningParagraph.textContent = "This item's price was adjusted due to price updates.";
                 }
             }

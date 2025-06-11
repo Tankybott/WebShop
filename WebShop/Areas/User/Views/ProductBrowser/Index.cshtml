@@ -26,6 +26,8 @@
         public const string ClearFiltersButtonSelector = "data-clear-filter-button";
 
         public const string CurrencyMetaSelector = "data-currency-meta";
+
+        public const string LoadingScreenSelector = "data-loading-screen";
     }
 }
 
@@ -112,13 +114,22 @@
                         </div>
                     </div>
                 </form>
-                <p class="text-danger fs-3 align-self-center p-4" @StaticData.InformationParagraphSelector>Please choose category...</p>
-                <div @StaticData.ItemsDivSelector class="d-flex flex-wrap p-3" style="row-gap: 1rem"></div>
+                <div class="position-relative" style="min-height: 40vh;">
+                    <div @StaticData.LoadingScreenSelector id="loading-overlay" class="position-absolute top-0 start-0 w-100 h-100 justify-content-center align-items-center bg-white bg-opacity-75" style="z-index: 10; display:none; min-height: 30vh">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <p class="fw-semibold text-primary text-center p-2 mt-2"  @StaticData.InformationParagraphSelector></p>
+                    <div @StaticData.ItemsDivSelector class="d-flex flex-wrap p-3" style="row-gap: 1rem"></div>
+                </div>
+               
                 <ul @StaticData.PaginationBoxSelector class="pagination mt-4 align-self-center" style="display: none">
+
                     <li class="page-item"><a class="page-link" @StaticData.PaginationArrowSelector href="#"><i class="bi bi-chevron-compact-left"></i></a></li>
-                    <li class="page-item"><a class="page-link"  @StaticData.PaginationEdgeSelector href="#"></a></li>
-                    <li class="page-item"><a class="page-link page-link--spacer"  @StaticData.PaginationSpacerSelector href="#">...</a></li>
-                    <li class="page-item"><a class="page-link "  @StaticData.PaginationNuberSelector href="#"></a></li>
+                    <li class="page-item"><a class="page-link" @StaticData.PaginationEdgeSelector href="#"></a></li>
+                    <li class="page-item"><a class="page-link page-link--spacer" @StaticData.PaginationSpacerSelector href="#">...</a></li>
+                    <li class="page-item"><a class="page-link " @StaticData.PaginationNuberSelector href="#"></a></li>
                     <li class="page-item"><a class="page-link " @StaticData.PaginationNuberSelector href="#"></a></li>
                     <li class="page-item"><a class="page-link" @StaticData.PaginationNuberSelector href="#"></a></li>
                     <li class="page-item"><a class="page-link page-link--spacer" @StaticData.PaginationSpacerSelector href="#">...</a></li>
@@ -130,6 +141,8 @@
         </div>
     </main>
 </div>
+
+
 
 @functions {
     private IHtmlContent RenderCategory(Category category)
@@ -174,6 +187,7 @@
             const productBrowserApiManager = new ProductBrowserApiManager(
                 `[@StaticData.ItemsDivSelector]`,
                 `[@StaticData.InformationParagraphSelector]`,
+                `[@StaticData.LoadingScreenSelector]`,
                 productBrowserCardGenerator
             )
 

@@ -64,7 +64,6 @@ class BaseCartQuantityValidator {
     handleUpdatedQuantities(updatedItems) {
         let foundAny = false;
         updatedItems.forEach(updatedItem => {
-            console.log(this.elements);
             const match = Array.from(this.elements)
                 .map(el => ({ el, ancestor: this.gatherAncestor(el) }))
                 .find(({ ancestor }) => {

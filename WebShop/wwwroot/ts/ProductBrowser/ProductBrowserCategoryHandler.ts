@@ -40,7 +40,6 @@ class ProductBrowserCategoryHandler{
     }
 
     private updateCategoryStatusAfterReload(): void {
-        console.log('dziala')
         this.allCategoryAnchors.forEach(a => {
             if (a.nextElementSibling?.innerHTML.trim() == this.productBrowserApiManager.ApiCallOptions.categoryIDFilter.trim()) {
                 this.setCategoryLinkActive(a);

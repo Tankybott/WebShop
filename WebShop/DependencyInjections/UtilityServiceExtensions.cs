@@ -10,6 +10,7 @@ using DinkToPdf.Contracts;
 using DinkToPdf;
 
 
+
 namespace WebShop.DependencyInjections
 {
     public static class UtilityServiceExtensions
@@ -28,6 +29,8 @@ namespace WebShop.DependencyInjections
 
             services.AddSingleton<IDiscountActivationQueue, DiscountActivationQueue>();
             services.AddSingleton<IDiscountDeletionQueue, DiscountDeletionQueue>();
+
+
 
 
             return services;

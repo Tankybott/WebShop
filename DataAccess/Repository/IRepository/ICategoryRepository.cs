@@ -10,6 +10,5 @@ namespace DataAccess.Repository.IRepository
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        bool Any(Expression<Func<Category, bool>> predicate);
     }
 }

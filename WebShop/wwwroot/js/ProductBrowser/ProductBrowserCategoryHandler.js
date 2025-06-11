@@ -32,7 +32,6 @@ class ProductBrowserCategoryHandler {
         this.lastActiveLink = link;
     }
     updateCategoryStatusAfterReload() {
-        console.log('dziala');
         this.allCategoryAnchors.forEach(a => {
             var _a;
             if (((_a = a.nextElementSibling) === null || _a === void 0 ? void 0 : _a.innerHTML.trim()) == this.productBrowserApiManager.ApiCallOptions.categoryIDFilter.trim()) {

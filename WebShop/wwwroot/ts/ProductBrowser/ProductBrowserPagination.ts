@@ -78,7 +78,6 @@ class ProductBrowserPagination {
 
     public setItemsAmount(itemsAmount: string): void {
         const itemsAmountNumber = Number(itemsAmount);
-        console.log(itemsAmount);
         if (!isNaN(itemsAmountNumber)) {
             this.itemsAmount = itemsAmountNumber;
         } else {
@@ -238,7 +237,6 @@ class ProductBrowserPagination {
         this.paginationNumbers.forEach((n) => {
             n.addEventListener("click", async () => {
                 try {
-                    console.log('proba')
                     this.apiManager.ApiCallOptions.PageSize = this.PAGE_SIZE.toString();
                     this.apiManager.ApiCallOptions.PageNumber = n.innerText.trim();
                     const activePageNumber = Number(n.innerText)

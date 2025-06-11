@@ -33,7 +33,6 @@ class OrderDetailHandler {
     }
     async handleStartProcessingClick(e) {
         var _a;
-        console.log("wysyla");
         e.preventDefault();
         const orderId = (_a = this.idInput) === null || _a === void 0 ? void 0 : _a.value;
         if (!orderId)
@@ -61,7 +60,6 @@ class OrderDetailHandler {
     }
     async handleSendClick(e) {
         var _a;
-        console.log("leci");
         e.preventDefault();
         const orderId = (_a = this.idInput) === null || _a === void 0 ? void 0 : _a.value;
         if (!orderId)
