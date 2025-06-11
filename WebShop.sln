@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{FA22AFA3-96CB-4B09-83B5-2B1391723B5C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "ControllersServices\Services.csproj", "{75343721-956F-4922-B4FC-D64302485AEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Servicesa", "ControllersServices\Servicesa.csproj", "{75343721-956F-4922-B4FC-D64302485AEB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{E3B14971-524A-43B1-8320-2AB5194929EB}"
 EndProject

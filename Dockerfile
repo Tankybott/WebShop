@@ -6,7 +6,7 @@ COPY WebShop.sln ./
 COPY WebShop/WebShop.csproj ./WebShop/
 COPY Models/Models.csproj ./Models/
 COPY DataAccess/DataAccess.csproj ./DataAccess/
-COPY Services/Services.csproj ./Services/
+COPY ControllersServices/Servicesa.csproj ./Services/
 COPY Utility/Utility.csproj ./Utility/
 COPY BackgroundServices/BackgroundServices.csproj ./BackgroundServices/
 
