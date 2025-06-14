@@ -56,13 +56,13 @@
                     <div class="container border border-secondary rounded p-3">
                         <div class="mb-3">
                             <label for="@StaticData.DiscountStartTimeInputId" class="mb-1">Discount Start Time</label>
-                            <input asp-for="Product.Discount.StartTime" type="datetime-local" class="form-control" id="@StaticData.DiscountStartTimeInputId" />
+                            <input asp-for="Product.Discount.StartTime" type="datetime-local" class="form-control" id="@StaticData.DiscountStartTimeInputId"  value=@(Model?.Product?.Discount?.StartTime.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")) />
                             <p class="text-danger"></p>
                         </div>
 
                         <div class="mb-3">
                             <label for="@StaticData.DiscountEndTimeInputId" class="mb-1">Discount End Time</label>
-                            <input asp-for="Product.Discount.EndTime" type="datetime-local" class="form-control" id="@StaticData.DiscountEndTimeInputId" />
+                            <input asp-for="Product.Discount.EndTime" type="datetime-local" class="form-control" id="@StaticData.DiscountEndTimeInputId" value=@(Model?.Product?.Discount?.EndTime.ToLocalTime().ToString("yyyy-MM-ddTHH:mm"))/>
                             <p class="text-danger"></p>
                         </div>
 
@@ -102,7 +102,7 @@
                 <!-- Product Price -->
                 <div class="mb-3">
                     <label for="@StaticData.ProductPriceId" class="mb-2 me-2 text-dark text-uppercase fs-6 ms-2" style="font-weight: 500">Product Price</label>
-                    <input asp-for="Product.Price" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ProductPriceId" />
+                    <input asp-for="Product.Price" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ProductPriceId" value="@(Model.Product.Price.ToString("F2"))"/>
                     <p class="text-danger"></p>
                 </div>
 
@@ -122,7 +122,7 @@
                             <i class="bi bi-question-circle-fill"></i>
                         </button>
                     </div>
-                    <input asp-for="Product.ShippingPriceFactor" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ShippingPriceFactorId" />
+                    <input asp-for="Product.ShippingPriceFactor" value="@(Model.Product.ShippingPriceFactor.ToString("F2"))" type="number" step="0.01" min="0" class="form-control" id="@StaticData.ShippingPriceFactorId" />
                     <p class="text-danger"></p>
                 </div>
 

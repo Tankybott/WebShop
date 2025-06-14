@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.FormModel;
 using Services.CartServices.CustomExeptions;
 using Services.CartServices.Interfaces;
+using Serilog;
 
 namespace WebShop.Areas.User.Controllers
 {
@@ -28,8 +29,9 @@ namespace WebShop.Areas.User.Controllers
                 ViewBag.Currency = webshopConfig.Currency;
                 return View("~/Views/Shared/ProductDetails.cshtml", product);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to load product details for productId={ProductId}", productId);
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
@@ -42,6 +44,7 @@ namespace WebShop.Areas.User.Controllers
         {
             if (!ModelState.IsValid)
             {
+                Log.Warning("AddItemToCart called with invalid model state: {@Model}", model);
                 return Json(new
                 {
                     success = false,
@@ -52,7 +55,6 @@ namespace WebShop.Areas.User.Controllers
             try
             {
                 await _cartServices.AddItemToCartAsync(model);
-
                 return Json(new
                 {
                     success = true,
@@ -65,15 +67,15 @@ namespace WebShop.Areas.User.Controllers
                 {
                     model.IsAddedWithDiscount = false;
                     await _cartServices.AddItemToCartAsync(model);
-
                     return Json(new
                     {
                         success = true,
                         message = "Unfortunately, the discount is no longer available. The item was added to the cart at the regular price."
                     });
                 }
-                catch (Exception)
+                catch (Exception fallbackEx)
                 {
+                    Log.Error(fallbackEx, "Fallback after DiscountOutOfDateException failed for model: {@Model}", model);
                     return Json(new
                     {
                         success = false,
@@ -83,6 +85,7 @@ namespace WebShop.Areas.User.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to add item to cart for model: {@Model}", model);
                 return Json(new
                 {
                     success = false,

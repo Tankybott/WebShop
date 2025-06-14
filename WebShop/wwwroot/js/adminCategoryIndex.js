@@ -11,18 +11,9 @@ $(document).ready(function () {
 
 $('#categoryFilter').change(function () {
     var selectedValue = $(this).val();
-    menageSubcategoryAddButtonVisibility(selectedValue);
     loadDataTable();
 });
 
-function menageSubcategoryAddButtonVisibility(selectedValue) {
-    if (selectedValue === "all") {
-        $('#CreateSubcategoryInThisCategory').hide();
-    } else {
-        $('#CreateSubcategoryInThisCategory').show();
-        $('#CreateSubcategoryInThisCategory').attr("href", `/Admin/Category/AddSubcategoryToSpecyficCategory?parentCategoryFilter=${selectedValue}`);
-    }
-}
 
 function loadDataTable() {
     var selectedParentCategoryId = $('#categoryFilter').val();

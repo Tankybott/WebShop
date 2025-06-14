@@ -196,11 +196,11 @@
                                         <div class="row container">
                                             <div class="col-8">
                                                 <h6 class="my-0 text-primary">@detail.ProductName</h6>
-                                                <small class="text-muted">Price : @detail.Price.ToString("c")</small><br />
+                                                <small class="text-muted">Price : @detail.Price.ToString("F2") @ViewBag.Currency</small><br />
                                                 <small class="text-muted">Quantity : @detail.Quantity</small>
                                             </div>
                                             <div class="col-4 text-end">
-                                                <p class="text-success">@((detail.Price * detail.Quantity).ToString("c"))</p>
+                                                <p class="text-success">@((detail.Price * detail.Quantity).ToString("F2"))</p>
                                             </div>
                                         </div>
                                     </li>

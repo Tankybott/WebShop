@@ -6,7 +6,7 @@ namespace Utility.Common.Interfaces
     public interface IFileNameCreator
     {
         string CreateFileName(IFormFile file);
-        string CreateJpegFileName();
+        string CreateProductPhotoName();
         string CreateFileName(string extension);
     }
 }

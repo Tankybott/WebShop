@@ -18,10 +18,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Services.EmailSender;
 using DinkToPdf.Contracts;
 using DinkToPdf;
-
 using Services.UsersServices;
 using Microsoft.AspNetCore.Identity;
 using Models;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,8 +37,9 @@ builder.Configuration
 
 // Configure logging
 Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Warning()
     .WriteTo.Console()
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 builder.Host.UseSerilog();
@@ -50,9 +51,15 @@ try
     builder.Services.AddRazorPages();
 
     // Configure database
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    Log.Information("Using connection string: {ConnectionString}", connectionString);
+
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.UseMySql(
+            connectionString,
+            ServerVersion.AutoDetect(connectionString)
+        );
     });
 
     // Register repositories, services, and authentication
@@ -155,6 +162,10 @@ try
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
+
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+        await dbContext.Database.MigrateAsync();
+
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var config = services.GetRequiredService<IConfiguration>();

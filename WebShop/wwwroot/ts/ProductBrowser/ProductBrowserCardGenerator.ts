@@ -22,6 +22,7 @@
 
     private styleDiscountedCard(productDto: IProductDTO, cardDiv: HTMLDivElement): void {
         const discountPercentage = Number(productDto.discountPercentage);
+        console.log(discountPercentage)
         if (!isNaN(discountPercentage) && discountPercentage > 0) {
             cardDiv.classList.add("border-primary")
             cardDiv.classList.add("border-bottom")

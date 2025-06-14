@@ -42,7 +42,7 @@ namespace Services.OrderServices
             {
                 orderHeader.PaymentIntentId = session.PaymentIntentId;
                 orderHeader.OrderStatus = OrderStatuses.PaymentConfirmed;
-                orderHeader.PaymentDate = DateTime.Now;
+                orderHeader.PaymentDate = DateTime.UtcNow;
 
                 _unitOfWork.OrderHeader.Update(orderHeader);
                 await _unitOfWork.SaveAsync();

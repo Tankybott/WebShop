@@ -13,12 +13,13 @@ using System.Security.Claims;
 namespace WebShop.Areas.User.Controllers
 {
     [Area("User")]
-    [Authorize] 
+    [Authorize]
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICartServices _cartServices;
         private readonly IProductPriceRetriver _productPriceRetriver;
+
         public CartController(IUnitOfWork unitOfWork, IProductService productService, ICartServices cartServices, IProductPriceRetriver productPriceRetriver)
         {
             _unitOfWork = unitOfWork;
@@ -37,14 +38,16 @@ namespace WebShop.Areas.User.Controllers
 
                 return View(userCart);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred while loading cart for user.");
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
         }
 
         #region ApiCalls
+
         [HttpGet]
         public async Task<IActionResult> GetCurrentProductPrice(int productId)
         {
@@ -53,22 +56,24 @@ namespace WebShop.Areas.User.Controllers
                 var currentProductPrice = await _productPriceRetriver.GetProductPriceAsync(productId);
                 return Json(new { success = true, data = currentProductPrice, message = "" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to get current price for productId={ProductId}", productId);
                 return Json(new { success = false, message = "Something went wrong" });
             }
         }
 
         [HttpPatch]
-        public async Task<IActionResult> SynchronizeCartPrices(int cartId) 
+        public async Task<IActionResult> SynchronizeCartPrices(int cartId)
         {
             try
             {
                 IEnumerable<int> modifiedCartItemsIds = await _cartServices.SynchronizeCartPrices(cartId);
                 return Json(new { success = true, modifiedCartItemsIds = modifiedCartItemsIds, message = "" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to synchronize prices for cartId={CartId}", cartId);
                 return Json(new { success = false, message = "Something went wrong" });
             }
         }
@@ -80,11 +85,11 @@ namespace WebShop.Areas.User.Controllers
             {
                 await _cartServices.RemoveCartItemAsync(id);
                 TempData["success"] = "Item deleted successfully";
-                return Json(new { success = true, });
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "failed to delete cart item");
+                Log.Error(ex, "Failed to delete cart item with id={CartItemId}", id);
                 return Json(new { success = false });
             }
         }
@@ -95,15 +100,15 @@ namespace WebShop.Areas.User.Controllers
             try
             {
                 await _cartServices.UpdateCartItemQantityAsync(cartItemId, newQuantity);
-                return Json(new { success = true, });
+                return Json(new { success = true });
             }
-            catch (NotEnoughQuantityException ex) 
+            catch (NotEnoughQuantityException ex)
             {
-                return Json(new { success = false, quantityLeft = ex.MaxAvailableQuantity});
+                return Json(new { success = false, quantityLeft = ex.MaxAvailableQuantity });
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "failed to update items quantity");
+                Log.Error(ex, "Failed to update quantity for cartItemId={CartItemId}", cartItemId);
                 return Json(new { success = false });
             }
         }
@@ -113,11 +118,12 @@ namespace WebShop.Areas.User.Controllers
         {
             try
             {
-                var newQuantity =  await _cartServices.GetCartItemsQantityAsync();
-                return Json(new { success = true, newQuantity = newQuantity});
+                var newQuantity = await _cartServices.GetCartItemsQantityAsync();
+                return Json(new { success = true, newQuantity = newQuantity });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to get cart item quantities");
                 return Json(new { success = false });
             }
         }
@@ -132,9 +138,11 @@ namespace WebShop.Areas.User.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to validate cart quantities");
                 return Json(new { success = false });
             }
         }
+
         #endregion
     }
 }

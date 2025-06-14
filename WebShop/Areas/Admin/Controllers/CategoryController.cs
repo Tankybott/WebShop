@@ -27,8 +27,9 @@ namespace WebShop.Areas.Admin.Controllers
                 var categoryVM = await _categoryService.GetCategoryVMAsync();
                 return View(categoryVM);
             }
-            catch (Exception) 
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Category/Index");
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
@@ -41,8 +42,9 @@ namespace WebShop.Areas.Admin.Controllers
                 var categoryVM = await _categoryService.GetCategoryVMAsync(id, bindedParentCategory);
                 return View(categoryVM);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Category/Upsert for id={Id}, bindedParentCategory={ParentId}", id, bindedParentCategory);
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index");
             }
@@ -52,7 +54,7 @@ namespace WebShop.Areas.Admin.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(parentCategoryFilter)) // when root category
+                if (string.IsNullOrEmpty(parentCategoryFilter))
                 {
                     return RedirectToAction("Upsert", new { bindedParentCategory = 0 });
                 }
@@ -64,12 +66,14 @@ namespace WebShop.Areas.Admin.Controllers
 
                 return RedirectToAction("Upsert");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Category/AddSubcategory with filter={Filter}", parentCategoryFilter);
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index");
             }
         }
+
         [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpPost]
         public async Task<IActionResult> Upsert(CategoryVM VM)
@@ -87,38 +91,49 @@ namespace WebShop.Areas.Admin.Controllers
                     return View(VM);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred while upserting category with id={Id}", VM?.Category?.Id);
                 TempData["error"] = "Something went wrong, try again later";
                 return View(VM);
             }
         }
 
         #region API CALLS
+
         [HttpGet]
         public async Task<IActionResult> GetAll(string filter)
         {
-            var categories = await _categoryService.GetSubcategoriesOfCateogryAsync(filter);
-            return Json(new { data = categories });
+            try
+            {
+                var categories = await _categoryService.GetSubcategoriesOfCateogryAsync(filter);
+                return Json(new { data = categories });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred in Category/GetAll with filter={Filter}", filter);
+                return Json(new { data = new object[0] });
+            }
         }
 
         [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpDelete]
-        public async  Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             try
             {
                 await _categoryService.DeleteCategoryWithAllSubcategoriesAsync(id);
                 TempData["success"] = "Category deleted successfully";
-                return Json(new { success = true,});
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "failed to delete category");
-                TempData["error"] = "There was en error when deleting category";
-                return Json(new { success = false});
+                Log.Error(ex, "Failed to delete category with id={Id}", id);
+                TempData["error"] = "There was an error when deleting category";
+                return Json(new { success = false });
             }
         }
+
         #endregion
     }
 }

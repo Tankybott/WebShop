@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SkiaSharp;
+using SixLabors.ImageSharp.Formats.Webp;
 using Utility.Common.Interfaces;
 
 namespace Utility.Common
@@ -15,52 +15,45 @@ namespace Utility.Common
 
         public async Task CreateThumbnailAsync(IFormFile inputFile, string outputThumbnailPath)
         {
-            await using var inputStream = inputFile.OpenReadStream();
-            using var original = SKBitmap.Decode(inputStream);
+            using var inputStream = inputFile.OpenReadStream();
+            using var image = await Image.LoadAsync(inputStream);
 
-            var samplingOptions = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
-
-            var thumbnail = ResizeToFitBoxPreservingAspectRatio(original, 250, 250, samplingOptions);
-            if (thumbnail != null)
+            image.Mutate(x => x.Resize(new ResizeOptions
             {
-                await SaveImageAsync(thumbnail, outputThumbnailPath, 90);
-            }
+                Mode = ResizeMode.Max,
+                Size = new Size(250, 250)
+            }));
+
+            await SaveImageAsync(image, outputThumbnailPath, 75);
         }
 
         public async Task CreateFullSizeImageAsync(IFormFile inputFile, string outputFullSizePath)
         {
-            await using var inputStream = inputFile.OpenReadStream();
-            using var original = SKBitmap.Decode(inputStream);
+            using var inputStream = inputFile.OpenReadStream();
+            using var image = await Image.LoadAsync(inputStream);
 
-            var samplingOptions = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
-
-            var fullSize = ResizeToFitBoxPreservingAspectRatio(original, 1200, 800, samplingOptions);
-            if (fullSize != null)
+            image.Mutate(x => x.Resize(new ResizeOptions
             {
-                await SaveImageAsync(fullSize, outputFullSizePath, 90);
-            }
+                Mode = ResizeMode.Max,
+                Size = new Size(1200, 1200)
+            }));
+
+            await SaveImageAsync(image, outputFullSizePath, 75);
         }
 
-        private SKBitmap ResizeToFitBoxPreservingAspectRatio(SKBitmap original, int maxWidth, int maxHeight, SKSamplingOptions samplingOptions)
+        private async Task SaveImageAsync(Image image, string outputPath, int quality)
         {
-            float widthRatio = (float)maxWidth / original.Width;
-            float heightRatio = (float)maxHeight / original.Height;
-            float scale = Math.Min(widthRatio, heightRatio);
+            var encoder = new WebpEncoder
+            {
+                Quality = quality,
+                FileFormat = WebpFileFormatType.Lossy 
+            };
 
-            int newWidth = (int)(original.Width * scale);
-            int newHeight = (int)(original.Height * scale);
+            await using var ms = new MemoryStream();
+            await image.SaveAsync(ms, encoder);
 
-            return original.Resize(new SKImageInfo(newWidth, newHeight), samplingOptions);
-        }
-
-        private async Task SaveImageAsync(SKBitmap bitmap, string outputPath, int quality)
-        {
-            using var image = SKImage.FromBitmap(bitmap);
-            using var memoryStream = new MemoryStream();
-            image.Encode(SKEncodedImageFormat.Webp, quality).SaveTo(memoryStream);
-
-            memoryStream.Position = 0;
-            await _fileService.CreateFileAsync(memoryStream, outputPath);
+            ms.Position = 0;
+            await _fileService.CreateFileAsync(ms, outputPath);
         }
     }
 }

@@ -2,7 +2,7 @@
 using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Models.ProductFilterOptions;
-
+using Serilog;
 
 namespace WebShop.Areas.User.Controllers
 {
@@ -11,6 +11,7 @@ namespace WebShop.Areas.User.Controllers
     {
         private readonly IProductBrowserService _productBrowserService;
         private readonly IUnitOfWork _unitOfWork;
+
         public ProductBrowserController(IProductBrowserService productBrowserService, IUnitOfWork unitOfWork)
         {
             _productBrowserService = productBrowserService;
@@ -24,8 +25,9 @@ namespace WebShop.Areas.User.Controllers
                 var productBrowserVm = await _productBrowserService.GetProductBrowserVM();
                 return View(productBrowserVm);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to load ProductBrowser view.");
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
@@ -36,8 +38,16 @@ namespace WebShop.Areas.User.Controllers
         [HttpGet]
         public async Task<IActionResult> GetChoosenProducts([FromQuery] ProductFilterOptionsRequest filterOption)
         {
-            var products = await _productBrowserService.GetFilteredProductsDTO(filterOption);
-            return Json(new { data = products });
+            try
+            {
+                var products = await _productBrowserService.GetFilteredProductsDTO(filterOption);
+                return Json(new { data = products });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error fetching filtered products with options: {@FilterOption}", filterOption);
+                return Json(new { data = Array.Empty<object>(), success = false });
+            }
         }
 
         #endregion

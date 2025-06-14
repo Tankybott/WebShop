@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.FormModel;
 using Models.ViewModels;
+using Serilog;
 using Services.OrderServices.Interfaces;
 using Stripe;
 using Utility.Common.Interfaces;
@@ -35,8 +36,9 @@ namespace WebShop.Areas.User.Controllers
             {
                 return View();
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to load orders list.");
                 TempData["error"] = "Unexpected error while loading the orders list.";
                 return Redirect("/");
             }
@@ -50,8 +52,9 @@ namespace WebShop.Areas.User.Controllers
                 var vm = await _orderService.GetVmForNewOrderAsync();
                 return View(vm);
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to prepare new order.");
                 TempData["error"] = "Unexpected error while preparing a new order.";
                 return Redirect("/");
             }
@@ -65,8 +68,9 @@ namespace WebShop.Areas.User.Controllers
                 var vm = await _orderService.GetOrderVMByIdAsync(id);
                 return View(vm);
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to load order details for id={Id}", id);
                 TempData["error"] = "Unexpected error while loading order details.";
                 return RedirectToAction(nameof(Index));
             }
@@ -92,8 +96,9 @@ namespace WebShop.Areas.User.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to update order header for id={Id}", vm?.OrderHeader?.Id);
                 TempData["error"] = "Unexpected error while updating order.";
                 return Redirect("/");
             }
@@ -110,64 +115,59 @@ namespace WebShop.Areas.User.Controllers
                 }
                 else
                 {
-                    TempData["error"] = "Something went wrong. Please check your order status in the orders table and verify it via email. If you encounter any issues, contact the administration.";
+                    TempData["error"] = "Something went wrong. Please check your order status...";
                     return RedirectToAction("Index", "ProductBrowser");
-                }
-            }
-            catch (Exception ex) 
-            {
-                TempData["error"] = "Something went wrong. Please check your order status in the orders table and verify it via email. If you encounter any issues, contact the administration.";
-                return RedirectToAction("Index", "ProductBrowser");
-            }
-        }
-
-        #region ApiCalls 
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetCarrier(int carrierId) 
-        {
-            try {
-                var carrier = await _unitOfWork.Carrier.GetAsync(c => c.Id == carrierId);
-                if (carrier != null)
-                {
-                    return Json(new { success = true, carrier = carrier });
-                }
-                else 
-                {
-                    return Json(new { success = false });
                 }
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error during order confirmation for orderHeaderId={Id}", orderHeaderId);
+                TempData["error"] = "Something went wrong. Please check your order status...";
+                return RedirectToAction("Index", "ProductBrowser");
+            }
+        }
+
+        #region API Calls
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetCarrier(int carrierId)
+        {
+            try
+            {
+                var carrier = await _unitOfWork.Carrier.GetAsync(c => c.Id == carrierId);
+                return carrier != null
+                    ? Json(new { success = true, carrier })
+                    : Json(new { success = false });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to get carrier info for carrierId={Id}", carrierId);
                 return Json(new { success = false });
             }
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetOrders() 
+        public async Task<IActionResult> GetOrders()
         {
             try
             {
                 var DTOs = await _orderService.GetOrderTableDTOEntitiesAsync();
-                if (DTOs != null)
-                {
-                    return Json(new { success = true, dtos = DTOs });
-                }
-                else
-                {
-                    return Json(new { success = false });
-                }
+                return DTOs != null
+                    ? Json(new { success = true, dtos = DTOs })
+                    : Json(new { success = false });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to fetch orders for current user.");
                 return Json(new { success = false });
             }
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromForm] OrderFormModel formModel) 
+        public async Task<IActionResult> CreateOrder([FromForm] OrderFormModel formModel)
         {
             try
             {
@@ -181,59 +181,57 @@ namespace WebShop.Areas.User.Controllers
             }
             catch (StripeException ex)
             {
-                return Json(new { success = true, paymentRedirectionScuess = false, messege = "There was a problem redirecting to the payment page. Please try to retry the payment from your orders list. If the payment is not completed within 1 hour, the order will be deleted. If the problem persists, please contact the administration." });
+                Log.Error(ex, "Stripe redirect failed during order creation.");
+                return Json(new
+                {
+                    success = true,
+                    paymentRedirectionScuess = false,
+                    messege = "There was a problem redirecting to the payment page..."
+                });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to create order.");
                 return Json(new
                 {
                     success = false,
                     paymentRedirectionSuccess = false,
                     message = "Something went wrong, try again later"
                 });
-            };
+            }
         }
 
         [Authorize(Roles = $"{IdentityRoleNames.AdminRole},{IdentityRoleNames.HeadAdminRole}")]
         [HttpPost]
-        public async Task<IActionResult> StartProcessing([FromBody] int orderId) 
+        public async Task<IActionResult> StartProcessing([FromBody] int orderId)
         {
-            try 
+            try
             {
                 await _orderService.StartProcessingOrderAsync(orderId);
                 TempData["success"] = "Order status updated";
-                return Json(new
-                {
-                    success = true,
-                });
-            } catch 
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
             {
-                return Json(new
-                {
-                    success = false,
-                });
+                Log.Error(ex, "Failed to start processing for orderId={Id}", orderId);
+                return Json(new { success = false });
             }
         }
 
         [Authorize(Roles = $"{IdentityRoleNames.AdminRole},{IdentityRoleNames.HeadAdminRole}")]
         [HttpPost]
-        public async Task<IActionResult> SetOrderSent([FromBody] int orderId) 
+        public async Task<IActionResult> SetOrderSent([FromBody] int orderId)
         {
-            try 
+            try
             {
                 await _orderService.SendOrderAsync(orderId);
                 TempData["success"] = "Order status updated";
-                return Json(new
-                {
-                    success = true,
-                });
+                return Json(new { success = true });
             }
-            catch
+            catch (Exception ex)
             {
-                return Json(new
-                {
-                    success = false,
-                });
+                Log.Error(ex, "Failed to mark order as sent. orderId={Id}", orderId);
+                return Json(new { success = false });
             }
         }
 
@@ -259,10 +257,12 @@ namespace WebShop.Areas.User.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to generate PDF for order id={Id}", id);
                 TempData["error"] = "Failed to generate the PDF. Please try again.";
                 return RedirectToAction(nameof(Index));
             }
         }
+
         #endregion
     }
 }

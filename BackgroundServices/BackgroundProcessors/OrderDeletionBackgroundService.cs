@@ -20,7 +20,7 @@ namespace BackgroundServices.BackgroundProcessors
 
             var ordersToDelete = await unitOfWork.OrderHeader
                 .GetAllAsync(c => c.OrderStatus == OrderStatuses.CreatedStatus &&
-                      c.CreationDate <= DateTime.Now.AddMinutes(-60));
+                      c.CreationDate <= DateTime.UtcNow.AddMinutes(-60));
 
             if (ordersToDelete?.Any() == true)
             {

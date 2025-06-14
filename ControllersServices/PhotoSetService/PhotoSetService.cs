@@ -14,7 +14,7 @@ namespace Services.PhotoSetService
         private readonly IPathCreator _pathCreator;
         private readonly IUnitOfWork _unitOfWork;
 
-        private const string ProductImageDirectory = "images/product";
+        private const string ProductImageDirectory = "appdata/images/product";
         public PhotoSetService(IFileNameCreator fileNameCreator, IPhotoService productPhotoService, IPathCreator pathCreator, IUnitOfWork unitOfWork)
         {
             _fileNameCreator = fileNameCreator;
@@ -25,8 +25,8 @@ namespace Services.PhotoSetService
 
         public async Task<PhotoUrlSet> CreatePhotoSetAsync(IFormFile photo, bool isMain)
         {
-            string thumbnailPhotoFileName = _fileNameCreator.CreateFileName("webp");
-            string fullSizePhotoFileName = _fileNameCreator.CreateFileName("webp");
+            string thumbnailPhotoFileName = _fileNameCreator.CreateProductPhotoName();
+            string fullSizePhotoFileName = _fileNameCreator.CreateProductPhotoName();
             await _productPhotoService.UploadPhotosFromSet(photo, thumbnailPhotoFileName, fullSizePhotoFileName, ProductImageDirectory);
             return new PhotoUrlSet
             {

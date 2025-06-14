@@ -21,15 +21,21 @@ namespace Services.OrderServices
         public async Task<IEnumerable<OrderDTO>> GetEntitiesAsync()
         {
             var DTOs = await _unitOfWork.OrderHeader.GetOrderTableDtoAsync();
+            var validDateDtos = DTOs.Select(d =>
+            {
+                d.CreationDate = d.CreationDate.ToLocalTime();
+                return d;
+            }).ToList();
+
             var currentUser = _userRetriver.GetCurrentUser();
             var currentUserId = _userRetriver.GetCurrentUserId();
             if (currentUser.IsInRole(IdentityRoleNames.HeadAdminRole) || currentUser.IsInRole(IdentityRoleNames.AdminRole))
             {
-                return DTOs;
+                return validDateDtos;
             }
             else
             {
-                return DTOs.Where(d => d.ApplicationUserId == currentUserId);
+                return validDateDtos.Where(d => d.ApplicationUserId == currentUserId);
             }
         }
     }

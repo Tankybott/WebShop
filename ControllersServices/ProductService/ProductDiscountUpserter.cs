@@ -27,12 +27,12 @@ namespace Services.ProductService
                 }
                 else if (product.DiscountId == 0 || product.DiscountId == null)
                 {
-                    var discount = await _discountService.CreateDiscountAsync(discountCreateModel.StartTime.Value, discountCreateModel.EndTime.Value, discountCreateModel.Percentage.Value);
+                    var discount = await _discountService.CreateDiscountAsync(discountCreateModel.StartTime.Value.ToUniversalTime(), discountCreateModel.EndTime.Value.ToUniversalTime(), discountCreateModel.Percentage.Value);
                     product.DiscountId = discount.Id;
                 }
                 else
                 {
-                    var discount = await _discountService.UpdateDiscountAsync(product.DiscountId.Value, discountCreateModel.StartTime.Value, discountCreateModel.EndTime.Value, discountCreateModel.Percentage.Value);
+                    var discount = await _discountService.UpdateDiscountAsync(product.DiscountId.Value, discountCreateModel.StartTime.Value.ToUniversalTime(), discountCreateModel.EndTime.Value.ToUniversalTime(), discountCreateModel.Percentage.Value);
                     product.DiscountId = discount.Id;
                 }
             }

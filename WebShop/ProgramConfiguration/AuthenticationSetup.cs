@@ -56,7 +56,7 @@ namespace WebShop.ProgramConfiguration
                             var cart = await unitOfWork.Cart.GetAsync(c => c.UserId == userId);
                             if (cart != null)
                             {
-                                cart.ExpiresTo = DateTime.Now.AddMinutes(2);
+                                cart.ExpiresTo = DateTime.UtcNow.AddMinutes(2);
                                 unitOfWork.Cart.Update(cart);
                                 await unitOfWork.SaveAsync();
                             }

@@ -11,13 +11,11 @@ namespace Services.PhotoService
     {
         private readonly IPathCreator _pathCreator;
         private readonly IImageProcessor _imageProcessor;
-        private readonly IMainPhotoSetSynchronizer _productMainPhotoSynchronizer;
         private readonly IFileService _fileService;
-        public PhotoService(IPathCreator pathCreator, IImageProcessor imageProcessor, IMainPhotoSetSynchronizer productMainPhotoSynchronizer, IFileService fileService)
+        public PhotoService(IPathCreator pathCreator, IImageProcessor imageProcessor, IFileService fileService)
         {
             _pathCreator = pathCreator;
             _imageProcessor = imageProcessor;
-            _productMainPhotoSynchronizer = productMainPhotoSynchronizer;
             _fileService = fileService;
         }
         public async Task UploadPhotosFromSet(IFormFile photo, string thumbnailPhotoName, string FullSizePhotName, string imageDirectory)

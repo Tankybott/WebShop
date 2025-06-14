@@ -37,7 +37,7 @@ public abstract class QueueProcessBackgroundService<TEntity> : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             bool wasProcessed = false;
 
             using (var scope = _serviceScopeFactory.CreateScope())

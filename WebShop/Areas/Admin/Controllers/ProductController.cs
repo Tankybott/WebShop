@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.FormModel;
 using Services.ProductManagement.Interfaces;
 using Utility.Constants;
-
+using Serilog;
 
 namespace WebShop.Areas.Admin.Controllers
 {
@@ -20,7 +20,6 @@ namespace WebShop.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-
             try
             {
                 var productVM = await _productService.GetProductVMForIndexAsync();
@@ -28,6 +27,7 @@ namespace WebShop.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Product/Index.");
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
@@ -40,20 +40,29 @@ namespace WebShop.Areas.Admin.Controllers
                 var productVM = await _productService.GetProductVMAsync(id);
                 return View(productVM);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Product/Upsert for id {ProductId}.", id);
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index");
             }
-
         }
 
         #region Api Calls
+
         [HttpGet]
         public async Task<IActionResult> GetAllForTable(int? categoryFilter, string? productFilterOption)
         {
-            var products = await _productService.GetProductsForTableAsync(categoryFilter, productFilterOption);
-            return Json(new { data = products });
+            try
+            {
+                var products = await _productService.GetProductsForTableAsync(categoryFilter, productFilterOption);
+                return Json(new { data = products });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetAllForTable. categoryFilter={CategoryFilter}, productFilterOption={ProductFilterOption}", categoryFilter, productFilterOption);
+                return Json(new { data = new object[0] });
+            }
         }
 
         [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
@@ -62,6 +71,8 @@ namespace WebShop.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var errorMessages = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                Log.Warning("UpsertAjax called with invalid model. Errors: {Errors}", errorMessages);
                 TempData["error"] = "Something went wrong, try again later";
                 return Json(new { });
             }
@@ -69,12 +80,12 @@ namespace WebShop.Areas.Admin.Controllers
             try
             {
                 await _productService.UpsertAsync(model);
-
                 TempData["success"] = model.Id != 0 ? "Product updated successfully" : "Product added successfully";
                 return Json(new { });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error in UpsertAjax for product {ProductId}.", model.Id);
                 TempData["error"] = "Something went wrong, try again later";
                 return Json(new { });
             }
@@ -88,14 +99,16 @@ namespace WebShop.Areas.Admin.Controllers
             {
                 await _productService.DeleteAsync(id);
                 TempData["success"] = "Product deleted successfully";
-                return Json(new { success = true,});
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                TempData["error"] = "There was en error when deleting product";
-                return Json(new { success = false,});
+                Log.Error(ex, "Error deleting product with id {ProductId}.", id);
+                TempData["error"] = "There was an error when deleting product";
+                return Json(new { success = false });
             }
         }
+
         #endregion
     }
 }

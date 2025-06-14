@@ -9,11 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{FA22AFA3-96CB-4B09-83B5-2B1391723B5C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Servicesa", "ControllersServices\Servicesa.csproj", "{75343721-956F-4922-B4FC-D64302485AEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "ControllersServices\Services.csproj", "{75343721-956F-4922-B4FC-D64302485AEB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{E3B14971-524A-43B1-8320-2AB5194929EB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{9063ACB1-47D3-4936-AF68-EFA7D4164DC3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundServices", "BackgroundServices\BackgroundServices.csproj", "{FD382643-22F9-48DB-B189-CC5F299DB431}"
 EndProject
@@ -43,10 +41,6 @@ Global
 		{E3B14971-524A-43B1-8320-2AB5194929EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3B14971-524A-43B1-8320-2AB5194929EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3B14971-524A-43B1-8320-2AB5194929EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9063ACB1-47D3-4936-AF68-EFA7D4164DC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9063ACB1-47D3-4936-AF68-EFA7D4164DC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9063ACB1-47D3-4936-AF68-EFA7D4164DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9063ACB1-47D3-4936-AF68-EFA7D4164DC3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD382643-22F9-48DB-B189-CC5F299DB431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD382643-22F9-48DB-B189-CC5F299DB431}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD382643-22F9-48DB-B189-CC5F299DB431}.Release|Any CPU.ActiveCfg = Release|Any CPU

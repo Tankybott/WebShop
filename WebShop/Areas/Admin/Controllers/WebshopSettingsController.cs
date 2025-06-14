@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.ViewModels;
 using Services.WebshopConfigServices.Interfaces;
 using Utility.Constants;
+using Serilog;
 
 namespace WebShop.Areas.Admin.Controllers
 {
@@ -36,15 +37,16 @@ namespace WebShop.Areas.Admin.Controllers
                 }
                 else
                 {
-                    return View(_webshopSettingsServices.GetVmAsync());
+                    var model = await _webshopSettingsServices.GetVmAsync();
+                    return View(model);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred while updating webshop settings.");
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "Home", new { area = "User" });
             }
-            
         }
     }
 }

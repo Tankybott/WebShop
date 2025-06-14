@@ -17,7 +17,7 @@ namespace BackgroundServices.BackgroundProcessors
             using var scope = _scopeFactory.CreateScope();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-            var cartsToDelete = await unitOfWork.Cart.GetAllAsync(c => c.ExpiresTo != null && c.ExpiresTo <= DateTime.Now);
+            var cartsToDelete = await unitOfWork.Cart.GetAllAsync(c => c.ExpiresTo != null && c.ExpiresTo <= DateTime.UtcNow);
             if (cartsToDelete?.Any() == true)
             {
                 unitOfWork.Cart.RemoveRange(cartsToDelete);

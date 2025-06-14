@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Services.UsersServices;
 using Utility.Constants;
+using Serilog;
 
 namespace WebShop.Areas.Admin.Controllers
 {
@@ -22,6 +23,7 @@ namespace WebShop.Areas.Admin.Controllers
         }
 
         #region Api Calls
+
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -32,7 +34,8 @@ namespace WebShop.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                Log.Error(ex, "Error occurred in Users/GetUsers.");
+                return Json(new { success = false, message = "Failed to retrieve users." });
             }
         }
 
@@ -52,10 +55,11 @@ namespace WebShop.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                Log.Error(ex, "Error occurred while toggling ban status for email={Email}", email);
+                return Json(new { success = false, message = "An error occurred while updating the user." });
             }
         }
+
         #endregion
     }
-
 }

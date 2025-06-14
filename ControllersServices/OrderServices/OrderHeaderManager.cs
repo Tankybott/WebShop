@@ -31,7 +31,7 @@ namespace Services.OrderServices
             orderHeader.PostalCode = formModel.PostalCode;
             orderHeader.Region = formModel.Region;
             orderHeader.StreetAdress = formModel.StreetAdress;
-            orderHeader.CreationDate = DateTime.Now;
+            orderHeader.CreationDate = DateTime.UtcNow;
             orderHeader.OrderStatus = OrderStatuses.CreatedStatus;
             _unitOfWork.OrderHeader.Add(orderHeader);
             await _unitOfWork.SaveAsync();

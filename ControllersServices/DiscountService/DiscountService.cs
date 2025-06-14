@@ -32,7 +32,7 @@ namespace Services.DiscountService
             _unitOfWork.Discount.Add(discount);
             await _unitOfWork.SaveAsync();
 
-            if (startTime <= DateTime.Now)
+            if (startTime.ToUniversalTime() <= DateTime.UtcNow)
             {
                 SetActiveAsync(discount);
                 _unitOfWork.Discount.Update(discount);
@@ -79,7 +79,8 @@ namespace Services.DiscountService
 
         private void CheckIfDiscountValid(DateTime startTime, DateTime endTime, int percentage)
         {
-            if (startTime >= endTime || endTime < DateTime.Now || percentage < 0 || percentage > 99) throw new Exception("Invalid discount data");
+            if (startTime.ToUniversalTime() >= endTime.ToUniversalTime() || endTime.ToUniversalTime() < DateTime.UtcNow || percentage < 0 || percentage > 99)
+                throw new Exception("Invalid discount data");
         }
     }
 }

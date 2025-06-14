@@ -17,9 +17,9 @@ namespace Utility.Common
             return Guid.NewGuid().ToString() + "." + extension;
         }
 
-        public string CreateJpegFileName()
+        public string CreateProductPhotoName()
         {
-            return CreateFileName("jpeg");
+            return CreateFileName("webp");
         }
 
 

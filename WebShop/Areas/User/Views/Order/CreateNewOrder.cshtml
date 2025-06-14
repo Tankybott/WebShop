@@ -91,7 +91,7 @@
 
                                             <div class="col-3 col-md-3 text-md-right d-flex flex-row flex-lg-column justify-content-center pe-5 pe-lg-0">
                                                 <label class="text-muted px-3 px-lg-0">Price per Item</label>
-                                                <p class="fw-bold">@item.CurrentPrice @Model.Currency</p>
+                                                <p class="fw-bold">@item.CurrentPrice.ToString("F2") @Model.Currency</p>
                                             </div>
 
                                             <div class="col-3 col-md-3 text-md-right d-flex flex-column justify-content-center align-items-center">
@@ -124,7 +124,7 @@
                                         <p class="text-dark fs-5 fw-semibold text-uppercase"> Total :</p>
                                         <div class="text-dark fw-bold fs-5 d-flex">
                                             <p @StaticData.TotalPriceParagrapSelector>
-                                                @Model.OrderDetailsAsCartItems?.Sum(item => item.CurrentPrice * item.ProductQuantity)
+                                                @Model.OrderDetailsAsCartItems?.Sum(item => item.CurrentPrice * item.ProductQuantity).ToString("F2")
                                             </p>
                                             <span>&nbsp;@Model.Currency</span>
                                         </div>

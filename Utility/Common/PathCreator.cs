@@ -16,7 +16,7 @@ namespace Utility.Common
 
         public string GetRootPath()
         {
-            return wwwRootPath;
+            return wwwRootPath.Replace("/app", "");
         }
 
         public string CombinePaths(string firstPath, string secondPath)

@@ -4,7 +4,6 @@ using Models.DatabaseRelatedModels;
 using Serilog;
 using Services.CarrierService.Interfaces;
 using Services.WebshopConfigServices.Interfaces;
-using System.Threading;
 using Utility.Constants;
 
 namespace WebShop.Areas.Admin.Controllers
@@ -30,6 +29,7 @@ namespace WebShop.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Carrier/Index while retrieving free shipping threshold.");
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
@@ -43,13 +43,14 @@ namespace WebShop.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Carrier/Upsert while retrieving carrier with id={Id}", id);
                 TempData["error"] = "Something went wrong, try again later";
                 return RedirectToAction("Index", "ProductBrowser", new { area = "User" });
             }
         }
 
-       [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
-       [HttpPost]
+        [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
+        [HttpPost]
         public async Task<IActionResult> Upsert(Carrier carrier)
         {
             try
@@ -65,19 +66,29 @@ namespace WebShop.Areas.Admin.Controllers
                     return View(carrier);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred in Carrier/Upsert while saving carrier with id={Id}", carrier?.Id);
                 TempData["error"] = "Something went wrong, try again later";
                 return View(carrier);
             }
         }
 
         #region API CALLS
+
         [HttpGet]
         public async Task<IActionResult> GetAll(string filter)
         {
-            var carriers = await _carrierService.GetAllCarriers();
-            return Json(new { data = carriers });
+            try
+            {
+                var carriers = await _carrierService.GetAllCarriers();
+                return Json(new { data = carriers });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred in Carrier/GetAll.");
+                return Json(new { data = new object[0] });
+            }
         }
 
         [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
@@ -91,14 +102,14 @@ namespace WebShop.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "failed to delete carrier");
+                Log.Error(ex, "Failed to delete carrier with id={Id}", id);
                 return Json(new { success = false });
             }
         }
 
         [Authorize(Roles = IdentityRoleNames.HeadAdminRole + "," + IdentityRoleNames.AdminRole)]
         [HttpPut]
-        public async Task<IActionResult> SetFreeShippingFromPrice([FromBody] decimal? price) 
+        public async Task<IActionResult> SetFreeShippingFromPrice([FromBody] decimal? price)
         {
             try
             {
@@ -107,10 +118,11 @@ namespace WebShop.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "failed to update free shipping from price");
+                Log.Error(ex, "Failed to update free shipping from price. Input price={Price}", price);
                 return Json(new { success = false });
             }
         }
+
         #endregion
     }
 }
