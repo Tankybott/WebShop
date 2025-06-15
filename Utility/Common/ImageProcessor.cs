@@ -21,7 +21,7 @@ namespace Utility.Common
             image.Mutate(x => x.Resize(new ResizeOptions
             {
                 Mode = ResizeMode.Max,
-                Size = new Size(250, 250)
+                Size = new Size(500, 500)
             }));
 
             await SaveImageAsync(image, outputThumbnailPath, 75);

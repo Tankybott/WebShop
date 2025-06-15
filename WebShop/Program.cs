@@ -22,6 +22,7 @@ using Services.UsersServices;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,8 @@ builder.Configuration
 // Configure logging
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Warning()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
     .WriteTo.Console()
     .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();

@@ -40,7 +40,7 @@ namespace WebShop.ProgramConfiguration
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                 options.SlidingExpiration = true;
                 options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.IsEssential = true;
 
