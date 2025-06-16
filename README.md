@@ -11,15 +11,7 @@ Beyond simple product management, the system ensures complete oversight of the *
 
 ### 📁 Category Management
 
-The administrator has full control over building and organizing the shop’s category structure. The system supports **nested categories**, allowing you to create logical trees such as:
-
-Cars
-├── SUVs
-└── Buses
-
-sql
-Copy
-Edit
+The administrator has full control over building and organizing the shop’s category structure. The system supports **nested categories**, allowing you to create logical category trees
 
 To ensure a clear and user-friendly search experience, there is an intentional restriction in place:  
 ➡️ **Only top-level categories can contain products.**
@@ -34,3 +26,6 @@ The category system is designed to:
 - Encourage clean and meaningful hierarchy
 - Improve search and filtering accuracy
 - Avoid dead-end categories with unreachable products
+![image](https://github.com/user-attachments/assets/f10618b7-7f5c-49d0-b9d9-9edbd22338ad)
+![image](https://github.com/user-attachments/assets/e2e0591b-4cd6-4e80-9080-3e21c9263db7)
+
