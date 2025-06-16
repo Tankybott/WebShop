@@ -111,11 +111,7 @@ As a head admin, you can:
 
 This feature ensures that access control remains in your hands while maintaining flexibility for team-based administration.
 
-Great — here's the Order Management section rewritten to perfectly match your existing Markdown structure and style:
 
-md
-Copy
-Edit
 ### 📦 Order Management
 
 The system provides a comprehensive **Order Management** experience tailored for both regular users and administrators.
