@@ -148,6 +148,10 @@ They can:
   - See payment information
   - Update the order status
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ce1359bb-e0bf-402d-8448-d739403aea74" alt="Order Summary Admin Panel" width="80%" />
+</p>
+
 > ⚠️ **Important Requirement Before Marking as Shipped**
 > 
 > Before changing the order status to `Shipped`, the following fields must be properly filled out:
@@ -166,9 +170,7 @@ Each order has a **Download PDF** button available in the admin panel.
 
 This allows for easy archiving or order sharing for administrative or logistical purposes.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/ce1359bb-e0bf-402d-8448-d739403aea74" alt="Order Summary Admin Panel" width="80%" />
-</p>
+
 
 
 ### 🔄 Stock & Price Lifecycle
