@@ -28,6 +28,9 @@ The category system is designed to:
 - Avoid dead-end categories with unreachable products
 <p align="center">
   <img src="https://github.com/user-attachments/assets/f10618b7-7f5c-49d0-b9d9-9edbd22338ad" alt="Image 1" width="45%" style="margin-right: 10px;"/>
-  <img src="https://github.com/user-attachments/assets/e2e0591b-4cd6-4e80-9080-3e21c9263db7" alt="Image 2" width="45%"/>
+  <img src="https://github.com/user-attachments/assets/599df214-6c55-40ae-9bcf-3e36c03422e8" alt="Image 2" width="45%"/>
 </p>
+
+
+
 
