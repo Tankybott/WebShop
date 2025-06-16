@@ -91,5 +91,173 @@ This flexible system allows you to plan future promotions, flash sales, or seaso
   <img src="https://github.com/user-attachments/assets/0d0cb7a1-dcce-485c-8f74-31720180d3e4" alt="Discount Scheduling" width="60%" />
 </p>
 
+### ⚙️ Webshop Settings
 
+In the **Webshop Settings** panel, you can configure:
+
+- The **name of your store** (displayed across the platform)
+- The **currency** used for all orders and price displays
+
+> 💡 Make sure the selected currency is supported by Stripe if you plan to enable online payments.
+
+
+### 👥 User Management
+
+The system includes a simple but effective **User Management** panel.
+
+As a head admin, you can:
+- **Block or unblock users** to restrict access without deleting their account
+- **Create new admin accounts** to share management responsibilities with other trusted users
+
+This feature ensures that access control remains in your hands while maintaining flexibility for team-based administration.
+
+Great — here's the Order Management section rewritten to perfectly match your existing Markdown structure and style:
+
+md
+Copy
+Edit
+### 📦 Order Management
+
+The system provides a comprehensive **Order Management** experience tailored for both regular users and administrators.
+
+---
+
+#### 👤 User Order Access
+
+Each user has access to a personal **My Orders** dashboard, where they can:
+
+- View a list of their past orders
+- See details like:
+  - Order date
+  - Order status
+  - Payment status
+  - Total price
+- Click on any order to see its full summary:
+  - Ordered items (name, quantity, price)
+  - Shipping method and delivery status
+
+This section allows users to monitor their purchases and get clear visibility into the fulfillment process.
+
+---
+
+#### 🛠️ Admin Order Management
+
+Administrators can manage the full lifecycle of all orders via the **Admin Order Panel**.
+
+They can:
+
+- View all orders in a searchable and filterable table
+- Click on any order to:
+  - Edit customer and shipping details
+  - See payment information
+  - Update the order status
+
+The admin interface includes the following editable fields:
+
+- Name, Phone, Address, City, Region, Postal Code
+- Email
+- Order Date
+- **Carrier**
+- **Tracking Link**
+- **Shipping Date**
+- Stripe Session ID
+- Payment Intent ID
+- Payment Date
+- **Order Status** (`Created`, `WaitingForPayment`, `Processing`, `Shipped`, etc.)
+
+> ⚠️ **Important Requirement Before Marking as Shipped**
+> 
+> Before changing the order status to `Shipped`, the following fields must be properly filled out:
+> 
+> - ✅ **Carrier**
+> - ✅ **Tracking Link**
+> - ✅ **Shipping Date** (valid and not left as default)
+
+If any of these fields are missing, the system should block the update and inform the admin.
+
+---
+
+#### 📄 Order PDF Export
+
+Each order has a **Download PDF** button available in the admin panel.
+
+The generated PDF includes:
+
+- Customer and shipping details
+- Order summary table:
+  - Product name
+  - Quantity
+  - Price per item
+- Total amount (with optional currency formatting)
+- Optional tracking and carrier info
+
+This allows for easy archiving or order sharing for administrative or logistical purposes.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ce1359bb-e0bf-402d-8448-d739403aea74" alt="Order Summary Admin Panel" width="80%" />
+</p>
+
+
+### 🔄 Stock & Price Lifecycle
+
+Due to the dynamic nature of pricing, discounts, and stock levels, the system includes built-in validation and adjustment mechanisms to ensure consistency and avoid overselling.
+
+Here's how it works:
+
+- 🛒 **Cart Validation on Entry**  
+  Each time a user opens their cart, the system re-validates the **current price and stock** of each product.  
+  If anything has changed (e.g., product went on sale, stock decreased), the user is immediately informed, and the cart is automatically adjusted to reflect the correct server-side state.
+
+- 💳 **Final Validation Before Payment**  
+  Just before redirecting to the payment provider (e.g. Stripe), a **final stock check** is performed.  
+  If a product's stock is insufficient to fulfill the quantity in the cart, the system:
+  - Notifies the user
+  - Automatically lowers the quantity to the highest possible amount
+
+- 📉 **Stock Deduction After Payment Confirmation**  
+  Stock is only reduced once payment is successfully confirmed.  
+  This prevents stock loss from abandoned or failed payments and ensures that only finalized orders affect inventory.
+
+This entire flow guarantees:
+- Accurate pricing
+- Real-time stock integrity
+- A seamless shopping experience without confusing order failures
+
+### 💡 User-Friendly Features
+
+The platform includes a range of modern enhancements designed to make the shopping and checkout experience smooth, secure, and efficient for customers.
+
+#### 💳 Stripe Payment Integration
+
+The system uses **Stripe** to securely handle online payments.
+
+- Users are redirected to a secure Stripe Checkout page
+- All payment information is processed externally — no sensitive data is stored by the webshop
+- Stripe supports multiple payment methods (e.g. cards, wallets, bank transfers depending on region)
+
+#### 🔐 Social Login Options
+
+To streamline account creation and login, users can authenticate using:
+
+- ✅ **Facebook**
+- ✅ **Google**
+
+This saves time during checkout and improves onboarding for returning customers.
+
+#### ⏳ Payment Grace Period
+
+If a user creates an order but the payment **fails** or is **abandoned**, the system gives them a **1-hour window** to complete the payment.
+
+After this time:
+- The order is automatically deleted
+- All reserved stock is restored
+- This prevents inventory from being locked due to unpaid orders
+
+#### 🛒 Cart Persistence After Logout
+
+To enhance the user experience, the system **preserves the shopping cart** even after logout:
+
+- Cart data is stored for up to **1 hour**
+- When the user logs back in, their cart is restored automatically
+- This prevents frustration from accidentally lost sessions and supports longer browsing sessions
 
