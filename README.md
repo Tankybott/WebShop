@@ -374,4 +374,23 @@ This mechanism is designed for **time-critical tasks** that must react precisely
 
 This structure is especially useful for dynamic, time-sensitive scenarios — like scheduled promotions — where real-time execution matters but constant DB hits would be wasteful.
 
+#### 🖼️ Optimized Image Processing
+
+To reduce load times and deliver responsive images across devices, the system uses server-side image processing at upload time.
+
+Whenever a user uploads an image, the server:
+
+1. **Generates a high-quality full-size image** (max 1600×1600)
+2. **Creates a thumbnail version** (max 600×600) optimized for previews and lists
+
+Both images are encoded in the **WebP format** using a custom encoder, offering:
+- ✅ Modern compression
+- ✅ Smaller file sizes
+- ✅ High visual quality
+
+This logic is handled by the `ImageProcessor` service, which:
+- Uses the `SixLabors.ImageSharp` library for efficient image manipulation
+- Works asynchronously to avoid blocking threads during file I/O
+- Delegates file storage to a reusable `IFileService` for flexibility
+
 
