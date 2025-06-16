@@ -152,16 +152,6 @@ They can:
   <img src="https://github.com/user-attachments/assets/ce1359bb-e0bf-402d-8448-d739403aea74" alt="Order Summary Admin Panel" width="80%" />
 </p>
 
-> ⚠️ **Important Requirement Before Marking as Shipped**
-> 
-> Before changing the order status to `Shipped`, the following fields must be properly filled out:
-> 
-> - ✅ **Carrier**
-> - ✅ **Tracking Link**
-> - ✅ **Shipping Date** (valid and not left as default)
-
-If any of these fields are missing, the system should block the update and inform the admin.
-
 ---
 
 #### 📄 Order PDF Export
