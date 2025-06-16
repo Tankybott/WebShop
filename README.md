@@ -322,4 +322,56 @@ This disciplined testing approach supports clean development, simplifies onboard
 ---
 
 ### 🧠 Some Code Optimizations
+### ⚡ Some Code Optimizations
+
+To ensure optimal performance, modularity, and scalability, the application utilizes **two distinct background service architectures**, each tailored to a specific type of workload:
+
+---
+
+#### 💤 1. Low-Frequency Polling Services  
+
+📂 [`ProcessBackgroundService`](https://github.com/Tankybott/WebShop/tree/master/BackgroundServices/BackgroundProcessors)
+
+This approach is ideal for **less time-sensitive tasks** that can be executed periodically without impacting user experience or data accuracy.
+
+**Used for:**
+- 🗑️ Removing expired carts
+- 🧹 Deleting orders that have remained unconfirmed for too long
+
+**How it works:**
+- These services run at fixed intervals (e.g., every 30 or 60 minutes).
+- Each service inherits from a shared base class `ProcessBackgroundService` which handles the scheduling.
+- Subclasses only need to implement a `ProcessAsync()` method that encapsulates logic for fetching and processing stale data.
+
+**Why it's optimal:**
+- These operations are **infrequent** and can be handled with minimal performance cost.
+- Database querying is done in **bulk**, reducing I/O frequency.
+- Keeps the logic simple, clean, and **easy to extend** for similar use cases.
+
+---
+
+#### ⚙️ 2. High-Frequency Queue-Based Services  
+📂 [`QueueProcessBackgroundService`](https://github.com/Tankybott/WebShop/tree/master/BackgroundServices/QueueProcessBackgroundServices)  
+📂 [`Queue Implementations`](https://github.com/Tankybott/WebShop/tree/master/Utility/Queues)
+
+This mechanism is designed for **time-critical tasks** that must react precisely to time-based triggers, such as scheduled discounts.
+
+**Used for:**
+- ✅ Activating discounts when their start time is reached
+- ❌ Removing expired discounts when their end time is passed
+
+**How it works:**
+- Built on a generic `QueueProcessBackgroundService<TEntity>` abstract class
+- Uses an in-memory `SortedQueue<T>` (based on `SortedSet<T>`) to sort items by time (start or end)
+- Entities must implement `IHasId` to allow precise removal from the queue (e.g., if a discount is edited or deleted)
+- O(1) access to the next item ensures we always process the **earliest eligible task first**
+
+**Why it's optimal:**
+- Real-time precision: No need to constantly poll the database
+- **O(1) performance** for checking the next item due to the nature of `SortedSet`
+- Queue remains consistently sorted after every enqueue
+- **Trade-off:** Slight increase in memory usage in exchange for **massive performance gains and accuracy**
+
+This structure is especially useful for dynamic, time-sensitive scenarios — like scheduled promotions — where real-time execution matters but constant DB hits would be wasteful.
+
 
