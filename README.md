@@ -48,6 +48,47 @@ This allows business owners to fully customize delivery pricing according to pro
   <img src="https://github.com/user-attachments/assets/22c024af-8932-4646-b034-0fc47826ddd7" alt="Carrier Pricing Options" width="45%" />
 </p>
 
+### 🛍️ Product & Discount Management
+
+The admin panel allows you to create and manage detailed product entries with full control over content, media, and pricing behavior.
+
+Admins can:
+- Set product name, price, stock, and category
+- Write rich product descriptions using a built-in editor
+- Upload up to **7 photos** for each product  
+  - The **first photo** is treated as the **main product image**
+  - Additional photos appear on the **product details page**
+  - You can **easily change** which uploaded image is set as the main
+
+You also have access to a powerful **shipping price factor** mechanism.
+
+> ℹ️ **Shipping Price Factor**  
+> This value is used to calculate shipping cost and defaults to the product's weight.  
+> It becomes especially useful when:
+> - The product is large but lightweight — you can increase the factor
+> - The selected carrier charges per kilogram
+> - You want to influence the shipping cost for specific items manually  
+> 
+> 💡 Example:  
+> If a carrier charges $5 per kg and a product has a shipping factor of 2.5, the total shipping cost is $12.50.
+
+#### 🎯 Discount Management
+
+Discounts can be added in two ways:
+- While **creating a new product**
+- By **editing any existing product**
+
+The admin can define:
+- Discount **percentage**
+- **Start** and **end date** (including time)
+- Easily remove or overwrite the discount with one click
+
+This flexible system allows you to plan future promotions, flash sales, or seasonal deals in advance.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d9d20f6e-c17c-4e0d-b30b-388c5fddadad" alt="Discount Scheduling" width="60%" />
+</p>
+
 
 
 
