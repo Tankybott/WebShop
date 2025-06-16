@@ -31,6 +31,23 @@ The category system is designed to:
   <img src="https://github.com/user-attachments/assets/599df214-6c55-40ae-9bcf-3e36c03422e8" alt="Image 2" width="45%" />
 </p>
 
+### 🚚 Carrier Management
+
+The system offers flexible delivery management through a dedicated **Carrier Management** panel.
+
+Administrators can:
+- Add and manage custom carriers
+- Define whether the shipping price is **fixed** or calculated **per kilogram**
+- Set a **free shipping threshold** (e.g., free shipping for orders above $100)
+- Enable or disable carriers as needed
+
+This allows business owners to fully customize delivery pricing according to product weight, pricing strategy, or promotional campaigns.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/96e307f8-f839-4b1f-a121-926437350c85" alt="Carrier Management Panel" width="45%" style="margin-right: 10px;" />
+  <img src="https://github.com/user-attachments/assets/22c024af-8932-4646-b034-0fc47826ddd7" alt="Carrier Pricing Options" width="45%" />
+</p>
+
 
 
 
