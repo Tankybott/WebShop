@@ -148,19 +148,6 @@ They can:
   - See payment information
   - Update the order status
 
-The admin interface includes the following editable fields:
-
-- Name, Phone, Address, City, Region, Postal Code
-- Email
-- Order Date
-- **Carrier**
-- **Tracking Link**
-- **Shipping Date**
-- Stripe Session ID
-- Payment Intent ID
-- Payment Date
-- **Order Status** (`Created`, `WaitingForPayment`, `Processing`, `Shipped`, etc.)
-
 > ⚠️ **Important Requirement Before Marking as Shipped**
 > 
 > Before changing the order status to `Shipped`, the following fields must be properly filled out:
@@ -176,16 +163,6 @@ If any of these fields are missing, the system should block the update and infor
 #### 📄 Order PDF Export
 
 Each order has a **Download PDF** button available in the admin panel.
-
-The generated PDF includes:
-
-- Customer and shipping details
-- Order summary table:
-  - Product name
-  - Quantity
-  - Price per item
-- Total amount (with optional currency formatting)
-- Optional tracking and carrier info
 
 This allows for easy archiving or order sharing for administrative or logistical purposes.
 
@@ -230,6 +207,22 @@ The system uses **Stripe** to securely handle online payments.
 - Users are redirected to a secure Stripe Checkout page
 - All payment information is processed externally — no sensitive data is stored by the webshop
 - Stripe supports multiple payment methods (e.g. cards, wallets, bank transfers depending on region)
+- 
+#### 📧 Order Status Email Notifications
+
+To keep customers fully informed, the system automatically sends an **email notification** every time the status of their order changes.
+
+Examples include:
+- Order created
+- Order moved to `Processing`
+- Order has been `Shipped`
+
+Emails include:
+- Order summary
+- Current status
+- Tracking information (if available)
+
+This ensures transparency and builds trust with the customer.
 
 #### 🔐 Social Login Options
 
