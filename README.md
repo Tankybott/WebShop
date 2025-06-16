@@ -3,7 +3,7 @@
 ## 📚 Table of Contents
 
 - [🚀 Try It Yourself](#-try-it-yourself)
-- [🛍️ Project Overview](#ecommerce-control-management-system)
+  
 - [✨ Features & Functionalities](#-features--functionalities)
   - [📁 Category Management](#-category-management)
   - [🚚 Carrier Management](#-carrier-management)
@@ -21,6 +21,7 @@
     - [🔐 Social Login Options](#-social-login-options)
     - [⏳ Payment Grace Period](#-payment-grace-period)
     - [🛒 Cart Persistence After Logout](#-cart-persistence-after-logout)
+      
 - [🛠️ Technical Documentation](#-technical-documentation)
   - [⚙️ Tech Stack](#-tech-stack)
   - [🧱 Code Architecture](#-code-architecture)
