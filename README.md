@@ -269,3 +269,57 @@ To enhance the user experience, the system **preserves the shopping cart** even 
 - When the user logs back in, their cart is restored automatically
 - This prevents frustration from accidentally lost sessions and supports longer browsing sessions
 
+## 🛠️ Technical Documentation
+
+### ⚙️ Tech Stack
+
+This application was built using the following technologies:
+
+- **Backend:** ASP.NET Core (MVC)
+- **Database:** MySQL (via local Docker container)
+- **ORM:** Entity Framework Core
+- **Frontend:** Razor Pages with TypeScript-enhanced behavior
+- **Authentication:** ASP.NET Identity + external providers (Google, Facebook)
+- **Payments:** Stripe Integration
+- **Containerization:** Docker
+- **Email:** SMTP with confirmation + order notifications
+- **Hosting:** ASP.NET-compatible shared host (hostingasp.pl)
+
+---
+
+### 🧱 Code Architecture
+
+This project was designed with a strong emphasis on:
+
+- **Modularity & Clean Structure**  
+  Services and business logic are separated into clear, reusable modules.
+
+- **Maintainability**  
+  Code follows the **SOLID principles** and **best ASP.NET practices**, making it easier to test, extend, and reason about.
+
+- **Reusability**  
+  Common behaviors (e.g., image uploading, discount processing) are extracted into services to avoid repetition.
+
+- **Readability & Conventions**  
+  Naming, folder structure, and layered architecture (Controllers → Services → Repositories → Database) follow a consistent and scalable pattern.
+
+---
+
+### ✅ Testing Strategy
+
+The **entire service layer** is fully covered with **unit tests**, designed to ensure long-term stability and confidence in business logic changes.
+
+Key testing principles followed:
+
+- **Proper mocking** of repositories, services, and external dependencies
+- **Consistent naming convention**:  
+  Each test method follows a `MethodName_ShouldExpectedBehavior_WhenCondition` format for clarity
+- **One assertion per test**:  
+  This ensures that each test checks only one behavior, making debugging fast and results easier to interpret
+
+This disciplined testing approach supports clean development, simplifies onboarding, and ensures that even the most complex flows (like discount scheduling, order stock handling, or Stripe payment flows) remain reliable over time.
+
+---
+
+### 🧠 Some Code Optimizations
+
