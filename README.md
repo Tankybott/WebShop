@@ -1,4 +1,31 @@
 # 🛍️ Project Overview
+## 🚀 Try It Yourself
+
+You can explore the app live here:  
+🔗 **[http://webshop.hostingasp.pl/](http://webshop.hostingasp.pl/)**
+
+### 🧪 Test Admin Account
+
+Log in as a test administrator to preview the admin panel:  
+- **Email:** `testadmin@mail.com`  
+- **Password:** `Abcd123!`  
+
+> ⚠️ This account has read-only access to admin features. You can preview everything, but you **cannot make changes**.
+
+### 📝 Create Your Own Account
+
+You're also welcome to register a new user account manually.  
+📩 **Note:** Because there’s no custom domain email yet, confirmation emails may land in your **Spam folder** — please check there after signing up.
+
+### 🛒 Want to Try a Purchase?
+
+Feel free to place a test order using the Stripe demo card:  
+💳 **Card Number:** `4242 4242 4242 4242`  
+- Any valid expiration date
+- Any 3-digit CVC
+
+> 🔐 Google and Facebook login are currently only enabled for the owner (me) in this demo stage.
+
 ## Ecommerce Control Management System
 
 This project is an **Ecommerce Control Management System** built specifically with small and medium-sized businesses in mind. It provides a streamlined, intuitive environment for managing products, orders, discounts — all from a centralized admin panel.
