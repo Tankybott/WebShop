@@ -324,16 +324,27 @@ This application was built using the following technologies:
 This project was designed with a strong emphasis on:
 
 - **Modularity & Clean Structure**  
-  Services and business logic are separated into clear, reusable modules.
+  The system follows a **layer-based architecture**, clearly separating responsibilities across:
+  - **Controllers** – handle request flow and input validation
+  - **Services** – encapsulate business logic and workflows
+  - **Repositories** – manage data access and queries
+  - **Utilities** – handle cross-cutting concerns (e.g. PDF generation, image handling)
+  - **Background Services** – manage tasks like order cleanup and stock restoration
 
 - **Maintainability**  
-  Code follows the **SOLID principles** and **best ASP.NET practices**, making it easier to test, extend, and reason about.
+  Code is structured to follow **SOLID principles** and **best practices in ASP.NET development**, making it easy to test, extend, and debug as the application grows.
 
 - **Reusability**  
-  Common behaviors (e.g., image uploading, discount processing) are extracted into services to avoid repetition.
+  Common logic such as:
+  - Image uploading
+  - Discount activation/expiration
+  - Order stock adjustments
+  - ViewModel generation  
+  ...are encapsulated in reusable services and helpers to eliminate duplication.
 
 - **Readability & Conventions**  
-  Naming, folder structure, and layered architecture (Controllers → Services → Repositories → Database) follow a consistent and scalable pattern.
+  Folder structure, naming conventions, and abstraction layers are consistently applied across the solution.  
+  This helps any new developer onboard quickly and maintain a scalable codebase with ease.
 
 ---
 
