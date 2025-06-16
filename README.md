@@ -1,4 +1,36 @@
 # 🛍️ Project Overview
+
+## 📚 Table of Contents
+
+- [🚀 Try It Yourself](#-try-it-yourself)
+- [🛍️ Project Overview](#ecommerce-control-management-system)
+- [✨ Features & Functionalities](#-features--functionalities)
+  - [📁 Category Management](#-category-management)
+  - [🚚 Carrier Management](#-carrier-management)
+  - [🛍️ Product & Discount Management](#-product--discount-management)
+  - [⚙️ Webshop Settings](#-webshop-settings)
+  - [👥 User Management](#-user-management)
+  - [📦 Order Management](#-order-management)
+    - [👤 User Order Access](#-user-order-access)
+    - [🛠️ Admin Order Management](#-admin-order-management)
+    - [📄 Order PDF Export](#-order-pdf-export)
+  - [🔄 Stock & Price Lifecycle](#-stock--price-lifecycle)
+  - [💡 User-Friendly Features](#-user-friendly-features)
+    - [💳 Stripe Payment Integration](#-stripe-payment-integration)
+    - [📧 Order Status Email Notifications](#-order-status-email-notifications)
+    - [🔐 Social Login Options](#-social-login-options)
+    - [⏳ Payment Grace Period](#-payment-grace-period)
+    - [🛒 Cart Persistence After Logout](#-cart-persistence-after-logout)
+- [🛠️ Technical Documentation](#-technical-documentation)
+  - [⚙️ Tech Stack](#-tech-stack)
+  - [🧱 Code Architecture](#-code-architecture)
+  - [✅ Testing Strategy](#-testing-strategy)
+  - [🧠 Some Code Optimizations](#-some-code-optimizations)
+    - [💤 Low-Frequency Polling Services](#-1-low-frequency-polling-services)
+    - [⚙️ High-Frequency Queue-Based Services](#-2-high-frequency-queue-based-services)
+    - [🖼️ Optimized Image Processing](#-optimized-image-processing)
+    - [🧭 Persistent Product Browsing State](#-persistent-product-browsing-state)
+
 ## 🚀 Try It Yourself
 
 You can explore the app live here:  
@@ -276,12 +308,11 @@ To enhance the user experience, the system **preserves the shopping cart** even 
 This application was built using the following technologies:
 
 - **Backend:** ASP.NET Core (MVC)
-- **Database:** MySQL (via local Docker container)
+- **Database:** MySQL 
 - **ORM:** Entity Framework Core
 - **Frontend:** Razor Pages with TypeScript-enhanced behavior
 - **Authentication:** ASP.NET Identity + external providers (Google, Facebook)
 - **Payments:** Stripe Integration
-- **Containerization:** Docker
 - **Email:** SMTP with confirmation + order notifications
 - **Hosting:** ASP.NET-compatible shared host (hostingasp.pl)
 
@@ -393,4 +424,17 @@ This logic is handled by the `ImageProcessor` service, which:
 - Works asynchronously to avoid blocking threads during file I/O
 - Delegates file storage to a reusable `IFileService` for flexibility
 
+#### 🧭 Persistent Product Browsing State
+
+To improve user experience during product exploration, the app stores the user’s **last selected filters** in the browser’s **session storage**.
+
+This means:
+- When a user applies filters (e.g., category, sorting, search term) and navigates away from the product listing page...
+- Then later **returns to the same page** (via navigation or browser back button)...
+- The previously selected filters are **restored automatically**, so the user doesn’t need to reapply them
+
+This feature provides:
+- ✅ A smoother, more intuitive browsing experience
+- ✅ Reduced frustration during long browsing sessions
+- ✅ A modern feel that users expect from high-quality e-commerce platforms
 
