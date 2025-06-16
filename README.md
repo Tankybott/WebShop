@@ -48,6 +48,7 @@ This allows business owners to fully customize delivery pricing according to pro
   <img src="https://github.com/user-attachments/assets/22c024af-8932-4646-b034-0fc47826ddd7" alt="Carrier Pricing Options" width="45%" />
 </p>
 
+
 ### 🛍️ Product & Discount Management
 
 The admin panel allows you to create and manage detailed product entries with full control over content, media, and pricing behavior.
@@ -71,6 +72,7 @@ You also have access to a powerful **shipping price factor** mechanism.
 > 
 > 💡 Example:  
 > If a carrier charges $5 per kg and a product has a shipping factor of 2.5, the total shipping cost is $12.50.
+
 
 #### 🎯 Discount Management
 
