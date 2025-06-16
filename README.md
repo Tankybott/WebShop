@@ -86,9 +86,8 @@ The admin can define:
 This flexible system allows you to plan future promotions, flash sales, or seasonal deals in advance.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/d9d20f6e-c17c-4e0d-b30b-388c5fddadad" alt="Discount Scheduling" width="60%" />
+  <img src="https://github.com/user-attachments/assets/0d0cb7a1-dcce-485c-8f74-31720180d3e4" alt="Discount Scheduling" width="60%" />
 </p>
-
 
 
 
