@@ -41,7 +41,10 @@ You can explore the app live here:
 
 Log in as a test administrator to preview the admin panel:  
 - **Email:** `testadmin@mail.com`  
-- **Password:** `Abcd123!`  
+- **Password:** `Abcd123!`
+- **Email:** `user@mail.com`  
+- **Password:** `Abcd123!`
+Log in as a test user to purchase:  
 
 > ⚠️ This account has read-only access to admin features. You can preview everything, but you **cannot make changes**.
 
